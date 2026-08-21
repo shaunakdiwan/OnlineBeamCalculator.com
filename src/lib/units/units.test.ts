@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { toSI, fromSI, formatSI, UNITS, defaultUnits } from '../index';
+import { toSI, fromSI, formatSI, UNITS, defaultUnits } from './index';
 
 describe('units', () => {
   it('length round-trips', () => {

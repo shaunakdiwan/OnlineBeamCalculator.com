@@ -1,11 +1,25 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
 ---
 
-<Layout>
-	<Welcome />
+<Layout
+  title="Free Beam Calculator — Shear, Moment & Deflection Diagrams"
+  description="Analyze simply supported, cantilever, fixed, overhanging and continuous beams online. Instant SFD, BMD, slope & deflection diagrams, reactions and stresses. 100% free, no signup."
+>
+  <div class="mx-auto max-w-7xl px-lg py-lg">
+    <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+      <!-- Left: inputs (hydrated by src/lib/ui) -->
+      <aside id="input-panel" class="card p-md"></aside>
+      <!-- Right: canvas + results -->
+      <section class="flex flex-col gap-lg min-w-0">
+        <div id="beam-canvas-wrap" class="card p-md"></div>
+        <div id="results-dashboard"></div>
+        <div id="diagrams" class="flex flex-col gap-lg"></div>
+      </section>
+    </div>
+  </div>
+  <script>
+    import { initBeamApp } from '../lib/ui/app';
+    initBeamApp();
+  </script>
 </Layout>

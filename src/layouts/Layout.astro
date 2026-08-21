@@ -1,23 +1,127 @@
+---
+import '../styles/global.css';
+import '@fontsource-variable/geist';
+import '@fontsource-variable/geist-mono';
+
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title = 'Online Beam Calculator — Free Beam Analysis: Shear, Moment & Deflection',
+  description = 'Free online beam calculator. Analyze simply supported, cantilever, fixed, overhanging, continuous and multi-span beams. Instant shear force, bending moment, slope & deflection diagrams. No signup.',
+  canonical,
+  jsonLd,
+} = Astro.props;
+
+const site = 'https://onlinebeamcalculator.com';
+const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
+
+const webAppLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Online Beam Calculator',
+  url: site,
+  applicationCategory: 'EngineeringApplication',
+  operatingSystem: 'Any',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  description,
+};
+---
+
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
-</html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Online Beam Calculator" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(webAppLd)} />
+    {jsonLd && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
+  </head>
+  <body class="min-h-screen flex flex-col bg-canvas-soft text-ink font-sans">
+    <header class="sticky top-0 z-40 bg-canvas border-b border-hairline">
+      <nav class="mx-auto max-w-7xl h-16 px-lg flex items-center justify-between" aria-label="Main">
+        <a href="/" class="flex items-center gap-xs font-semibold tracking-tight">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M2 14 L22 14" stroke="#171717" stroke-width="2" stroke-linecap="round"/>
+            <path d="M6 14 L9 20 L3 20 Z" fill="#171717"/>
+            <path d="M15 14 L18 20 L12 20 Z" fill="#171717"/>
+            <path d="M11 3 L11 11 M8 6 L11 3 L14 6" stroke="#0070f3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>OnlineBeamCalculator<span class="text-link">.com</span></span>
+        </a>
+        <div class="hidden md:flex items-center gap-xxs text-body-sm">
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/calculator">Calculator</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/formulas">Formulas</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/guide">Guide</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/about">About</a>
+        </div>
+        <div class="flex items-center gap-sm">
+          <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">100% FREE</span>
+          <a href="/calculator" class="btn-primary h-7 px-xs rounded-sm text-body-sm">Open calculator</a>
+        </div>
+      </nav>
+    </header>
 
-<style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
-</style>
+    <main class="flex-1">
+      <slot />
+    </main>
+
+    <footer class="bg-canvas border-t border-hairline mt-4xl">
+      <div class="mx-auto max-w-7xl px-lg py-4xl grid grid-cols-2 md:grid-cols-4 gap-xl text-body-sm text-body">
+        <div>
+          <div class="eyebrow mb-sm uppercase">Product</div>
+          <ul class="space-y-xs">
+            <li><a class="hover:text-ink" href="/calculator">Beam calculator</a></li>
+            <li><a class="hover:text-ink" href="/calculator/simply-supported-udl">Simply supported</a></li>
+            <li><a class="hover:text-ink" href="/calculator/cantilever-tip-load">Cantilever</a></li>
+            <li><a class="hover:text-ink" href="/calculator/continuous-two-span">Continuous beam</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow mb-sm uppercase">Learn</div>
+          <ul class="space-y-xs">
+            <li><a class="hover:text-ink" href="/formulas">Beam formulas</a></li>
+            <li><a class="hover:text-ink" href="/guide">Reading SFD & BMD</a></li>
+            <li><a class="hover:text-ink" href="/guide#sign-conventions">Sign conventions</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow mb-sm uppercase">Resources</div>
+          <ul class="space-y-xs">
+            <li><a class="hover:text-ink" href="/calculator/fixed-fixed-udl">Fixed–fixed beam</a></li>
+            <li><a class="hover:text-ink" href="/calculator/overhanging-beam">Overhanging beam</a></li>
+            <li><a class="hover:text-ink" href="/about">About</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow mb-sm uppercase">OnlineBeamCalculator.com</div>
+          <p class="text-caption text-mute max-w-[28ch]">Free structural beam analysis in your browser. No account, no limits, no install.</p>
+        </div>
+      </div>
+      <div class="border-t border-hairline">
+        <div class="mx-auto max-w-7xl px-lg py-md flex items-center justify-between text-caption text-mute">
+          <span>© {new Date().getFullYear()} OnlineBeamCalculator.com</span>
+          <span class="font-mono">Runs 100% client-side</span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

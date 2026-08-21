@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout
+  title="Beam Calculator — Free Online Structural Analysis"
+  description="Interactive beam calculator: add supports (pin, roller, fixed, spring), internal hinges, point loads, UDLs, triangular & trapezoidal loads and moments. Instant SFD, BMD, slope and deflection diagrams."
+>
+  <div class="mx-auto max-w-7xl px-lg py-lg">
+    <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+      <aside id="input-panel" class="card p-md"></aside>
+      <section class="flex flex-col gap-lg min-w-0">
+        <div id="beam-canvas-wrap" class="card p-md"></div>
+        <div id="results-dashboard"></div>
+        <div id="diagrams" class="flex flex-col gap-lg"></div>
+      </section>
+    </div>
+  </div>
+  <script>
+    import { initBeamApp } from '../../lib/ui/app';
+    initBeamApp();
+  </script>
+</Layout>

@@ -100,6 +100,8 @@ export function initBeamApp(presetSlug?: string): Store | null {
   };
 
   store.subscribe(() => recompute());
+  // Re-render on theme toggle so SVG colors update
+  window.addEventListener('obc:theme', () => recompute());
   window.addEventListener('keydown', (ev) => {
     if ((ev.ctrlKey || ev.metaKey) && ev.key === 'z' && !ev.shiftKey) { ev.preventDefault(); store.undo(); }
     if ((ev.ctrlKey || ev.metaKey) && (ev.key === 'y' || (ev.key === 'z' && ev.shiftKey))) { ev.preventDefault(); store.redo(); }

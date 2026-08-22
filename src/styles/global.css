@@ -113,6 +113,32 @@
   }
 }
 
+/* ── Dark mode (class strategy, toggled on <html>) ───────────── */
+.dark {
+  --color-canvas: #171717;
+  --color-canvas-soft: #0f0f0f;
+  --color-canvas-soft-2: #232323;
+  --color-ink: #f2f2f2;
+  --color-body: #b3b3b3;
+  --color-mute: #6e6e6e;
+  --color-hairline: #2e2e2e;
+  --color-hairline-strong: #5e5e5e;
+  --color-primary: #f2f2f2;
+  --color-on-primary: #171717;
+  --color-link: #4d9bff;
+  --color-link-deep: #79b6ff;
+  --color-link-bg-soft: #12233d;
+  --color-error: #ff6363;
+  --color-error-soft: #3d1214;
+  --color-error-deep: #ff8484;
+  --color-warning-soft: #3d2b0a;
+  --color-selection-bg: #f2f2f2;
+  --color-selection-fg: #171717;
+  --shadow-card: 0px 1px 1px rgba(0,0,0,0.2), 0px 2px 2px rgba(0,0,0,0.25), inset 0 0 0 1px var(--color-hairline);
+  --shadow-popover: 0px 1px 1px rgba(0,0,0,0.3), 0px 4px 8px rgba(0,0,0,0.35), 0px 12px 24px rgba(0,0,0,0.4);
+  --shadow-modal: 0px 1px 1px rgba(0,0,0,0.3), 0px 8px 16px rgba(0,0,0,0.4), 0px 24px 48px rgba(0,0,0,0.5);
+}
+
 @layer components {
   /* Mono eyebrow label — DESIGN.md signature */
   .eyebrow {

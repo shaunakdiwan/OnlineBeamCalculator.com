@@ -50,6 +50,15 @@ const webAppLd = {
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <script is:inline>
+      // theme boot before first paint (avoid FOUC)
+      try {
+        const t = localStorage.getItem('obc:theme');
+        if (t === 'dark' || (!t && matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch {}
+    </script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify(webAppLd)} />
     {jsonLd && (
       <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
@@ -74,10 +83,21 @@ const webAppLd = {
           <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/about">About</a>
         </div>
         <div class="flex items-center gap-sm">
+          <button id="theme-toggle" class="btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
           <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">100% FREE</span>
           <a href="/calculator" class="btn-primary h-7 px-xs rounded-sm text-body-sm">Open calculator</a>
         </div>
       </nav>
+      <script is:inline>
+        (() => {
+          const b = document.getElementById('theme-toggle');
+          b?.addEventListener('click', () => {
+            const dark = document.documentElement.classList.toggle('dark');
+            try { localStorage.setItem('obc:theme', dark ? 'dark' : 'light'); } catch {}
+            window.dispatchEvent(new CustomEvent('obc:theme', { detail: { dark } }));
+          });
+        })();
+      </script>
     </header>
 
     <main class="flex-1">

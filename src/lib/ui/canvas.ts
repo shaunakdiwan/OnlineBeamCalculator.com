@@ -5,6 +5,7 @@
 import type { BeamModel, Load, Support } from '../beam/model';
 import type { Store } from './state';
 import { uid } from './state';
+import { palette } from './theme';
 
 const NS = 'http://www.w3.org/2000/svg';
 const VBH = 220; // viewBox height
@@ -54,54 +55,47 @@ export class BeamCanvas {
   }
 
   render() {
+    const P = palette();
     const { model, ui } = this.store.get();
     const s = this.scale(model);
     const beamY = 100;
     this.svg.textContent = '';
 
-    // defs: arrowhead
     const defs = el('defs', {});
-    const marker = el('marker', { id: 'arrow', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
-    marker.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 z', fill: '#0070f3' }));
-    const markerR = el('marker', { id: 'arrowR', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
-    markerR.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 z', fill: '#eb367f' }));
+    const marker = el('marker', { id: 'obc-arrow', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
+    marker.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 z', fill: P.link }));
+    const markerR = el('marker', { id: 'obc-arrowR', viewBox: '0 0 10 10', refX: 8, refY: 5, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' });
+    markerR.appendChild(el('path', { d: 'M0,0 L10,5 L0,10 z', fill: P.magenta }));
     defs.append(marker, markerR);
     this.svg.appendChild(defs);
 
-    // ground line hint
-    this.svg.appendChild(el('line', { x1: s.x0, x2: s.x1, y1: beamY + 56, y2: beamY + 56, stroke: '#ebebeb' }));
+    this.svg.appendChild(el('line', { x1: s.x0, x2: s.x1, y1: beamY + 56, y2: beamY + 56, stroke: P.hairline }));
+    this.svg.appendChild(el('rect', { x: s.x0, y: beamY - 6, width: s.x1 - s.x0, height: 12, fill: P.ink, rx: 2 }));
 
-    // BEAM
-    const beam = el('rect', { x: s.x0, y: beamY - 6, width: s.x1 - s.x0, height: 12, fill: '#171717', rx: 2 });
-    this.svg.appendChild(beam);
+    const lt = el('text', { x: 500, y: VBH - 8, 'text-anchor': 'middle', fill: P.mute, 'font-size': 11, 'font-family': 'monospace' }) as unknown as SVGTextElement;
+    lt.textContent = `L = ${model.length} m · click on the beam to add — drag glyphs to move`;
+    this.svg.appendChild(lt);
 
-    // length label
-    this.svg.appendChild(el('text', { x: 500, y: VBH - 8, 'text-anchor': 'middle', class: 'canvas-label', fill: '#888', 'font-size': 11, 'font-family': 'monospace' })) as unknown as SVGTextElement;
-    const lt = this.svg.lastChild as SVGTextElement;
-    lt.textContent = `L = ${model.length} m (click on beam to add support/hinge; click a glyph to edit)`;
-
-    // SUPPORTS
     for (const sup of model.supports) {
       const px = s.toPx(sup.x);
       const g = el('g', { 'data-kind': 'support', 'data-id': sup.id, cursor: 'grab' }) as SVGGElement;
-      if (ui.selection.id === sup.id) g.appendChild(el('circle', { cx: px, cy: beamY + 26, r: 22, fill: 'none', stroke: '#0070f3', 'stroke-dasharray': '3 2' }));
-      g.appendChild(el('path', { d: `M${px},${beamY + 6} L${px - 12},${beamY + 30} L${px + 12},${beamY + 30} Z`, fill: '#fff', stroke: '#171717', 'stroke-width': 2 }));
-      if (sup.type === 'roller') {
-        g.appendChild(el('path', { d: `M${px},${beamY + 6} L${px - 12},${beamY + 26} L${px + 12},${beamY + 26} Z`, fill: '#fff', stroke: '#171717', 'stroke-width': 2 }));
-        g.appendChild(el('circle', { cx: px - 6, cy: beamY + 32, r: 4, fill: '#fff', stroke: '#171717', 'stroke-width': 1.5 }));
-        g.appendChild(el('circle', { cx: px + 6, cy: beamY + 32, r: 4, fill: '#fff', stroke: '#171717', 'stroke-width': 1.5 }));
+      if (ui.selection.id === sup.id) g.appendChild(el('circle', { cx: px, cy: beamY + 26, r: 24, fill: 'none', stroke: P.link, 'stroke-dasharray': '3 2' }));
+      if (sup.type === 'pin') {
+        g.appendChild(el('path', { d: `M${px},${beamY + 6} L${px - 12},${beamY + 30} L${px + 12},${beamY + 30} Z`, fill: P.canvas, stroke: P.ink, 'stroke-width': 2 }));
+      } else if (sup.type === 'roller') {
+        g.appendChild(el('path', { d: `M${px},${beamY + 6} L${px - 12},${beamY + 26} L${px + 12},${beamY + 26} Z`, fill: P.canvas, stroke: P.ink, 'stroke-width': 2 }));
+        g.appendChild(el('circle', { cx: px - 6, cy: beamY + 32, r: 4, fill: P.canvas, stroke: P.ink, 'stroke-width': 1.5 }));
+        g.appendChild(el('circle', { cx: px + 6, cy: beamY + 32, r: 4, fill: P.canvas, stroke: P.ink, 'stroke-width': 1.5 }));
       } else if (sup.type === 'fixed') {
-        const side = sup.x < model.length / 2 ? 1 : -1; // hatch on outer face
-        const fx = px + (side === 1 ? -2.5 : -2.5);
-        g.appendChild(el('rect', { x: fx, y: beamY - 14, width: 5, height: 52, fill: '#171717' }));
-        for (let i = 0; i < 5; i++) g.appendChild(el('line', { x1: fx + (side === 1 ? 0 : 5), y1: beamY - 12 + i * 10, x2: fx + (side === 1 ? -10 : 15), y2: beamY - 4 + i * 10, stroke: '#171717', 'stroke-width': 1.5 }));
+        g.appendChild(el('rect', { x: px - 2.5, y: beamY - 14, width: 5, height: 52, fill: P.ink }));
+        for (let i = 0; i < 5; i++) g.appendChild(el('line', { x1: px - 2.5, y1: beamY - 12 + i * 10, x2: px - 13, y2: beamY - 4 + i * 10, stroke: P.ink, 'stroke-width': 1.5 }));
       } else if (sup.type === 'spring') {
         let d = `M${px},${beamY + 6}`;
         for (let i = 0; i < 6; i++) d += ` L${px + (i % 2 === 0 ? 7 : -7)},${beamY + 10 + i * 4}`;
         d += ` L${px},${beamY + 36}`;
-        g.appendChild(el('path', { d, fill: 'none', stroke: '#171717', 'stroke-width': 2 }));
+        g.appendChild(el('path', { d, fill: 'none', stroke: P.ink, 'stroke-width': 2 }));
       }
-      const t = el('text', { x: px, y: beamY + 52, 'text-anchor': 'middle', fill: '#4d4d4d', 'font-size': 10, 'font-family': 'monospace' });
+      const t = el('text', { x: px, y: beamY + 52, 'text-anchor': 'middle', fill: P.body, 'font-size': 10, 'font-family': 'monospace' }) as unknown as SVGTextElement;
       let label = sup.type;
       if (sup.type === 'spring' && sup.k) label += ` k=${sup.k.toExponential(1)}`;
       if (sup.settlement) label += ` Δ=${sup.settlement}`;
@@ -110,35 +104,33 @@ export class BeamCanvas {
       this.svg.appendChild(g);
     }
 
-    // HINGES
     for (const h of model.hinges) {
       const px = s.toPx(h.x);
       const g = el('g', { 'data-kind': 'hinge', 'data-id': h.id, cursor: 'grab' }) as SVGGElement;
-      if (ui.selection.id === h.id) g.appendChild(el('circle', { cx: px, cy: beamY, r: 12, fill: 'none', stroke: '#0070f3', 'stroke-dasharray': '3 2' }));
-      g.appendChild(el('circle', { cx: px, cy: beamY, r: 6, fill: '#fff', stroke: '#171717', 'stroke-width': 2 }));
+      if (ui.selection.id === h.id) g.appendChild(el('circle', { cx: px, cy: beamY, r: 12, fill: 'none', stroke: P.link, 'stroke-dasharray': '3 2' }));
+      g.appendChild(el('circle', { cx: px, cy: beamY, r: 6, fill: P.canvas, stroke: P.ink, 'stroke-width': 2 }));
       this.svg.appendChild(g);
     }
 
-    // LOADS
     for (const l of model.loads) {
       const g = el('g', { 'data-kind': 'load', 'data-id': l.id, cursor: 'grab' }) as SVGGElement;
       if (ui.selection.id === l.id) {
         const hx = l.type === 'udl' || l.type === 'trapezoid' ? s.toPx((l.x1 + l.x2) / 2) : s.toPx(l.x);
-        g.appendChild(el('circle', { cx: hx, cy: beamY - 46, r: 24, fill: 'none', stroke: '#0070f3', 'stroke-dasharray': '3 2' }));
+        g.appendChild(el('circle', { cx: hx, cy: beamY - 46, r: 24, fill: 'none', stroke: P.link, 'stroke-dasharray': '3 2' }));
       }
       if (l.type === 'point') {
         const px = s.toPx(l.x);
         const down = l.P >= 0;
         const y0 = down ? beamY - 52 : beamY - 18;
         const y1 = down ? beamY - 10 : beamY - 60;
-        g.appendChild(el('line', { x1: px, y1: y0, x2: px, y2: y1, stroke: '#0070f3', 'stroke-width': 3, 'marker-end': down ? 'url(#arrow)' : 'url(#arrow)', ...(down ? {} : {}) }));
-        const t = el('text', { x: px, y: y0 - 6, 'text-anchor': 'middle', fill: '#0070f3', 'font-size': 10, 'font-family': 'monospace' });
+        g.appendChild(el('line', { x1: px, y1: y0, x2: px, y2: y1, stroke: P.link, 'stroke-width': 3, 'marker-end': 'url(#obc-arrow)' }));
+        const t = el('text', { x: px, y: y0 - 6, 'text-anchor': 'middle', fill: P.link, 'font-size': 10, 'font-family': 'monospace' }) as unknown as SVGTextElement;
         t.textContent = `${compact(l.P)}N`;
         g.appendChild(t);
       } else if (l.type === 'moment') {
         const px = s.toPx(l.x);
-        g.appendChild(el('path', { d: `M ${px - 14} ${beamY - 34} A 16 16 0 1 1 ${px + 14} ${beamY - 34}`, fill: 'none', stroke: '#eb367f', 'stroke-width': 2.5, 'marker-end': 'url(#arrowR)' }));
-        const t = el('text', { x: px, y: beamY - 58, 'text-anchor': 'middle', fill: '#eb367f', 'font-size': 10, 'font-family': 'monospace' });
+        g.appendChild(el('path', { d: `M ${px - 14} ${beamY - 34} A 16 16 0 1 1 ${px + 14} ${beamY - 34}`, fill: 'none', stroke: P.magenta, 'stroke-width': 2.5, 'marker-end': 'url(#obc-arrowR)' }));
+        const t = el('text', { x: px, y: beamY - 58, 'text-anchor': 'middle', fill: P.magenta, 'font-size': 10, 'font-family': 'monospace' }) as unknown as SVGTextElement;
         t.textContent = `${compact(l.M)}N·m`;
         g.appendChild(t);
       } else {
@@ -149,19 +141,18 @@ export class BeamCanvas {
         const ref = Math.max(Math.abs(w1), Math.abs(w2), 1);
         const h1 = Math.max(10, (Math.abs(w1) / ref) * hMax);
         const h2 = Math.max(10, (Math.abs(w2) / ref) * hMax);
-        g.appendChild(el('polygon', { points: `${p1},${beamY - 8} ${p1},${beamY - 8 - h1} ${p2},${beamY - 8 - h2} ${p2},${beamY - 8}`, fill: 'rgba(0,112,243,0.08)', stroke: '#0070f3', 'stroke-width': 1.5 }));
+        g.appendChild(el('polygon', { points: `${p1},${beamY - 8} ${p1},${beamY - 8 - h1} ${p2},${beamY - 8 - h2} ${p2},${beamY - 8}`, fill: `${P.link}14`, stroke: P.link, 'stroke-width': 1.5 }));
         const n = Math.max(2, Math.round((p2 - p1) / 26));
         for (let i = 0; i <= n; i++) {
           const px = p1 + ((p2 - p1) * i) / n;
           const hh = h1 + ((h2 - h1) * i) / n;
-          g.appendChild(el('line', { x1: px, y1: beamY - 8 - hh, x2: px, y2: beamY - 10, stroke: '#0070f3', 'stroke-width': 1.5, 'marker-end': 'url(#arrow)' }));
+          g.appendChild(el('line', { x1: px, y1: beamY - 8 - hh, x2: px, y2: beamY - 10, stroke: P.link, 'stroke-width': 1.5, 'marker-end': 'url(#obc-arrow)' }));
         }
-        const t = el('text', { x: (p1 + p2) / 2, y: beamY - 16 - Math.max(h1, h2), 'text-anchor': 'middle', fill: '#0070f3', 'font-size': 10, 'font-family': 'monospace' });
+        const t = el('text', { x: (p1 + p2) / 2, y: beamY - 16 - Math.max(h1, h2), 'text-anchor': 'middle', fill: P.link, 'font-size': 10, 'font-family': 'monospace' }) as unknown as SVGTextElement;
         t.textContent = l.type === 'udl' ? `${compact(l.w)}N/m` : `${compact(w1)}→${compact(w2)}N/m`;
         g.appendChild(t);
-        // end handles
-        g.appendChild(el('circle', { cx: p1, cy: beamY - 8, r: 4, fill: '#0070f3', 'data-kind': 'load', 'data-id': l.id, 'data-end': '1' }));
-        g.appendChild(el('circle', { cx: p2, cy: beamY - 8, r: 4, fill: '#0070f3', 'data-kind': 'load', 'data-id': l.id, 'data-end': '2' }));
+        g.appendChild(el('circle', { cx: p1, cy: beamY - 8, r: 4, fill: P.link, 'data-kind': 'load', 'data-id': l.id, 'data-end': '1' }));
+        g.appendChild(el('circle', { cx: p2, cy: beamY - 8, r: 4, fill: P.link, 'data-kind': 'load', 'data-id': l.id, 'data-end': '2' }));
       }
       this.svg.appendChild(g);
     }

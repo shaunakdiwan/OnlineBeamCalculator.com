@@ -3,6 +3,7 @@
  * crosshair hover, extrema markers, and unit-aware tooltips.
  */
 import type { Store } from './state';
+import { palette } from './theme';
 import type { DiagramSeries, SolveResult } from '../beam/solve';
 import { formatSI } from '../units';
 import type { Quantity } from '../units';
@@ -30,15 +31,16 @@ export class Diagrams {
     this.root.textContent = '';
     this.charts = [];
     if (!result) return;
+    const P = palette();
     const st = this.store.get();
     const U = st.ui.units;
     const sgn = st.ui.signConvention === 'sagging-positive' ? 1 : -1;
 
     const specs: PlotSpec[] = [
-      { title: 'Shear force V(x)', color: '#7928ca', series: result.shear, quantity: 'force', unitId: U.force, sign: sgn },
-      { title: 'Bending moment M(x)', color: '#0070f3', series: result.moment, quantity: 'moment', unitId: U.moment, sign: sgn },
-      { title: 'Slope θ(x)', color: '#f5a623', series: result.slope, quantity: 'length', unitId: 'm', sign: 1 }, // rad — custom fmt
-      { title: 'Deflection δ(x)', color: '#ff0080', series: result.deflection, quantity: 'length', unitId: U.length, sign: 1 },
+      { title: 'Shear force V(x)', color: P.shear, series: result.shear, quantity: 'force', unitId: U.force, sign: sgn },
+      { title: 'Bending moment M(x)', color: P.moment, series: result.moment, quantity: 'moment', unitId: U.moment, sign: sgn },
+      { title: 'Slope θ(x)', color: P.slope, series: result.slope, quantity: 'length', unitId: 'm', sign: 1 }, // rad — custom fmt
+      { title: 'Deflection δ(x)', color: P.deflection, series: result.deflection, quantity: 'length', unitId: U.length, sign: 1 },
     ];
 
     for (const spec of specs) {
@@ -73,6 +75,7 @@ export class Diagrams {
   }
 
   private plot(holder: HTMLElement, spec: PlotSpec, result: SolveResult): SVGSVGElement {
+    const P = palette();
     const { series, color } = spec;
     const L = this.store.get().model.length;
     const svg = document.createElementNS(NS, 'svg') as SVGSVGElement;
@@ -92,7 +95,7 @@ export class Diagrams {
       return e;
     };
     svg.appendChild(mk('rect', { x: 0, y: 0, width: W, height: H, fill: 'none' }));
-    svg.appendChild(mk('line', { x1: PADL, x2: W - PADR, y1: y0, y2: y0, stroke: '#ebebeb' }));
+    svg.appendChild(mk('line', { x1: PADL, x2: W - PADR, y1: y0, y2: y0, stroke: P.hairline }));
 
     // curve
     const pts = series.x.map((x, i) => `${toPx(x).toFixed(1)},${toPy(series.values[i]).toFixed(1)}`);
@@ -114,8 +117,8 @@ export class Diagrams {
 
     // crosshair
     const cross = mk('g', { visibility: 'hidden' }) as SVGGElement;
-    const cline = mk('line', { x1: 0, x2: 0, y1: PADT, y2: H - PADB, stroke: '#a1a1a1', 'stroke-dasharray': '3 2' });
-    const tip = mk('text', { x: 0, y: PADT - 4, fill: '#171717', 'font-size': 10, 'font-family': 'monospace' });
+    const cline = mk('line', { x1: 0, x2: 0, y1: PADT, y2: H - PADB, stroke: P.hairlineStrong, 'stroke-dasharray': '3 2' });
+    const tip = mk('text', { x: 0, y: PADT - 4, fill: P.ink, 'font-size': 10, 'font-family': 'monospace' });
     cross.append(cline, tip);
     svg.appendChild(cross);
 

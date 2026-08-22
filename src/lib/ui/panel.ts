@@ -36,8 +36,8 @@ function numInput(
 }
 
 function row(label: string, ...els: HTMLElement[]): HTMLElement {
-  const r = h('div', 'flex items-center gap-xs');
-  const l = h('label', 'w-28 shrink-0 text-body-sm text-body', label);
+  const r = h('div', 'flex flex-wrap items-center gap-xs');
+  const l = h('label', 'w-full sm:w-28 shrink-0 text-body-sm text-body', label);
   r.append(l, ...els);
   return r;
 }

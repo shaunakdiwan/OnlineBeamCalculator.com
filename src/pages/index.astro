@@ -30,6 +30,26 @@ const homeFaqLd = {
       name: 'Can I share or save my beam model?',
       acceptedAnswer: { '@type': 'Answer', text: 'Yes. The entire model is serialized into the URL, so you can copy the link to share the exact beam with a colleague, or bookmark it. Your last model is also auto-saved locally in your browser.' },
     },
+    {
+      '@type': 'Question',
+      name: 'How do I calculate the load on a beam?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Tally every force the beam must carry: dead loads (self-weight of the beam, floor, roof, finishes), live loads (occupancy, snow, furniture), and any concentrated loads from walls, columns or equipment resting on it. Multiply floor loads in kN/m² by the tributary width to get a line load (UDL) in kN/m, then enter those loads here. The calculator returns reactions and internal shear/moment along the span.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'What is the formula for beam calculation?',
+      acceptedAnswer: { '@type': 'Answer', text: 'For a simply supported beam with a central point load: reactions R = P/2, maximum moment M = PL/4 at midspan, and maximum deflection δ = PL³/(48EI). With a uniform load w: R = wL/2, M = wL²/8, δ = 5wL⁴/(384EI). Cantilever with tip load: M = PL at the wall, δ = PL³/(3EI). The full formula table is on the /formulas page.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I calculate how much weight a beam can hold?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Capacity is governed by the lower of a strength check and a serviceability check. Strength: require σ = M·c/I ≤ fy (bending stress below yield, with safety factor). Serviceability: require δmax ≤ L/360 (or L/240) so the beam does not sag visibly or crack finishes. Model your section here, read M_max and δ_max, and compare against the material’s allowable stress.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'How do I calculate structural load capacity?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Structural capacity combines bending strength, shear strength and deflection. Bending: allowable load P such that M_max ≤ fy·I/c. Shear: V_max ≤ τ_allow·A. Deflection: choose E·I so δ_max ≤ L/limit. This tool reports M_max, V_max and δ_max with their locations so you can run each check directly; designing to a code (AISC, NDS, Eurocode) additionally applies safety and resistance factors.' },
+    },
   ],
 };
 ---
@@ -188,6 +208,22 @@ const homeFaqLd = {
           <div>
             <h3 class="text-body-md-strong text-ink">Can I share or save my model?</h3>
             <p class="mt-xxs">Yes. The model is encoded in the URL, so copying the link shares the exact beam. Your last model is also auto-saved in the browser.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">How do I calculate the load on a beam?</h3>
+            <p class="mt-xxs">Add up every load the beam carries: dead loads (self-weight of the beam, floor, roof, finishes), live loads (occupancy, snow, furniture), and concentrated loads from walls or equipment. Multiply floor loads in kN/m² by the tributary width to get a line load in kN/m, then enter it here. The calculator returns reactions and internal shear and moment along the span.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">What is the formula for beam calculation?</h3>
+            <p class="mt-xxs">For a simply supported beam with a central point load: R = P/2, M<sub>max</sub> = PL/4, δ<sub>max</sub> = PL³/(48EI). With a uniform load w: R = wL/2, M<sub>max</sub> = wL²/8, δ<sub>max</sub> = 5wL⁴/(384EI). Cantilever with tip load: M_max = PL at the wall, δ_tip = PL³/(3EI). Full reference on the <a class="text-link hover:underline" href="/formulas">formulas page</a>.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">How do I calculate how much weight a beam can hold?</h3>
+            <p class="mt-xxs">Run two checks and take the lower answer. Strength: keep bending stress σ = M·c/I below the allowable stress (yield ÷ safety factor). Serviceability: keep deflection δ<sub>max</sub> ≤ L/360 (or L/240). Enter your section, read M_max and δ_max from the dashboard, and compare σ_max to the material’s allowable stress.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">How do I calculate structural load capacity?</h3>
+            <p class="mt-xxs">Capacity combines bending, shear and deflection. Bending: the largest P such that M_max ≤ f<sub>y</sub>·I/c. Shear: V_max ≤ τ_allow·A. Deflection: choose E·I so δ_max ≤ L/limit. This tool reports all three with locations, so each check is a direct read-off; code design (AISC, NDS, Eurocode) additionally applies resistance factors.</p>
           </div>
         </div>
       </section>

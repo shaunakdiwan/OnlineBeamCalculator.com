@@ -38,7 +38,7 @@ export function initBeamApp(presetSlug?: string): Store | null {
   const diagrams = new Diagrams(diagEl, store);
 
   const toolbar = document.createElement('div');
-  toolbar.className = 'flex flex-wrap items-center gap-xs mb-md';
+  toolbar.className = 'flex flex-wrap items-center gap-xs mb-md toolbar';
   canvasEl.prepend(toolbar);
 
   // Presets dropdown

@@ -64,11 +64,11 @@ export class ResultsDashboard {
       <div class="card p-md mt-md">
         <div class="flex items-center justify-between flex-wrap gap-xs">
           <div class="eyebrow uppercase">Reactions & serviceability</div>
-          <div class="flex gap-xxs items-center">${badge(240)} ${badge(360)} ${badge(480)}
+          <div class="flex gap-xxs items-center flex-wrap">${badge(240)} ${badge(360)} ${badge(480)}
             <span class="text-caption text-mute ml-xs">${isFinite(ratio) ? `L/${Math.round(ratio)}` : 'rigid'}</span>
           </div>
         </div>
-        <div class="mt-sm overflow-x-auto">
+        <div class="mt-sm overflow-x-auto -mx-md px-md">
           <table class="w-full text-body-sm">
             <thead><tr class="text-left font-mono text-caption text-mute border-b border-hairline">
               <th class="py-xxs pr-md">Support</th><th class="py-xxs pr-md">x</th>

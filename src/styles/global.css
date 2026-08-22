@@ -117,6 +117,11 @@
     outline-offset: 2px;
     border-radius: 2px;
   }
+  /* Mobile: bump virtual height for bigger tap targets */
+  svg { -webkit-tap-highlight-color: transparent; }
+  @media (max-width: 640px) {
+    #beam-canvas-wrap svg, #diagrams svg { min-height: 200px; }
+  }
   button, a, select, input { touch-action: manipulation; }
 }
 

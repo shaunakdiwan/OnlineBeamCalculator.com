@@ -302,13 +302,15 @@ export function solve(model: BeamModel): SolveResult {
   // Start: V(0−)=0; apply events at x=0 then integrate.
   let Vcur = eventsAt(0);
   V[0] = Vcur;
-  // M(0−)=0; applied moments to the left of x=0 none; moments at x=0 jump M.
+  // M(0−)=0; applied moments and fixed-end moments to the left of x=0 jump M.
+  // Convention: sagging positive. A left fixed-end hogging reaction (solver
+  // moment < 0 at θ-DOF) corresponds to negative internal M.
   let Mcur = 0;
-  for (const m of momentLoads) if (Math.abs(m.x) < 1e-9) Mcur += m.M;
-  for (const r of reactions) if (Math.abs(r.x) < 1e-9 && r.type === 'fixed') Mcur += -r.M;
+  for (const m of momentLoads) if (Math.abs(m.x) < 1e-9) Mcur += -m.M;
+  for (const r of reactions) if (Math.abs(r.x) < 1e-9 && r.type === 'fixed') Mcur += r.M;
   M[0] = Mcur;
 
-  const momentEvents = [...momentLoads.map((m) => ({ x: m.x, dM: m.M })), ...reactions.filter((r) => r.type === 'fixed').map((r) => ({ x: r.x, dM: -r.M }))];
+  const momentEvents = [...momentLoads.map((m) => ({ x: m.x, dM: -m.M })), ...reactions.filter((r) => r.type === 'fixed').map((r) => ({ x: r.x, dM: r.M }))];
 
   for (let i = 1; i < xs.length; i++) {
     const x0 = xs[i - 1], x1 = xs[i];

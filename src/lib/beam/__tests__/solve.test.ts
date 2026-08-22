@@ -185,6 +185,21 @@ describe('solver closed-form', () => {
     expect(Math.abs(Math.abs(r.reactions[0].R) + Math.abs(r.reactions[1].R))).toBeCloseTo(2 * M0 / L, 1);
   });
 
+  it('fixed–fixed + center point: MA=MB=−PL/8, Mmid=PL/8, δ=PL³/192EI', () => {
+    const L = 8, P = 24e3;
+    const r = solve(model({
+      length: L,
+      supports: [sup(0, 'fixed'), sup(L, 'fixed')],
+      loads: [{ id: id(), type: 'point', x: L / 2, P }],
+    }));
+    expect(Math.abs(r.reactions[0].M)).toBeCloseTo((P * L) / 8, 0);
+    expect(Math.abs(r.reactions[1].M)).toBeCloseTo((P * L) / 8, 0);
+    const Mmid = at(r.moment.x, r.moment.values, L / 2);
+    expect(Mmid).toBeCloseTo((P * L) / 8, 0);
+    const EI = STEEL.E * RECT.I;
+    expect(Math.abs(r.deflection.min.value)).toBeCloseTo((P * L ** 3) / (192 * EI), 6);
+  });
+
   it('mechanism detection: single pin is unstable', () => {
     expect(() =>
       solve(model({ supports: [sup(0, 'pin')], loads: [{ id: id(), type: 'point', x: 5, P: 1e3 }] })),

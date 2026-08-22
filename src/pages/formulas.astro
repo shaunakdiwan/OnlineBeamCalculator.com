@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const cases: { name: string; sketch: string; reactions: string; Mmax: string; dmax: string }[] = [
+  { name: 'Simply supported — center point load P', sketch: 'Pin A + roller B, P at L/2', reactions: 'RA = RB = P/2', Mmax: 'Mmax = PL/4 at x = L/2', dmax: 'δmax = PL³/(48EI) at midspan' },
+  { name: 'Simply supported — point load P at a from A', sketch: 'Pin A + roller B, P at x = a', reactions: 'RA = P·b/L,  RB = P·a/L  (b = L−a)', Mmax: 'Mmax = P·a·b/L at x = a', dmax: 'δmax = P·a·b·(L²−a²−b²)^{3/2}/(9√3·EIL) (when a≥b)' },
+  { name: 'Simply supported — UDL w', sketch: 'Pin A + roller B, w over whole span', reactions: 'RA = RB = wL/2', Mmax: 'Mmax = wL²/8 at midspan', dmax: 'δmax = 5wL⁴/(384EI)' },
+  { name: 'Simply supported — applied moment M₀ at x=a', sketch: 'Concentrated couple', reactions: 'RA = −M₀/L,  RB = +M₀/L', Mmax: 'M jumps by M₀ at x = a', dmax: '—' },
+  { name: 'Cantilever — tip point load P', sketch: 'Fixed at A, P at free tip', reactions: 'RA = P, MA = −PL', Mmax: '|M|max = PL at fixed end', dmax: 'δtip = PL³/(3EI)' },
+  { name: 'Cantilever — UDL w', sketch: 'Fixed at A, w over whole length', reactions: 'RA = wL, MA = −wL²/2', Mmax: '|M|max = wL²/2 at fixed end', dmax: 'δtip = wL⁴/(8EI)' },
+  { name: 'Cantilever — triangular (0→w at tip)', sketch: 'Linearly increasing load', reactions: 'RA = wL/2, MA = −wL²/6', Mmax: '|M|max = wL²/6 at fixed end', dmax: 'δtip = wL⁴/(30EI)' },
+  { name: 'Propped cantilever — UDL w', sketch: 'Fixed at A + roller at B', reactions: 'RB = 3wL/8,  RA = 5wL/8,  MA = −wL²/8', Mmax: 'M+ = 9wL²/128 at x = 5L/8', dmax: 'δmax ≈ 0.00541 wL⁴/EI at x ≈ 0.5785L' },
+  { name: 'Fixed–fixed — UDL w', sketch: 'Both ends fixed', reactions: 'RA = RB = wL/2,  MA = MB = −wL²/12', Mmax: 'M+ = wL²/24 at midspan', dmax: 'δmax = wL⁴/(384EI)' },
+  { name: 'Fixed–fixed — center point P', sketch: 'Both ends fixed, P at L/2', reactions: 'RA = RB = P/2,  MA = MB = −PL/8', Mmax: 'M+ = PL/8 at midspan', dmax: 'δmax = PL³/(192EI)' },
+  { name: 'Two equal spans — UDL w both spans', sketch: 'Pins at A, B, C; span L each', reactions: 'RA = RC = 3wL/8,  RB = 10wL/8', Mmax: 'M− = wL²/8 over B; M+ = 9wL²/128', dmax: '≈ 0.0052 wL⁴/EI per span' },
+  { name: 'Overhanging (symmetric) — UDL w', sketch: 'Supports at a from each end', reactions: 'RA = RB = wL/2', Mmax: 'M at supports = −w·a²/2', dmax: 'depends on a/L' },
+];
+---
+
+<Layout title="Beam Formulas — Reactions, Moments & Deflections | OnlineBeamCalculator.com" description="Reference table of closed-form formulas: reactions, maximum bending moment and maximum deflection for simply supported, cantilever, propped cantilever, fixed–fixed, continuous and overhanging beams.">
+  <div class="mx-auto max-w-7xl px-lg py-xl">
+    <div class="eyebrow uppercase mb-xxs">Reference</div>
+    <h1 class="text-display-lg font-semibold">Beam formulas</h1>
+    <p class="mt-sm text-body-md text-body max-w-3xl">Closed-form reactions, maximum moments and maximum deflections for the standard beam cases. Every case below can be loaded interactively in the <a class="text-link hover:underline" href="/calculator">calculator</a>.</p>
+
+    <div class="mt-xl overflow-x-auto card">
+      <table class="w-full text-body-sm">
+        <thead>
+          <tr class="text-left font-mono text-caption text-mute border-b border-hairline bg-canvas-soft">
+            <th class="p-sm">Case</th>
+            <th class="p-sm">Setup</th>
+            <th class="p-sm">Reactions</th>
+            <th class="p-sm">Bending moment</th>
+            <th class="p-sm">Deflection</th>
+          </tr>
+        </thead>
+        <tbody>
+          {cases.map((c) => (
+            <tr class="border-b border-hairline align-top">
+              <td class="p-sm font-medium whitespace-nowrap">{c.name}</td>
+              <td class="p-sm text-body">{c.sketch}</td>
+              <td class="p-sm font-mono text-[13px]">{c.reactions}</td>
+              <td class="p-sm font-mono text-[13px]">{c.Mmax}</td>
+              <td class="p-sm font-mono text-[13px]">{c.dmax}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-md text-caption text-mute">P point load · w distributed load per unit length · L span · E Young's modulus · I second moment of area. Sagging moments positive.</p>
+  </div>
+</Layout>

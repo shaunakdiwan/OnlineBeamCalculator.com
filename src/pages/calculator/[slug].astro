@@ -1,0 +1,76 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { PRESETS } from '../../lib/ui/presets';
+
+export function getStaticPaths() {
+  return PRESETS.map((p) => ({
+    params: { slug: p.slug },
+    props: { preset: p },
+  }));
+}
+
+const { preset } = Astro.props;
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: `How do I analyze a ${preset.name.toLowerCase()}?`,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `This page pre-loads a ${preset.name.toLowerCase()} in the beam calculator. Edit positions and magnitudes directly, or click elements on the diagram to move them. Results update instantly.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is this beam calculator free?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Yes — 100% free with no signup, no load limits, and no account. All analysis runs in your browser.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'What do the diagrams show?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Shear force (SFD), bending moment (BMD), slope θ, and deflection δ along the beam, plus reactions at every support and max/min values with their locations.',
+      },
+    },
+  ],
+};
+---
+
+<Layout
+  title={`${preset.name} — Free Beam Calculator`}
+  description={`${preset.description} Analyze online: shear force, bending moment, slope and deflection diagrams with reactions. Free, instant, no signup.`}
+  jsonLd={faqLd}
+>
+  <div class="mx-auto max-w-7xl px-lg py-lg">
+    <div class="mb-md max-w-3xl">
+      <div class="eyebrow uppercase mb-xxs">Worked example</div>
+      <h1 class="text-display-md font-semibold">{preset.name}</h1>
+      <p class="mt-xs text-body-md text-body">{preset.description} The calculator below is pre-loaded with this configuration — change anything and results update instantly.</p>
+    </div>
+    <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+      <aside id="input-panel" class="card p-md"></aside>
+      <section class="flex flex-col gap-lg min-w-0">
+        <div id="beam-canvas-wrap" class="card p-md"></div>
+        <div id="results-dashboard"></div>
+        <div id="diagrams" class="flex flex-col gap-lg"></div>
+      </section>
+    </div>
+    <section class="mt-xl max-w-3xl text-body-sm text-body space-y-sm">
+      <h2 class="text-display-sm font-semibold text-ink">About this case</h2>
+      <p>{preset.description}</p>
+      <p>All diagrams use the Euler–Bernoulli beam theory with an exact finite-element solver that runs entirely in your browser. You can move supports by dragging them, switch unit systems at the top of the input panel, and export results as CSV or a printable report.</p>
+      <p><a class="text-link hover:underline" href="/formulas">See closed-form formulas for this and similar cases →</a></p>
+    </section>
+  </div>
+  <script define:vars={{ slug: preset.slug }}>
+    import { initBeamApp } from '../../lib/ui/app';
+    initBeamApp(slug);
+  </script>
+</Layout>

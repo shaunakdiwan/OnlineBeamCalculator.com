@@ -113,7 +113,7 @@ export function initBeamApp(presetSlug?: string): Store | null {
 
 function makeToaster(): (msg: string, ms?: number, isError?: boolean) => void {
   const holder = document.createElement('div');
-  holder.className = 'fixed bottom-lg right-lg z-50 flex flex-col gap-xs max-w-sm';
+  holder.className = 'fixed bottom-lg right-lg z-50 flex flex-col gap-xs max-w-[24rem]';
   document.body.appendChild(holder);
   return (msg, ms = 2500, isError = false) => {
     const t = document.createElement('div');

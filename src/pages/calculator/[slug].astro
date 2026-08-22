@@ -54,7 +54,7 @@ const faqLd = {
       <h1 class="text-display-md font-semibold">{preset.name}</h1>
       <p class="mt-xs text-body-md text-body">{preset.description} The calculator below is pre-loaded with this configuration; change anything and results update instantly.</p>
     </div>
-    <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+    <div id="beam-app" data-preset-slug={preset.slug} class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
       <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
       <section class="flex flex-col gap-lg min-w-0">
         <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
@@ -69,8 +69,9 @@ const faqLd = {
       <p><a class="text-link hover:underline" href="/formulas">See closed-form formulas for this and similar cases →</a></p>
     </section>
   </div>
-  <script define:vars={{ slug: preset.slug }}>
+  <script>
     import { initBeamApp } from '../../lib/ui/app';
+    const slug = document.getElementById('beam-app')?.getAttribute('data-preset-slug') ?? undefined;
     initBeamApp(slug);
   </script>
 </Layout>

@@ -6,13 +6,13 @@ import Layout from '../layouts/Layout.astro';
   title="Free Beam Calculator — Shear, Moment & Deflection Diagrams"
   description="Analyze simply supported, cantilever, fixed, overhanging and continuous beams online. Instant SFD, BMD, slope & deflection diagrams, reactions and stresses. 100% free, no signup."
 >
-  <div class="mx-auto max-w-7xl px-lg py-lg">
+  <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
     <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
       <!-- Left: inputs (hydrated by src/lib/ui) -->
-      <aside id="input-panel" class="card p-md"></aside>
+      <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
       <!-- Right: canvas + results -->
       <section class="flex flex-col gap-lg min-w-0">
-        <div id="beam-canvas-wrap" class="card p-md"></div>
+        <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
         <div id="results-dashboard"></div>
         <div id="diagrams" class="flex flex-col gap-lg"></div>
       </section>

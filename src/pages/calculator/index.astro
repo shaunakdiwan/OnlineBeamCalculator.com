@@ -6,11 +6,11 @@ import Layout from '../../layouts/Layout.astro';
   title="Beam Calculator: Free Online Structural Analysis"
   description="Interactive beam calculator: add supports (pin, roller, fixed, spring), internal hinges, point loads, UDLs, triangular & trapezoidal loads and moments. Instant SFD, BMD, slope and deflection diagrams."
 >
-  <div class="mx-auto max-w-7xl px-lg py-lg">
+  <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
     <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
-      <aside id="input-panel" class="card p-md"></aside>
+      <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
       <section class="flex flex-col gap-lg min-w-0">
-        <div id="beam-canvas-wrap" class="card p-md"></div>
+        <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
         <div id="results-dashboard"></div>
         <div id="diagrams" class="flex flex-col gap-lg"></div>
       </section>

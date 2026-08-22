@@ -111,6 +111,13 @@
     background-color: var(--color-selection-bg);
     color: var(--color-selection-fg);
   }
+  /* Accessible focus ring */
+  :focus-visible {
+    outline: 2px solid var(--color-link);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  button, a, select, input { touch-action: manipulation; }
 }
 
 /* ── Dark mode (class strategy, toggled on <html>) ───────────── */
@@ -177,20 +184,38 @@
 
 /* ── Print report (Phase 3) ───────────────────────────────────── */
 @media print {
-  header, footer, .no-print, #input-panel .btn-secondary, #beam-canvas-wrap .flex.flex-wrap {
+  header, footer, .no-print, #theme-toggle,
+  #beam-canvas-wrap .toolbar,
+  #input-panel .btn-secondary,
+  #input-panel sectionHead,
+  #input-panel select.print-hide {
     display: none !important;
   }
-  body { background: #fff; }
+  body { background: #fff; color-adjust: exact; print-color-adjust: exact; }
   main { max-width: 100% !important; padding: 0 !important; }
-  .card { border: 0.5pt solid #ddd; box-shadow: none; break-inside: avoid; }
-  #beam-app { grid-template-columns: 1fr !important; }
+  .card { border: 0.5pt solid #ddd !important; box-shadow: none !important; break-inside: avoid; }
+  .eyebrow { color: #666 !important; }
+  #beam-app {
+    display: block !important;
+  }
+  #input-panel, #beam-canvas-wrap, #results-dashboard, #diagrams { margin-bottom: 14pt; }
   #beam-app::before {
-    content: "OnlineBeamCalculator.com — Beam Analysis Report";
-    display: block; font-family: monospace; font-size: 10pt; color: #666;
-    border-bottom: 1pt solid #000; padding-bottom: 6pt; margin-bottom: 12pt;
+    content: "OnlineBeamCalculator.com: Beam Analysis Report";
+    display: block;
+    font-family: monospace;
+    font-size: 10pt;
+    color: #666;
+    border-bottom: 1pt solid #000;
+    padding-bottom: 6pt;
+    margin-bottom: 12pt;
   }
   #beam-app::after {
-    content: "Assumptions: Euler–Bernoulli beam theory · linear elastic, prismatic section · small deflections · self-weight as UDL where enabled. Verify critical designs against applicable codes.";
-    display: block; font-size: 8pt; color: #888; margin-top: 12pt; border-top: 0.5pt solid #ccc; padding-top: 6pt;
+    content: "Assumptions: Euler–Bernoulli beam theory; linear elastic, prismatic section; small deflections; self-weight as UDL where enabled. Verify critical designs against applicable codes.";
+    display: block;
+    font-size: 8pt;
+    color: #888;
+    margin-top: 12pt;
+    border-top: 0.5pt solid #ccc;
+    padding-top: 6pt;
   }
 }

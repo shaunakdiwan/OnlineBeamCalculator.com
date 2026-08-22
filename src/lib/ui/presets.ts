@@ -165,7 +165,7 @@ export const VARIANT_LANDINGS: VariantLanding[] = [
   {
     slug: 'cantilever-beam-calculator',
     presetSlug: 'cantilever-udl',
-    title: 'Cantilever Beam Calculator — Tip Deflection & Fixed-End Moment',
+    title: 'Cantilever Beam Calculator | Free SFD, BMD & Deflection',
     h1: 'Cantilever beam calculator',
     description: 'Free cantilever beam calculator: fixed-end moments, tip deflection, shear and moment diagrams for point loads, moments and distributed loads on cantilevers.',
     intro: 'Cantilevers concentrate everything at the fixed support: the maximum moment and shear both occur at the wall, and deflection grows toward the free tip. This page loads a cantilever preset; extend it with multiple loads, a propped tip or an internal hinge.',

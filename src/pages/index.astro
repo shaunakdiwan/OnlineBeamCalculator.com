@@ -1,12 +1,55 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const homeFaqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'What is a beam calculator?',
+      acceptedAnswer: { '@type': 'Answer', text: 'A beam calculator is a structural analysis tool that computes reactions, shear force, bending moment, slope and deflection for a beam under given supports and loads. This free online beam calculator uses an exact Euler–Bernoulli finite-element solver that runs entirely in your browser.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Is this beam calculator really free?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Unlimited loads, unlimited spans, all section libraries, CSV export and print reports are completely free with no signup, no trial and no paywall.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I use it as a wood beam calculator or steel beam calculator?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. Pick from preset materials including structural steel, aluminum, concrete and timber, or enter a custom Young’s modulus. A library of common AISC W-shapes is included for steel design, and rectangular sections work for wood beams.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Which beam types does it support?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Simply supported, cantilever, fixed–fixed, propped cantilever, overhanging, continuous multi-span beams, and Gerber beams with internal hinges. Spring supports and support settlement are also supported.' },
+    },
+    {
+      '@type': 'Question',
+      name: 'Can I share or save my beam model?',
+      acceptedAnswer: { '@type': 'Answer', text: 'Yes. The entire model is serialized into the URL, so you can copy the link to share the exact beam with a colleague, or bookmark it. Your last model is also auto-saved locally in your browser.' },
+    },
+  ],
+};
 ---
 
 <Layout
-  title="Free Beam Calculator — Shear, Moment & Deflection Diagrams"
-  description="Analyze simply supported, cantilever, fixed, overhanging and continuous beams online. Instant SFD, BMD, slope & deflection diagrams, reactions and stresses. 100% free, no signup."
+  title="Beam Calculator — Free Online Shear, Moment & Deflection Diagrams"
+  description="Free online beam calculator for simply supported, cantilever, fixed, overhanging and continuous beams. Instant shear force, bending moment & deflection diagrams. Metric & imperial. No signup."
+  jsonLd={homeFaqLd}
 >
   <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
+    <header class="mb-md max-w-[60rem]">
+      <div class="eyebrow uppercase mb-xxs">Free · No signup · Runs in your browser</div>
+      <h1 class="text-display-lg md:text-display-xl font-semibold">Beam Calculator</h1>
+      <p class="mt-xs text-body-md md:text-body-lg text-body">
+        Analyze simply supported, cantilever, fixed, overhanging and continuous beams online.
+        Get instant shear force, bending moment, slope and deflection diagrams with reactions,
+        stresses and deflection-limit checks.
+      </p>
+    </header>
+
     <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
       <!-- Left: inputs (hydrated by src/lib/ui) -->
       <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
@@ -17,6 +60,138 @@ import Layout from '../layouts/Layout.astro';
         <div id="diagrams" class="flex flex-col gap-lg"></div>
       </section>
     </div>
+
+    <!-- ── SEO content ─────────────────────────────────────────── -->
+    <article class="mt-5xl max-w-[48rem] text-body-md text-body space-y-xl">
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">A free online beam calculator that works like a real tool</h2>
+        <p class="mt-sm">
+          This beam calculator is built for engineers, students, fabricators and DIY builders who need
+          fast, accurate structural answers without installing software or creating an account. It runs
+          a complete Euler–Bernoulli finite-element solver directly in your browser, so results appear
+          instantly as you type. There are no load limits, no locked features, and no signup form: open
+          the page and analyze.
+        </p>
+        <p class="mt-sm">
+          Whether you call it a simple beam calculator, an online beam calculator, or a structural
+          analysis tool, the workflow is the same: set a beam length, place supports, add loads, and
+          read the diagrams. The drag-and-drop canvas lets you move supports and loads like a real
+          editor, and every change re-solves in under a millisecond.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">What this beam calculator can analyze</h2>
+        <h3 class="text-display-sm font-semibold text-ink mt-md">Beam types</h3>
+        <p class="mt-xs">
+          Simply supported beams, cantilevers, fixed–fixed beams, propped cantilevers, overhanging
+          beams, multi-span continuous beams, and Gerber beams with internal hinges (moment releases).
+          If you are searching for a cantilever beam calculator or a simply supported beam calculator,
+          those configurations are one click away in the examples menu.
+        </p>
+        <h3 class="text-display-sm font-semibold text-ink mt-md">Supports and connections</h3>
+        <p class="mt-xs">
+          Pin, roller, fixed and spring supports can be placed anywhere along the beam, including at
+          overhangs. Spring stiffness is fully adjustable, and you can prescribe support settlement to
+          study differential settlement effects. Internal hinges create true moment releases between
+          spans, which is essential for modeling Gerber girders.
+        </p>
+        <h3 class="text-display-sm font-semibold text-ink mt-md">Loads</h3>
+        <p class="mt-xs">
+          Add unlimited loads: concentrated point loads, applied moments, uniform distributed loads,
+          triangular loads, and general linearly varying (trapezoidal) loads with independent start and
+          end intensities. Loads can start and end anywhere on the beam, and a self-weight toggle
+          automatically applies the beam’s weight as a distributed load from the section area and
+          material density.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">A steel beam calculator and a wood beam calculator in one</h2>
+        <p class="mt-sm">
+          Material and section libraries make this tool equally useful as a steel beam calculator and
+          a wood beam calculator. Presets include structural steel (A36), aluminum (6061-T6), concrete
+          and timber, each with realistic Young’s modulus, density and yield strength. The section
+          library covers rectangles, hollow sections, circles, I-beams, channels, and a curated set of
+          common AISC W-shapes, and you can always enter a custom area and moment of inertia by hand.
+          For ridge beam sizing in roof framing, model the ridge as a simply supported or overhanging
+          timber beam with rafter point loads: the calculator reports reactions, maximum moment and
+          deflection so you can compare the result to allowable-span tables.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">Results you can actually use</h2>
+        <p class="mt-sm">
+          A results dashboard surfaces the maximum shear, maximum moment, maximum deflection and
+          maximum bending stress with the exact location of each, so you never have to hunt through a
+          chart. Below it, interactive shear force, bending moment, slope and deflection diagrams let
+          you hover or tap to read values at any point along the span. Deflection-limit badges check
+          your beam against the common L/240, L/360 and L/480 serviceability limits automatically.
+        </p>
+        <p class="mt-sm">
+          Everything is built for real workflows: full metric and imperial unit systems with granular
+          unit pickers (mm, cm, m, in, ft; N, kN, lb, kip; Pa, MPa, GPa, psi, ksi), a sign-convention
+          toggle, undo and redo, shareable links that encode the entire model in the URL, CSV export of
+          all diagram data, and a print-optimized report you can save as PDF.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">How to use the beam calculator</h2>
+        <ol class="mt-sm list-decimal pl-lg space-y-xxs">
+          <li>Set the beam length and pick a preset from the examples menu, or start from scratch.</li>
+          <li>Click the beam to add supports and hinges; drag glyphs to reposition them.</li>
+          <li>Add loads from the input panel: point loads, moments, UDLs, triangular or trapezoidal loads.</li>
+          <li>Choose a material and cross-section, or enter custom properties.</li>
+          <li>Read reactions and maximum values from the dashboard; hover the diagrams to query any point.</li>
+          <li>Share the link, download the CSV, or print the report for your records.</li>
+        </ol>
+      </section>
+
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">Why engineers choose this free beam calculator</h2>
+        <p class="mt-sm">
+          Most free tools cap the number of loads, hide deflection results behind a paywall, or push
+          you into a signup funnel. This one does not. It handles statically indeterminate structures,
+          continuous spans, spring supports, internal hinges and support settlement for free, and it
+          keeps your data private because every calculation happens locally on your device. Bookmark it,
+          share it, and use it as your everyday online beam calculator.
+        </p>
+        <p class="mt-sm">
+          Looking for theory? The <a class="text-link hover:underline" href="/formulas">beam formulas</a> page
+          lists closed-form reactions, moments and deflections for the standard cases, and the
+          <a class="text-link hover:underline" href="/guide"> guide</a> explains how to read shear and moment
+          diagrams. Ready to start? <a class="text-link hover:underline" href="/calculator">Open the calculator</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="text-display-md font-semibold text-ink">Frequently asked questions</h2>
+        <div class="mt-sm space-y-md">
+          <div>
+            <h3 class="text-body-md-strong text-ink">What is a beam calculator?</h3>
+            <p class="mt-xxs">A beam calculator computes reactions, shear force, bending moment, slope and deflection for a beam under given supports and loads. This tool uses an exact finite-element method and returns piecewise-exact diagrams.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">Is this beam calculator really free?</h3>
+            <p class="mt-xxs">Yes: unlimited loads, unlimited spans, all materials and sections, export and printing. No account is ever required.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">Can I use it as a wood or steel beam calculator?</h3>
+            <p class="mt-xxs">Yes. Pick steel, aluminum, concrete or timber presets, or enter a custom modulus. W-shapes are included for steel, and rectangular sections cover typical lumber sizes.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">Which beam types are supported?</h3>
+            <p class="mt-xxs">Simply supported, cantilever, fixed–fixed, propped cantilever, overhanging, continuous multi-span and Gerber beams with internal hinges, plus spring supports and settlement.</p>
+          </div>
+          <div>
+            <h3 class="text-body-md-strong text-ink">Can I share or save my model?</h3>
+            <p class="mt-xxs">Yes. The model is encoded in the URL, so copying the link shares the exact beam. Your last model is also auto-saved in the browser.</p>
+          </div>
+        </div>
+      </section>
+    </article>
   </div>
   <script>
     import { initBeamApp } from '../lib/ui/app';

@@ -1,15 +1,34 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { PRESETS } from '../../lib/ui/presets';
+import { PRESETS, VARIANT_LANDINGS } from '../../lib/ui/presets';
 
 export function getStaticPaths() {
-  return PRESETS.map((p) => ({
+  const presetPages = PRESETS.map((p) => ({
     params: { slug: p.slug },
-    props: { preset: p },
+    props: { kind: 'preset' as const, preset: p },
   }));
+  const variantPages = VARIANT_LANDINGS.map((v) => {
+    const preset = PRESETS.find((p) => p.slug === v.presetSlug)!;
+    return { params: { slug: v.slug }, props: { kind: 'variant' as const, preset, variant: v } };
+  });
+  return [...presetPages, ...variantPages];
 }
 
-const { preset } = Astro.props;
+const props = Astro.props as
+  | { kind: 'preset'; preset: (typeof PRESETS)[number] }
+  | { kind: 'variant'; preset: (typeof PRESETS)[number]; variant: (typeof VARIANT_LANDINGS)[number] };
+
+const preset = props.preset;
+const isVariant = props.kind === 'variant';
+const variant = isVariant ? props.variant : null;
+
+const pageTitle = variant ? variant.title : `${preset.name} | Free Beam Calculator`;
+const pageDesc = variant
+  ? variant.description
+  : `${preset.description} Analyze online: shear force, bending moment, slope and deflection diagrams with reactions. Free, instant, no signup.`;
+const h1 = variant ? variant.h1 : preset.name;
+const intro = variant ? variant.intro : preset.description;
+const loadSlug = preset.slug;
 
 const faqLd = {
   '@context': 'https://schema.org',
@@ -17,10 +36,10 @@ const faqLd = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: `How do I analyze a ${preset.name.toLowerCase()}?`,
+      name: isVariant ? `How does this ${variant!.h1} work?` : `How do I analyze a ${preset.name.toLowerCase()}?`,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `This page pre-loads a ${preset.name.toLowerCase()} in the beam calculator. Edit positions and magnitudes directly, or click elements on the diagram to move them. Results update instantly.`,
+        text: `This page pre-loads a configured model in the beam calculator. Edit positions and magnitudes directly, or drag elements on the diagram. Results update instantly in your browser.`,
       },
     },
     {
@@ -28,15 +47,15 @@ const faqLd = {
       name: 'Is this beam calculator free?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Yes: 100% free with no signup, no load limits, and no account. All analysis runs in your browser.',
+        text: 'Yes: 100% free with no signup, no load limits, and no account. All analysis runs locally in your browser.',
       },
     },
     {
       '@type': 'Question',
-      name: 'What do the diagrams show?',
+      name: 'What results do I get?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Shear force (SFD), bending moment (BMD), slope θ, and deflection δ along the beam, plus reactions at every support and max/min values with their locations.',
+        text: 'Support reactions, shear force and bending moment diagrams, slope and deflection curves, max/min values with locations, bending and average shear stress, and deflection-limit badges for L/240, L/360 and L/480.',
       },
     },
   ],
@@ -44,17 +63,17 @@ const faqLd = {
 ---
 
 <Layout
-  title={`${preset.name} | Free Beam Calculator`}
-  description={`${preset.description} Analyze online: shear force, bending moment, slope and deflection diagrams with reactions. Free, instant, no signup.`}
+  title={pageTitle}
+  description={pageDesc}
   jsonLd={faqLd}
 >
-  <div class="mx-auto max-w-7xl px-lg py-lg">
+  <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
     <div class="mb-md max-w-[48rem]">
-      <div class="eyebrow uppercase mb-xxs">Worked example</div>
-      <h1 class="text-display-md font-semibold">{preset.name}</h1>
-      <p class="mt-xs text-body-md text-body">{preset.description} The calculator below is pre-loaded with this configuration; change anything and results update instantly.</p>
+      <div class="eyebrow uppercase mb-xxs">{isVariant ? 'Calculator' : 'Worked example'}</div>
+      <h1 class="text-display-md font-semibold">{h1}</h1>
+      <p class="mt-xs text-body-md text-body">{intro} The calculator below is pre-loaded; change anything and results update instantly.</p>
     </div>
-    <div id="beam-app" data-preset-slug={preset.slug} class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+    <div id="beam-app" data-preset-slug={loadSlug} class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
       <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
       <section class="flex flex-col gap-lg min-w-0">
         <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>

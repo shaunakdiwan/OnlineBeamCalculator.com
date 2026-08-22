@@ -7,28 +7,66 @@ interface Props {
   title?: string;
   description?: string;
   canonical?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  keywords?: string[];
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
-  title = 'Online Beam Calculator: Free Shear, Moment & Deflection Analysis',
-  description = 'Free online beam calculator. Analyze simply supported, cantilever, fixed, overhanging, continuous and multi-span beams. Instant shear force, bending moment, slope & deflection diagrams. No signup.',
+  title = 'Beam Calculator — Free Online Shear, Moment & Deflection Diagrams',
+  description = 'Free online beam calculator for simply supported, cantilever, fixed, overhanging and continuous beams. Instant shear force, bending moment & deflection diagrams. No signup, no limits.',
   canonical,
+  ogImage,
+  ogType = 'website',
+  keywords,
   jsonLd,
 } = Astro.props;
 
 const site = 'https://onlinebeamcalculator.com';
+const siteName = 'OnlineBeamCalculator.com';
 const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
+const ogImageUrl = ogImage ?? `${site}/og.png`;
+
+const primaryKeywords = [
+  'beam calculator',
+  'free beam calculator',
+  'online beam calculator',
+  'beam calculator online',
+  'steel beam calculator',
+  'wood beam calculator',
+  'cantilever beam calculator',
+  'simply supported beam calculator',
+  'ridge beam calculator',
+  'simple beam calculator',
+];
+const keywordsStr = (keywords ?? primaryKeywords).join(', ');
 
 const webAppLd = {
   '@context': 'https://schema.org',
   '@type': 'WebApplication',
   name: 'Online Beam Calculator',
+  alternateName: ['Beam Calculator', 'Free Beam Calculator', 'Online Beam Calculator'],
   url: site,
   applicationCategory: 'EngineeringApplication',
+  applicationSubCategory: 'Structural Analysis',
   operatingSystem: 'Any',
+  inLanguage: 'en',
+  isAccessibleForFree: true,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  featureList: [
+    'Simply supported, cantilever, fixed, overhanging, and continuous beam analysis',
+    'Shear force (SFD) and bending moment (BMD) diagrams',
+    'Slope and deflection calculations',
+    'Spring supports and internal hinges',
+    'Point, moment, uniform, triangular and trapezoidal loads',
+    'Self-weight and support settlement',
+    'Metric and imperial units',
+    'CSV export and printable PDF reports',
+  ],
   description,
+  audience: { '@type': 'Audience', audienceType: 'Engineers, students, builders' },
+  provider: { '@type': 'Organization', name: siteName, url: site },
 };
 ---
 
@@ -39,17 +77,34 @@ const webAppLd = {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={keywordsStr} />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="author" content={siteName} />
+    <meta name="theme-color" content="#171717" />
+
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Online Beam Calculator" />
+    <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:type" content={ogType} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Online Beam Calculator: free shear, moment and deflection diagrams" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
     <script is:inline>
       // theme boot before first paint (avoid FOUC)
       try {
@@ -107,12 +162,21 @@ const webAppLd = {
     <footer class="bg-canvas border-t border-hairline mt-4xl">
       <div class="mx-auto max-w-7xl px-lg py-4xl grid grid-cols-2 md:grid-cols-4 gap-xl text-body-sm text-body">
         <div>
-          <div class="eyebrow mb-sm uppercase">Product</div>
+          <div class="eyebrow mb-sm uppercase">Calculators</div>
           <ul class="space-y-xs">
             <li><a class="hover:text-ink" href="/calculator">Beam calculator</a></li>
-            <li><a class="hover:text-ink" href="/calculator/simply-supported-udl">Simply supported</a></li>
-            <li><a class="hover:text-ink" href="/calculator/cantilever-tip-load">Cantilever</a></li>
-            <li><a class="hover:text-ink" href="/calculator/continuous-two-span">Continuous beam</a></li>
+            <li><a class="hover:text-ink" href="/calculator/simply-supported-beam-calculator">Simply supported beams</a></li>
+            <li><a class="hover:text-ink" href="/calculator/cantilever-beam-calculator">Cantilever beams</a></li>
+            <li><a class="hover:text-ink" href="/calculator/continuous-two-span">Continuous beams</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="eyebrow mb-sm uppercase">Materials</div>
+          <ul class="space-y-xs">
+            <li><a class="hover:text-ink" href="/calculator/steel-beam-calculator">Steel beams</a></li>
+            <li><a class="hover:text-ink" href="/calculator/wood-beam-calculator">Wood beams</a></li>
+            <li><a class="hover:text-ink" href="/calculator/ridge-beam-calculator">Ridge beams</a></li>
+            <li><a class="hover:text-ink" href="/calculator/overhanging-beam">Overhanging beams</a></li>
           </ul>
         </div>
         <div>

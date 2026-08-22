@@ -11,6 +11,7 @@ interface Props {
   ogType?: 'website' | 'article';
   keywords?: string[];
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  noindex?: boolean;
 }
 
 const {
@@ -21,6 +22,7 @@ const {
   ogType = 'website',
   keywords,
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const site = 'https://onlinebeamcalculator.com';
@@ -78,7 +80,9 @@ const webAppLd = {
     <title>{title}</title>
     <meta name="description" content={description} />
     <meta name="keywords" content={keywordsStr} />
-    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    {noindex
+      ? <meta name="robots" content="noindex, nofollow" />
+      : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
     <meta name="author" content={siteName} />
     <meta name="theme-color" content="#171717" />
 

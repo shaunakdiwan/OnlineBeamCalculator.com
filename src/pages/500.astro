@@ -1,0 +1,17 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Something Went Wrong (500) | OnlineBeamCalculator.com" noindex={true} description="A server error occurred. The beam calculator itself runs entirely in your browser, so give the page a refresh or head back to the calculator.">
+  <div class="mx-auto max-w-[48rem] px-lg py-4xl text-center">
+    <div class="eyebrow uppercase mb-xxs">500: Server error</div>
+    <h1 class="text-display-lg font-semibold">This load exceeded our capacity</h1>
+    <p class="mt-md text-body-md text-body">Something went wrong on the server side while serving this page. It is usually temporary: a refresh often fixes it.</p>
+    <p class="mt-sm text-body-md text-body">Good news: the calculator itself runs entirely in your browser, so once the page loads, your analysis is unaffected by server hiccups.</p>
+    <div class="mt-xl flex flex-wrap items-center justify-center gap-sm">
+      <a href="/" onclick="location.reload(); return false;" class="btn-primary h-9 px-md rounded-sm text-body-sm inline-flex items-center">Refresh the page</a>
+      <a href="/calculator" class="btn-secondary h-9 px-md rounded-sm text-body-sm inline-flex items-center">Open the calculator</a>
+    </div>
+    <p class="mt-4xl text-body-sm text-mute">If the problem keeps happening, let us know on the <a class="text-link hover:underline" href="/contact">contact page</a>.</p>
+  </div>
+</Layout>

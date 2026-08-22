@@ -1,0 +1,41 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Page Not Found (404) | OnlineBeamCalculator.com" noindex={true} description="This page could not be found. Head back to the free beam calculator or browse the formulas and guides.">
+  <div class="mx-auto max-w-[48rem] px-lg py-4xl text-center">
+    <div class="eyebrow uppercase mb-xxs">404: Page not found</div>
+    <h1 class="text-display-lg font-semibold">This beam has no support here</h1>
+    <p class="mt-md text-body-md text-body">The page you are looking for does not exist or may have moved. Nothing is broken on your end, the link just spans a gap.</p>
+    <div class="mt-xl flex flex-wrap items-center justify-center gap-sm">
+      <a href="/calculator" class="btn-primary h-9 px-md rounded-sm text-body-sm inline-flex items-center">Open the calculator</a>
+      <a href="/" class="btn-secondary h-9 px-md rounded-sm text-body-sm inline-flex items-center">Back to home</a>
+    </div>
+    <div class="mt-4xl grid grid-cols-1 sm:grid-cols-3 gap-xl text-left">
+      <div>
+        <div class="eyebrow mb-xs uppercase">Popular calculators</div>
+        <ul class="space-y-xs text-body-sm">
+          <li><a class="text-link hover:underline" href="/calculator/simply-supported-beam-calculator">Simply supported beams</a></li>
+          <li><a class="text-link hover:underline" href="/calculator/cantilever-beam-calculator">Cantilever beams</a></li>
+          <li><a class="text-link hover:underline" href="/calculator/continuous-two-span">Continuous beams</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow mb-xs uppercase">Materials</div>
+        <ul class="space-y-xs text-body-sm">
+          <li><a class="text-link hover:underline" href="/calculator/steel-beam-calculator">Steel beams</a></li>
+          <li><a class="text-link hover:underline" href="/calculator/wood-beam-calculator">Wood beams</a></li>
+          <li><a class="text-link hover:underline" href="/calculator/ridge-beam-calculator">Ridge beams</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="eyebrow mb-xs uppercase">Learn</div>
+        <ul class="space-y-xs text-body-sm">
+          <li><a class="text-link hover:underline" href="/formulas">Beam formulas</a></li>
+          <li><a class="text-link hover:underline" href="/guide">Reading SFD &amp; BMD</a></li>
+          <li><a class="text-link hover:underline" href="/about">About this tool</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</Layout>

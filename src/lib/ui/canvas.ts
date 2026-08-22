@@ -73,7 +73,7 @@ export class BeamCanvas {
     this.svg.appendChild(el('rect', { x: s.x0, y: beamY - 6, width: s.x1 - s.x0, height: 12, fill: P.ink, rx: 2 }));
 
     const lt = el('text', { x: 500, y: VBH - 8, 'text-anchor': 'middle', fill: P.mute, 'font-size': 11, 'font-family': 'monospace' }) as unknown as SVGTextElement;
-    lt.textContent = `L = ${model.length} m · click on the beam to add — drag glyphs to move`;
+    lt.textContent = `L = ${model.length} m · click on the beam to add, drag glyphs to move`;
     this.svg.appendChild(lt);
 
     for (const sup of model.supports) {

@@ -119,12 +119,12 @@ export class InputPanel {
     this.root.append(sectionHead('Section'));
     const secSel = document.createElement('select');
     secSel.className = 'input w-full';
-    secSel.add(new Option('— Parametric —', '', true, true));
+    secSel.add(new Option('Parametric', '', true, true));
     for (const p of [
       ['rect', 'Rectangle'], ['hollow-rect', 'Hollow rectangle'], ['circle', 'Circle'],
       ['hollow-circle', 'Hollow circle'], ['i-beam', 'I-beam'], ['channel', 'Channel'],
     ] as const) secSel.add(new Option(p[1], p[0]));
-    secSel.add(new Option('— AISC W-shapes —', '', true, true));
+    secSel.add(new Option('AISC W-shapes', '', true, true));
     for (const w of W_SHAPES) secSel.add(new Option(w.designation, `W:${w.designation}`));
     secSel.add(new Option('Custom (A, I)…', 'custom'));
     // current value
@@ -162,7 +162,7 @@ export class InputPanel {
       fn: () => this.store.update((s) => { s.model.supports.push({ id: uid(), x: s.model.length / 2, type: 'pin' }); }),
     }));
     for (const sup of m.supports) this.root.append(this.supportRow(sup));
-    if (m.supports.length === 0) this.root.append(h('div', 'text-caption text-mute italic', 'No supports — click on the beam to add.'));
+    if (m.supports.length === 0) this.root.append(h('div', 'text-caption text-mute italic', 'No supports yet; click on the beam to add one.'));
 
     // ── Hinges list ─────────────────────────────────────────
     this.root.append(sectionHead('Internal hinges', {

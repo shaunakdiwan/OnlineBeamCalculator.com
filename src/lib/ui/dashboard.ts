@@ -79,7 +79,7 @@ export class ResultsDashboard {
                 <td class="py-xxs pr-md capitalize">${r.type} ${i + 1}</td>
                 <td class="py-xxs pr-md font-mono">${formatSI('length', r.x, U.length)}</td>
                 <td class="py-xxs pr-md font-mono">${formatSI('force', -r.R, U.force)} ↑</td>
-                <td class="py-xxs pr-md font-mono">${Math.abs(r.M) > 1e-9 ? formatSI('moment', r.M, U.moment) : '—'}</td>
+                <td class="py-xxs pr-md font-mono">${Math.abs(r.M) > 1e-9 ? formatSI('moment', r.M, U.moment) : '·'}</td>
               </tr>`).join('')}
             </tbody>
           </table>

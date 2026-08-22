@@ -70,7 +70,7 @@ export function initBeamApp(presetSlug?: string): Store | null {
     catch { toast('Link: ' + url, 5000); }
   });
   btn('⬇ CSV', () => exportCsv(store));
-  btn('🖨 Print / PDF', () => window.print(), 'Prints a report — use "Save as PDF" in the print dialog');
+  btn('🖨 Print / PDF', () => window.print(), 'Prints a report; use "Save as PDF" in the print dialog');
   btn('✕ Clear', () => {
     if (confirm('Clear the whole model?')) store.update((s) => {
       s.model.supports = [];

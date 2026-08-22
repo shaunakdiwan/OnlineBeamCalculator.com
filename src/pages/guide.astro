@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Guide — Reading SFD & BMD, Sign Conventions | OnlineBeamCalculator.com" description="How to read shear force and bending moment diagrams, sign conventions, and how the calculator works.">
+<Layout title="Guide: Reading SFD & BMD, Sign Conventions | OnlineBeamCalculator.com" description="How to read shear force and bending moment diagrams, sign conventions, and how the calculator works.">
   <div class="mx-auto max-w-[48rem] px-lg py-xl">
     <div class="eyebrow uppercase mb-xxs">Guide</div>
     <h1 class="text-display-lg font-semibold">How beam analysis works</h1>
@@ -23,20 +23,20 @@ import Layout from '../layouts/Layout.astro';
       <section>
         <h2 class="text-display-sm font-semibold text-ink mb-sm">Supports</h2>
         <ul class="list-disc pl-md space-y-xxs">
-          <li><strong>Pin</strong> — restrains vertical translation; free to rotate.</li>
-          <li><strong>Roller</strong> — same as pin in this 2D vertical model; free horizontal.</li>
-          <li><strong>Fixed</strong> — restrains translation and rotation (adds a fixing moment reaction).</li>
-          <li><strong>Spring</strong> — vertical spring with stiffness k; the reaction equals k×settlement-adjusted deflection.</li>
-          <li><strong>Internal hinge</strong> — releases the moment: rotation is discontinuous across the hinge.</li>
+          <li><strong>Pin:</strong> restrains vertical translation; free to rotate.</li>
+          <li><strong>Roller:</strong> same as pin in this 2D vertical model; free horizontal.</li>
+          <li><strong>Fixed:</strong> restrains translation and rotation (adds a fixing moment reaction).</li>
+          <li><strong>Spring:</strong> vertical spring with stiffness k; the reaction equals k × settlement-adjusted deflection.</li>
+          <li><strong>Internal hinge:</strong> releases the moment, so rotation is discontinuous across the hinge.</li>
         </ul>
       </section>
       <section>
         <h2 class="text-display-sm font-semibold text-ink mb-sm">Method</h2>
-        <p>The engine is a classical Euler–Bernoulli finite-element solver: two degrees of freedom per node (v, θ), exact Hermitian beam elements, consistent nodal loads for distributed loads, and piecewise-exact post-processing. Solve time is under a millisecond for typical models and everything runs locally in your browser — nothing is sent to a server.</p>
+        <p>The engine is a classical Euler–Bernoulli finite-element solver: two degrees of freedom per node (v, θ), exact Hermitian beam elements, consistent nodal loads for distributed loads, and piecewise-exact post-processing. Solve time is under a millisecond for typical models and everything runs locally in your browser: nothing is sent to a server.</p>
       </section>
       <section>
         <h2 class="text-display-sm font-semibold text-ink mb-sm">Stresses and serviceability</h2>
-        <p>Bending stress is computed as σ = M·c/I separately for the top and bottom fibres (cTop, cBot may differ for asymmetric sections). Average shear stress is V/A — a coarse check; webs of I-sections carry significantly higher peak shear. Deflection badges compare against the common serviceability limits L/240, L/360 and L/480.</p>
+        <p>Bending stress is computed as σ = M·c/I separately for the top and bottom fibres (cTop, cBot may differ for asymmetric sections). Average shear stress is V/A: a coarse check; webs of I-sections carry significantly higher peak shear. Deflection badges compare against the common serviceability limits L/240, L/360 and L/480.</p>
       </section>
     </div>
   </div>

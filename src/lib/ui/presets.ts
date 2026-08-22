@@ -28,7 +28,7 @@ const base = (over: Partial<BeamModel>): BeamModel => ({
 export const PRESETS: Preset[] = [
   {
     slug: 'simply-supported-point',
-    name: 'Simply supported — center point load',
+    name: 'Simply supported, center point load',
     description: 'Pin + roller with a single point load at midspan.',
     build: () => base({
       length: 6,
@@ -38,7 +38,7 @@ export const PRESETS: Preset[] = [
   },
   {
     slug: 'simply-supported-udl',
-    name: 'Simply supported — UDL',
+    name: 'Simply supported, UDL',
     description: 'Classic textbook case: uniform load over the whole span.',
     build: () => base({
       length: 6,
@@ -48,7 +48,7 @@ export const PRESETS: Preset[] = [
   },
   {
     slug: 'cantilever-tip-load',
-    name: 'Cantilever — tip point load',
+    name: 'Cantilever, tip point load',
     description: 'Fixed at the left end with a point load at the free tip.',
     build: () => base({
       length: 4,
@@ -58,7 +58,7 @@ export const PRESETS: Preset[] = [
   },
   {
     slug: 'cantilever-udl',
-    name: 'Cantilever — UDL',
+    name: 'Cantilever, UDL',
     description: 'Fixed cantilever under uniform load over its full length.',
     build: () => base({
       length: 4,
@@ -68,7 +68,7 @@ export const PRESETS: Preset[] = [
   },
   {
     slug: 'fixed-fixed-udl',
-    name: 'Fixed–fixed — UDL',
+    name: 'Fixed-fixed, UDL',
     description: 'Fully restrained beam; hogging at ends, sagging at midspan.',
     build: () => base({
       length: 8,
@@ -88,7 +88,7 @@ export const PRESETS: Preset[] = [
   },
   {
     slug: 'continuous-two-span',
-    name: 'Continuous — two spans',
+    name: 'Continuous, two spans',
     description: 'Three supports, two equal spans under uniform load.',
     build: () => base({
       length: 12,

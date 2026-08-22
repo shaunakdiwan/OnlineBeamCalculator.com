@@ -83,7 +83,7 @@ function denseSolve(A: number[][], b: number[]): number[] {
 
 export function solve(model: BeamModel): SolveResult {
   if (model.length <= 0) throw new StabilityError('Beam length must be positive.');
-  if (model.supports.length === 0) throw new StabilityError('No supports — the beam is floating. Add at least one support.');
+  if (model.supports.length === 0) throw new StabilityError('No supports: the beam is floating. Add at least one support.');
 
   const mesh = buildMesh(model);
   const { nodeX, elNodes, nDof, nodeAtX } = mesh;

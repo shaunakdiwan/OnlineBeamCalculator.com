@@ -138,7 +138,7 @@ export function formatSI(
   digits = 4,
 ): string {
   const v = fromSI(quantity, siValue, unitId);
-  if (!Number.isFinite(v)) return '—';
+  if (!Number.isFinite(v)) return 'n/a';
   const av = Math.abs(v);
   let s: string;
   if (av === 0) s = '0';

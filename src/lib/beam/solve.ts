@@ -185,6 +185,24 @@ export function solve(model: BeamModel): SolveResult {
 
   for (const { dof, k } of springDofs) K[dof][dof] += k;
 
+  // Internal hinge: rotational release via the second θ-DOF, but vertical
+  // translation is SHARED. Couple v_left = v_right with a stiff penalty spring
+  // so a hinge between two stable spans doesn't decouple vertically.
+  // (Penalty method is approximate but numerically sufficient — EI·1e6 is
+  // much larger than typical element stiffness terms.)
+  const hingePenalty = EI * 1e6; // large relative to element stiffness
+  for (const h of model.hinges) {
+    const xKey = Math.round(h.x * 1e9) / 1e9;
+    const nodes = nodeAtX.get(xKey);
+    if (!nodes || nodes.length < 2) continue;
+    const v1 = 2 * nodes[0];
+    const v2 = 2 * nodes[1];
+    K[v1][v1] += hingePenalty;
+    K[v2][v2] += hingePenalty;
+    K[v1][v2] -= hingePenalty;
+    K[v2][v1] -= hingePenalty;
+  }
+
   // Partition free/prescribed
   const freeIdx: number[] = [];
   const freeMap = new Map<number, number>();
@@ -263,15 +281,28 @@ export function solve(model: BeamModel): SolveResult {
   //
   // March: events at loads, supports. V(x) = Σ (upward reactions) − Σ (downward loads) to the left, flipping signs to the "sagging positive" convention.
 
-  const xs: number[] = [];
   const nSeg = SAMPLES;
-  for (let i = 0; i <= nSeg; i++) xs.push((model.length * i) / nSeg);
+  // Build refined sample grid: uniform samples PLUS all event positions so
+  // jumps are rendered exactly. Sorted, deduped.
+  const eventXs = new Set<number>();
+  const addEv = (x: number) => eventXs.add(Math.round(x * 1e9) / 1e9);
+  addEv(0); addEv(model.length);
+  for (const s of model.supports) addEv(s.x);
+  for (const h of model.hinges) addEv(h.x);
+  for (const l of allLoads) {
+    if (l.type === 'point' || l.type === 'moment') addEv(l.x);
+    else { addEv(l.x1); addEv(l.x2); }
+  }
+  const baseXs: number[] = [];
+  for (let i = 0; i <= nSeg; i++) baseXs.push((model.length * i) / nSeg);
+  const xs = [...new Set([...baseXs, ...[...eventXs]])].sort((a, b) => a - b);
 
-  // Build event list of distributed loads for integration
+  // Load classifications for the march
   const distLoads = allLoads.filter((l) => l.type === 'udl' || l.type === 'trapezoid') as (Load & { type: 'udl' | 'trapezoid' })[];
   const pointLoads = allLoads.filter((l) => l.type === 'point') as (Load & { type: 'point' })[];
   const momentLoads = allLoads.filter((l) => l.type === 'moment') as (Load & { type: 'moment' })[];
 
+  // Distributed load intensity q(x) (downward positive) at any x
   const q = (x: number): number => {
     let s = 0;
     for (const l of distLoads) {
@@ -283,56 +314,61 @@ export function solve(model: BeamModel): SolveResult {
         s += l.w1 + (l.w2 - l.w1) * t;
       }
     }
-    return s; // downward positive [N/m]
+    return s;
   };
 
-  // V(x) via cumulative integral: V(x) = V(0+) − ∫₀ˣ q dx, with jumps at point loads/reactions.
-  // Sign convention: sagging positive → V = sum of vertical forces left of cut, upward positive.
-  // Reactions R computed above are solver "downward-positive" nodal forces, so upward reaction = −R.
-  // Point load P is downward positive → contributes −P to V.
-  const eventsAt = (x: number): number => {
-    let jump = 0;
-    for (const r of reactions) if (Math.abs(r.x - x) < 1e-9) jump += -r.R; // upward positive
-    for (const p of pointLoads) if (Math.abs(p.x - x) < 1e-9) jump += -p.P;
-    return jump;
+  // Exact antiderivatives of q for udl/trapezoid between x0 and x1
+  const intQ = (x0: number, x1: number): number => {
+    let s = 0;
+    for (const l of distLoads) {
+      const a = Math.max(Math.min(l.x1, l.x2), x0);
+      const b = Math.min(Math.max(l.x1, l.x2), x1);
+      if (b <= a) continue;
+      if (l.type === 'udl') s += l.w * (b - a);
+      else {
+        // ∫ w(x) dx from a to b where w linearly varies from w1@x1 to w2@x2
+        const L = l.x2 - l.x1;
+        if (Math.abs(L) < 1e-12) continue;
+        const w = (x: number) => l.w1 + (l.w2 - l.w1) * (x - l.x1) / L;
+        // linear function on [a,b]: integral = (w(a)+w(b))/2 * (b-a)
+        s += ((w(a) + w(b)) / 2) * (b - a);
+      }
+    }
+    return s;
   };
+
+  // Events: v-jumps (point + reactions) and m-jumps (moments + fixed-end reactions)
+  const vEvents = new Map<number, number>();
+  const bumpV = (x: number, dv: number) => vEvents.set(x, (vEvents.get(x) ?? 0) + dv);
+  for (const r of reactions) bumpV(r.x, -r.R); // upward positive
+  for (const p of pointLoads) bumpV(p.x, -p.P);
+
+  const mEvents = new Map<number, number>();
+  const bumpM = (x: number, dM: number) => mEvents.set(x, (mEvents.get(x) ?? 0) + dM);
+  for (const m of momentLoads) bumpM(m.x, -m.M); // CW moment applied → internal M jumps by -m.M
+  for (const r of reactions) if (r.type === 'fixed') bumpM(r.x, r.M);
 
   const V: number[] = new Array(xs.length).fill(0);
   const M: number[] = new Array(xs.length).fill(0);
-  // Start: V(0−)=0; apply events at x=0 then integrate.
-  let Vcur = eventsAt(0);
+  let Vcur = vEvents.get(0) ?? 0;
+  let Mcur = mEvents.get(0) ?? 0;
   V[0] = Vcur;
-  // M(0−)=0; applied moments and fixed-end moments to the left of x=0 jump M.
-  // Convention: sagging positive. A left fixed-end hogging reaction (solver
-  // moment < 0 at θ-DOF) corresponds to negative internal M.
-  let Mcur = 0;
-  for (const m of momentLoads) if (Math.abs(m.x) < 1e-9) Mcur += -m.M;
-  for (const r of reactions) if (Math.abs(r.x) < 1e-9 && r.type === 'fixed') Mcur += r.M;
   M[0] = Mcur;
-
-  const momentEvents = [...momentLoads.map((m) => ({ x: m.x, dM: -m.M })), ...reactions.filter((r) => r.type === 'fixed').map((r) => ({ x: r.x, dM: r.M }))];
 
   for (let i = 1; i < xs.length; i++) {
     const x0 = xs[i - 1], x1 = xs[i];
-    // ∫q over [x0,x1] via midpoint refined into 4 sub-steps
-    let intq = 0;
-    for (let s = 0; s < 4; s++) {
-      const xm = x0 + ((s + 0.5) / 4) * (x1 - x0);
-      intq += q(xm) * (x1 - x0) / 4;
-    }
-    // Moment += V·dx using trapezoid-ish with new V
-    const Vm = Vcur - intq / 1; // use current V before jump... better: M increment = ∫V dx
-    // Use: M(x1) = M(x0) + ∫V dx; V(x1−) = Vcur − intq
-    Mcur += (Vcur + (Vcur - intq)) / 2 * (x1 - x0);
-    Vcur = Vcur - intq;
-    // jumps at x1
-    Vcur += eventsAt(x1);
+    const dq = intQ(x0, x1);           // total distributed load over interval
+    // ∫V dx over interval = V(x0)·Δ − (1/2)·q_avg·Δ² but use trapezoid
+    // with the new V after integrating distributed load.
+    const Vnew = Vcur - dq;
+    Mcur += (Vcur + Vnew) / 2 * (x1 - x0);
+    Vcur = Vnew;
+    // Apply jumps at x1
+    Vcur += vEvents.get(x1) ?? 0;
+    Mcur += mEvents.get(x1) ?? 0;
     V[i] = Vcur;
-    for (const ev of momentEvents) if (Math.abs(ev.x - x1) < 1e-9) Mcur += ev.dM;
     M[i] = Mcur;
-    void Vm;
   }
-
   // θ, δ: integrate curvature κ = −M/EI? Convention: with v positive downward and sagging
   // positive M, curvature v'' = −M/EI (hogging curvature sign). We anchor at solved
   // nodal DOFs to avoid drift: use FE nodal u for v and θ at nodes, and Hermite

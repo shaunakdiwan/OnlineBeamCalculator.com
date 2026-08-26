@@ -206,6 +206,107 @@ describe('solver closed-form', () => {
     ).toThrow(StabilityError);
   });
 
+  // ===== Regression tests from code review (friend's audit) =====
+
+  it('shear diagram captures point load jump at non-grid position', () => {
+    // point load at x=2.733 (NOT on the 400-sample grid of a 6m beam)
+    // xs = i·6/400 = 0.015·m → 2.733 is between samples 182 and 183
+    const r = solve(model({
+      length: 6,
+      supports: [sup(0, 'pin'), sup(6, 'roller')],
+      loads: [{ id: id(), type: 'point', x: 2.733, P: 10e3 }],
+    }));
+    const xs = r.shear.x, V = r.shear.values;
+    const idx = xs.reduce((best, x, i) => Math.abs(x - 2.733) < Math.abs(xs[best] - 2.733) ? i : best, 0);
+    // V just before the load ≈ +Ra; just after ≈ +Ra − P
+    const Ra = 10e3 * (6 - 2.733) / 6; // ~5445
+    expect(V[idx - 1]).toBeCloseTo(Ra, -2);
+    expect(V[idx + 1]).toBeCloseTo(Ra - 10e3, -2);
+  });
+
+  it('cantilever with clockwise end moment has constant moment diagram', () => {
+    // cantilever fixed at 0, applied CW moment M at the free end.
+    // Internal M should be constant = M along the whole beam (sagging-positive sign depends on convention).
+    const L = 5, M0 = 8e3;
+    const r = solve(model({
+      length: L,
+      supports: [sup(0, 'fixed')],
+      loads: [{ id: id(), type: 'moment', x: L, M: M0 }],
+    }));
+    for (const i of [10, 100, 200, 300, 399]) {
+      expect(Math.abs(r.moment.values[i])).toBeCloseTo(M0, 1);
+    }
+  });
+
+  it('applied moment INSIDE beam (off-grid) produces constant offset + tip drop', () => {
+    // moment at x=2.733 on freely supported beam
+    // RA = -M/L (if CW at mid), RB = +M/L; M jumps by M at x=2.733
+    const L = 8, M0 = 12e3;
+    const r = solve(model({
+      length: L,
+      supports: [sup(0, 'pin'), sup(L, 'roller')],
+      loads: [{ id: id(), type: 'moment', x: 2.733, M: M0 }],
+    }));
+    const xs = r.moment.x, M = r.moment.values;
+    const idx = xs.reduce((best, x, i) => Math.abs(x - 2.733) < Math.abs(xs[best] - 2.733) ? i : best, 0);
+    // M jump should be ~M0 between samples immediately straddling 2.733
+    // (adjacent samples in the grid, not ±1 index)
+    // Account for linear drift over the interval between samples: Δ_drift = V·Δx
+    const dx = xs[idx] - xs[idx - 1];
+    const Vdrift = r.shear.values[idx - 1]; // constant in pure moment region
+    const drift = Vdrift * dx;
+    expect(Math.abs(M[idx] - M[idx - 1] - drift)).toBeCloseTo(M0, 4);
+  });
+
+  it('Gerber hinge with no support at the hinge is stable', () => {
+    // Classic Gerber: main span 0-10 with pin @0, hinge @6, secondary span 6-14
+    // supported by hinge at 6 + roller @14. Hinge itself is NOT supported.
+    const r = solve(model({
+      length: 14,
+      supports: [sup(0, 'fixed'), sup(10, 'roller')],
+      hinges: [{ id: id(), x: 6 }],
+      loads: [{ id: id(), type: 'udl', x1: 0, x2: 14, w: 5e3 }],
+    }));
+    // M at hinge position is exactly zero
+    const xs = r.moment.x;
+    const idx = xs.reduce((best, x, i) => Math.abs(x - 6) < Math.abs(xs[best] - 6) ? i : best, 0);
+    expect(Math.abs(r.moment.values[idx])).toBeLessThan(1);
+  });
+
+  it('URL-hash/localStorage sanitize rejects garbage models', async () => {
+    const { sanitizeAndDeserialize } = await import('../../ui/state');
+    // not an object
+    expect(sanitizeAndDeserialize('')).toBeNull();
+    // wrong version
+    expect(sanitizeAndDeserialize({ v: 2 })).toBeNull();
+    // NaN length
+    expect(sanitizeAndDeserialize({ v: 1, model: { length: NaN, supports: [], loads: [], hinges: [] }, ui: {} })).toBeNull();
+    // zero-length
+    expect(sanitizeAndDeserialize({ v: 1, model: { length: 0, supports: [], loads: [], hinges: [] }, ui: {} })).toBeNull();
+    // support beyond beam
+    expect(sanitizeAndDeserialize({
+      v: 1,
+      model: { length: 5, supports: [{ id: 'a', x: 99, type: 'pin' }], loads: [], hinges: [],
+               material: { id: 'm', name: '', E: 1e6, density: 0 }, section: { id: 's', name: '', A: 1, I: 1, depth: 1, cTop: 0.5, cBot: 0.5 }, selfWeight: false },
+      ui: {},
+    })).toBeNull();
+    // negative E
+    expect(sanitizeAndDeserialize({
+      v: 1,
+      model: { length: 5, supports: [], loads: [], hinges: [],
+               material: { id: 'm', name: '', E: -1, density: 0 }, section: { id: 's', name: '', A: 1, I: 1, depth: 1, cTop: 0.5, cBot: 0.5 }, selfWeight: false },
+      ui: {},
+    })).toBeNull();
+    // valid model passes
+    const valid = {
+      v: 1,
+      model: { length: 5, supports: [{ id: 'a', x: 0, type: 'pin' }, { id: 'b', x: 5, type: 'roller' }], loads: [{ id: 'l', type: 'point', x: 2.5, P: 1000 }], hinges: [],
+               material: { id: 'm', name: '', E: 200e9, density: 7850 }, section: { id: 's', name: '', A: 0.01, I: 8e-6, depth: 0.1, cTop: 0.05, cBot: 0.05 }, selfWeight: false },
+      ui: { unitSystem: 'metric', units: {} },
+    };
+    expect(sanitizeAndDeserialize(valid)).not.toBeNull();
+  });
+
   it('no supports → friendly error', () => {
     expect(() => solve(model({ supports: [] }))).toThrow(/floating|unstable/i);
   });

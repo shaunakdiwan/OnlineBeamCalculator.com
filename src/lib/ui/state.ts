@@ -129,7 +129,9 @@ export class Store {
       if (!raw) return false;
       const json = decodeURIComponent(escape(atob(raw)));
       const data = JSON.parse(json);
-      this.state = deserialize(data);
+      const state = sanitizeAndDeserialize(data);
+      if (!state) return false;
+      this.state = state;
       this.emit();
       this.persist();
       return true;
@@ -142,7 +144,9 @@ export class Store {
     try {
       const raw = localStorage.getItem(LS_KEY);
       if (!raw) return false;
-      this.state = deserialize(JSON.parse(raw));
+      const state = sanitizeAndDeserialize(JSON.parse(raw));
+      if (!state) return false;
+      this.state = state;
       this.emit();
       return true;
     } catch { return false; }
@@ -172,6 +176,57 @@ export function deserialize(data: Serialized): AppState {
     model: data.model,
     ui: { ...defaultUI(), ...data.ui, selection: { kind: null, id: null } },
   };
+}
+
+/**
+ * Validate and sanitize persisted/URL-loaded data. Returns null if input is
+ * structurally invalid (so we fall back to the default model rather than
+ * crash the solver on NaN / negative E / zero length / etc).
+ */
+export function sanitizeAndDeserialize(data: unknown): AppState | null {
+  if (typeof data !== 'object' || data === null) return null;
+  const d = data as Partial<Serialized>;
+  if (d.v !== 1) return null;
+  const m = d.model;
+  if (!m || typeof m !== 'object') return null;
+  const B = m as Partial<BeamModel>;
+  const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+  if (!isNum(B.length) || B.length <= 0 || B.length > 1e3) return null;
+  if (!Array.isArray(B.supports) || !Array.isArray(B.loads) || !Array.isArray(B.hinges)) return null;
+  const validSupport = (s: unknown): boolean => {
+    if (typeof s !== 'object' || s === null) return false;
+    const S = s as Record<string, unknown>;
+    return isNum(S.x) && S.x >= 0 && S.x <= B.length! &&
+           (S.type === 'pin' || S.type === 'roller' || S.type === 'fixed' || S.type === 'spring');
+  };
+  const validHinge = (h: unknown): boolean => {
+    if (typeof h !== 'object' || h === null) return false;
+    const H = h as Record<string, unknown>;
+    return isNum(H.x) && H.x >= 0 && H.x <= B.length!;
+  };
+  const validLoad = (l: unknown): boolean => {
+    if (typeof l !== 'object' || l === null) return false;
+    const L = l as Record<string, unknown>;
+    if (!L.type) return false;
+    if (L.type === 'point' || L.type === 'moment') {
+      const vKey = L.type === 'point' ? 'P' : 'M';
+      return isNum(L.x) && isNum(L[vKey]);
+    }
+    if (L.type === 'udl') return isNum(L.x1) && isNum(L.x2) && isNum(L.w);
+    if (L.type === 'trapezoid') return isNum(L.x1) && isNum(L.x2) && isNum(L.w1) && isNum(L.w2);
+    return false;
+  };
+  const mat = B.material, sec = B.section;
+  if (!mat || !sec) return null;
+  const M2 = mat as unknown as Record<string, unknown>, S2 = sec as unknown as Record<string, unknown>;
+  if (!isNum(M2.E) || M2.E <= 0 || !isNum(M2.density) || M2.density < 0) return null;
+  if (!isNum(S2.A) || S2.A <= 0 || !isNum(S2.I) || S2.I <= 0 || !isNum(S2.depth) || S2.depth <= 0) return null;
+
+  if (!B.supports!.every(validSupport)) return null;
+  if (!B.hinges!.every(validHinge)) return null;
+  if (!B.loads!.every(validLoad)) return null;
+
+  return deserialize(d as Serialized);
 }
 
 export { uid };

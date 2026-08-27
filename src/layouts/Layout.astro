@@ -27,7 +27,9 @@ const {
 
 const site = 'https://onlinebeamcalculator.com';
 const siteName = 'OnlineBeamCalculator.com';
-const canonicalUrl = canonical ?? new URL(Astro.url.pathname, site).href;
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isHome = path === '/';
+const canonicalUrl = canonical ?? new URL(path, site).href;
 const ogImageUrl = ogImage ?? `${site}/og.png`;
 
 const primaryKeywords = [
@@ -44,32 +46,40 @@ const primaryKeywords = [
 ];
 const keywordsStr = (keywords ?? primaryKeywords).join(', ');
 
-const webAppLd = {
-  '@context': 'https://schema.org',
-  '@type': 'WebApplication',
-  name: 'Online Beam Calculator',
-  alternateName: ['Beam Calculator', 'Free Beam Calculator', 'Online Beam Calculator'],
-  url: site,
-  applicationCategory: 'EngineeringApplication',
-  applicationSubCategory: 'Structural Analysis',
-  operatingSystem: 'Any',
-  inLanguage: 'en',
-  isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
-  featureList: [
-    'Simply supported, cantilever, fixed, overhanging, and continuous beam analysis',
-    'Shear force (SFD) and bending moment (BMD) diagrams',
-    'Slope and deflection calculations',
-    'Spring supports and internal hinges',
-    'Point, moment, uniform, triangular and trapezoidal loads',
-    'Self-weight and support settlement',
-    'Metric and imperial units',
-    'CSV export and printable PDF reports',
-  ],
-  description,
-  audience: { '@type': 'Audience', audienceType: 'Engineers, students, builders' },
-  provider: { '@type': 'Organization', name: siteName, url: site },
-};
+const webAppLd = isHome
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      '@id': `${site}/#app`,
+      name: 'Online Beam Calculator',
+      alternateName: ['Beam Calculator', 'Free Beam Calculator', 'Online Beam Calculator'],
+      url: site,
+      applicationCategory: 'EngineeringApplication',
+      applicationSubCategory: 'Structural Analysis',
+      operatingSystem: 'Any',
+      inLanguage: 'en',
+      isAccessibleForFree: true,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+      featureList: [
+        'Simply supported, cantilever, fixed, overhanging, and continuous beam analysis',
+        'Shear force (SFD) and bending moment (BMD) diagrams',
+        'Slope and deflection calculations',
+        'Spring supports and internal hinges',
+        'Point, moment, uniform, triangular and trapezoidal loads',
+        'Self-weight and support settlement',
+        'Metric and imperial units',
+        'CSV export and printable PDF reports',
+      ],
+      description,
+      audience: { '@type': 'Audience', audienceType: 'Engineers, students, builders' },
+      provider: { '@type': 'Organization', name: siteName, url: site },
+    }
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'WebApplication',
+      '@id': `${site}/#app`,
+      url: site,
+    };
 ---
 
 <!doctype html>
@@ -85,6 +95,8 @@ const webAppLd = {
       : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />}
     <meta name="author" content={siteName} />
     <meta name="theme-color" content="#171717" />
+
+    <link rel="preload" href="/fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-L9C6S6PT5K"></script>

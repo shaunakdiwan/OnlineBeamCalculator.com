@@ -125,6 +125,71 @@ export function applyPreset(slug: string): AppState | null {
 }
 
 /**
+ * Related-calculator links for /calculator/[slug] pages.
+ * Weighted toward pages already earning impressions in search; /about gets a
+ * contextual mention on cantilever-family pages which currently perform.
+ */
+export const RELATED_LINKS: Record<string, { slug: string; label: string }[]> = {
+  'cantilever-beam-calculator': [
+    { slug: 'cantilever-udl', label: 'Cantilever beam under uniform load' },
+    { slug: 'cantilever-tip-load', label: 'Cantilever with tip point load' },
+    { slug: 'steel-beam-calculator', label: 'Steel beam calculator' },
+    { slug: 'wood-beam-calculator', label: 'Wood beam calculator' },
+  ],
+  'cantilever-udl': [
+    { slug: 'cantilever-beam-calculator', label: 'Cantilever beam calculator' },
+    { slug: 'cantilever-tip-load', label: 'Cantilever with tip point load' },
+    { slug: 'fixed-fixed-udl', label: 'Fixed–fixed beam, UDL' },
+    { slug: 'simply-supported-udl', label: 'Simply supported beam, UDL' },
+  ],
+  'cantilever-tip-load': [
+    { slug: 'cantilever-beam-calculator', label: 'Cantilever beam calculator' },
+    { slug: 'cantilever-udl', label: 'Cantilever with uniform load' },
+    { slug: 'simply-supported-point', label: 'Simply supported, center point load' },
+    { slug: 'overhanging-beam', label: 'Overhanging beam' },
+  ],
+  'steel-beam-calculator': [
+    { slug: 'simply-supported-beam-calculator', label: 'Simply supported beam calculator' },
+    { slug: 'cantilever-beam-calculator', label: 'Cantilever beam calculator' },
+    { slug: 'wood-beam-calculator', label: 'Wood beam calculator' },
+    { slug: 'ridge-beam-calculator', label: 'Ridge beam calculator' },
+  ],
+  'wood-beam-calculator': [
+    { slug: 'ridge-beam-calculator', label: 'Ridge beam calculator' },
+    { slug: 'steel-beam-calculator', label: 'Steel beam calculator' },
+    { slug: 'simply-supported-beam-calculator', label: 'Simply supported beam calculator' },
+    { slug: 'cantilever-beam-calculator', label: 'Cantilever beam calculator' },
+  ],
+  'ridge-beam-calculator': [
+    { slug: 'wood-beam-calculator', label: 'Wood beam calculator' },
+    { slug: 'overhanging-beam', label: 'Overhanging beam' },
+    { slug: 'steel-beam-calculator', label: 'Steel beam calculator' },
+    { slug: 'simply-supported-beam-calculator', label: 'Simply supported beam calculator' },
+  ],
+  'simply-supported-beam-calculator': [
+    { slug: 'simply-supported-point', label: 'Simply supported, center point load' },
+    { slug: 'simply-supported-udl', label: 'Simply supported, uniform load' },
+    { slug: 'steel-beam-calculator', label: 'Steel beam calculator' },
+    { slug: 'wood-beam-calculator', label: 'Wood beam calculator' },
+  ],
+  'simple-beam-calculator': [
+    { slug: 'simply-supported-beam-calculator', label: 'Simply supported beam calculator' },
+    { slug: 'simply-supported-udl', label: 'Simply supported, uniform load' },
+    { slug: 'cantilever-beam-calculator', label: 'Cantilever beam calculator' },
+    { slug: 'steel-beam-calculator', label: 'Steel beam calculator' },
+  ],
+};
+
+/** Fallback related links for preset pages without an explicit entry. */
+export const DEFAULT_RELATED = (selfSlug: string) =>
+  [
+    { slug: 'simply-supported-beam-calculator', label: 'Simply supported beam calculator' },
+    { slug: 'cantilever-beam-calculator', label: 'Cantilever beam calculator' },
+    { slug: 'steel-beam-calculator', label: 'Steel beam calculator' },
+    { slug: 'wood-beam-calculator', label: 'Wood beam calculator' },
+  ].filter((l) => l.slug !== selfSlug);
+
+/**
  * Keyword-targeted landing pages. Each maps to a preset with tailored
  * title/description copy rendered on /calculator/<slug>.
  */

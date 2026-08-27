@@ -35,6 +35,10 @@ import Layout from '../layouts/Layout.astro';
         <p>The engine is a classical Euler–Bernoulli finite-element solver: two degrees of freedom per node (v, θ), exact Hermitian beam elements, consistent nodal loads for distributed loads, and piecewise-exact post-processing. Solve time is under a millisecond for typical models and everything runs locally in your browser: nothing is sent to a server.</p>
       </section>
       <section>
+        <h2 class="text-display-sm font-semibold text-ink mb-sm">Try it on a real case</h2>
+        <p>The fastest way to internalize these diagrams is to build a case and watch them change. Start with the <a class="text-link hover:underline" href="/calculator/cantilever-udl">cantilever under uniform load</a> to see the classic linear shear and parabolic moment, or the <a class="text-link hover:underline" href="/calculator/cantilever-beam-calculator">cantilever beam calculator</a> for tip loads and moments. For full background on the tool's assumptions, see the <a class="text-link hover:underline" href="/about">about page</a>.</p>
+      </section>
+      <section>
         <h2 class="text-display-sm font-semibold text-ink mb-sm">Stresses and serviceability</h2>
         <p>Bending stress is computed as σ = M·c/I separately for the top and bottom fibres (cTop, cBot may differ for asymmetric sections). Average shear stress is V/A: a coarse check; webs of I-sections carry significantly higher peak shear. Deflection badges compare against the common serviceability limits L/240, L/360 and L/480.</p>
       </section>

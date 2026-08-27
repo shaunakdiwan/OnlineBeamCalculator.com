@@ -1,6 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { PRESETS, VARIANT_LANDINGS } from '../../lib/ui/presets';
+import { PRESETS, VARIANT_LANDINGS, RELATED_LINKS, DEFAULT_RELATED } from '../../lib/ui/presets';
 
 export function getStaticPaths() {
   const presetPages = PRESETS.map((p) => ({
@@ -29,6 +29,313 @@ const pageDesc = variant
 const h1 = variant ? variant.h1 : preset.name;
 const intro = variant ? variant.intro : preset.description;
 const loadSlug = preset.slug;
+const pageSlug = Astro.params.slug;
+const related = RELATED_LINKS[pageSlug] ?? DEFAULT_RELATED(pageSlug);
+
+/**
+ * Per-slug deep-dive content sections (item 3 copy expansion). Only pages
+ * listed here get the extra sections; the rest keep the standard layout until
+ * copy is written.
+ */
+const DEEP_DIVE: Record<string, { heading: string; paragraphs: string[] }[]> = {
+  'steel-beam-calculator': [
+    {
+      heading: 'How to use this steel beam calculator',
+      paragraphs: [
+        'Start with the pre-loaded simply supported beam, then set your real span between supports. Replace the uniform load with your own line load in kN/m (multiply your floor or roof area load in kN/m² by the tributary width), or swap it for point loads at the exact positions where other beams or columns bear on this one.',
+        'Open the section library and pick a W-shape from the AISC list: W4 through W24 sections carry their real area and moment of inertia, so the deflection and bending stress results match published steel properties. The material preset uses structural steel with E = 200 GPa and fy = 250 MPa; switch to a custom modulus only if you are working with a different alloy.',
+      ],
+    },
+    {
+      heading: 'Reading the results for a steel design check',
+      paragraphs: [
+        'For a quick strength check, compare the reported maximum bending stress against the yield strength divided by your safety factor; a common allowable-stress approach keeps the working stress under roughly 0.6 × fy. For serviceability, watch the deflection badges: L/360 keeps brittle finishes safe on floors, and L/240 is the common roof limit.',
+        'If the beam fails serviceability but passes strength, choose a deeper W-shape: deflection scales with 1/I, and deeper sections gain moment of inertia much faster than weight. Export the CSV or print the report to attach a record of the load case to your calc package.',
+      ],
+    },
+    {
+      heading: 'Common steel beam mistakes this tool helps you catch',
+      paragraphs: [
+        'Forgetting self-weight is the classic error; toggle self-weight on and the section’s mass becomes a uniform load automatically. Another is underestimating tributary width, which matters more than the area load itself. And when a steel beam sits over three or more posts, it must be modelled as continuous rather than as a series of simply supported spans: the hogging moment over the middle support changes the design.',
+      ],
+    },
+  ],
+  'wood-beam-calculator': [
+    {
+      heading: 'How to use this wood beam calculator',
+      paragraphs: [
+        'Start with the pre-loaded simply supported beam under uniform load, then set your real joist, rafter or header span. Match the rectangular section to your dressed lumber size, not the nominal name: a 2×8 is 38 × 184 mm dressed, a 2×10 is 38 × 235 mm. The default 100 × 200 mm section is close to a 2×8 and a reasonable first guess.',
+        'Enter loads the way timber framing actually receives them: a uniform line load from the tributary floor or roof width (area load in kN/m² times the spacing), plus point loads wherever a post, hanger or crossed beam lands on this member. The timber material preset uses E = 13 GPa, roughly Douglas Fir; for SPF or lower-grade stock, drop E to 9–11 GPa with a custom material.',
+      ],
+    },
+    {
+      heading: 'Reading the results for a wood design check',
+      paragraphs: [
+        'Timber is deflection-governed far more often than steel: a wood beam that comfortably passes bending can still fail L/360, so read the deflection badge before the stress number. For floors with plaster or tile underneath use L/360; for roofs without brittle finishes, L/240 is the common limit.',
+        'Watch for creep: the deflection shown is the elastic, instantaneous value. Under permanent dead load, wood sags further over months, and a common rule of thumb multiplies the dead-load deflection by 1.5–2. If your beam is mostly dead load, leave visible margin under the limit rather than skating at exactly L/360.',
+      ],
+    },
+    {
+      heading: 'Common wood beam mistakes this tool helps you catch',
+      paragraphs: [
+        'Using nominal instead of dressed dimensions is the biggest one: a 2×10 has about 16% less depth than its name suggests, and since moment of inertia scales with depth cubed, its stiffness drops by roughly 40%. Second is ignoring moisture: lumber above the fibre saturation point has a noticeably lower E than the dry table values, so green or exterior beams deflect more than calculated. Third is placing a heavy point load at midspan without checking bearing length at the supports: the reactions may be fine while the wood crushes at the bearing pad.',
+      ],
+    },
+  ],
+  'ridge-beam-calculator': [
+    {
+      heading: 'How to use this ridge beam calculator',
+      paragraphs: [
+        'A structural ridge beam carries half the roof: each pair of rafters delivers its reaction onto the ridge as a point load at every rafter position. The pre-loaded case shows an overhanging layout, but for a simple attic ridge use pin supports at the ends (or at the posts the ridge lands on) and model the rafter reactions as a row of point loads or, once the rafters are closely spaced, as an equivalent uniform load.',
+        'To get the line load: take the roof area load (dead plus snow, in kN/m²), multiply by the roof width tributary to the ridge (half the total span for symmetric gables), and add the rafter self-weight. Set the section to your dressed LVL or solid-sawn member and read the reactions, which are exactly what the posts and their footings must carry down the load path.',
+      ],
+    },
+    {
+      heading: 'Reading the results for a ridge design check',
+      paragraphs: [
+        'Ridge beams almost always fail on deflection or end bearing before they fail on bending stress. Check the deflection badge against L/240 for roofs; a ridge that sags telegraphs straight into the roofline. Then look at the reactions: they concentrate the entire roof onto a few posts, so the post and footing below each support must be checked for that exact number, not a vague share of the total.',
+      ],
+    },
+    {
+      heading: 'Common ridge beam mistakes this tool helps you catch',
+      paragraphs: [
+        'The classic error is treating the ridge beam as carrying half the roof AREA regardless of geometry: it actually carries the reactions the rafters deliver, which depend on rafter span and pitch, and cutting a mid-span post into the load path changes them completely. Second is ignoring rafter thrust: a true structural ridge removes the need for collar tension ties, but only if it is genuinely stiff enough; an undersized ridge lets the rafters spread the walls. Third is forgetting that ridge point loads bunch up where dormers or hips concentrate several rafters onto one short length.',
+      ],
+    },
+  ],
+  'cantilever-beam-calculator': [
+    {
+      heading: 'How to use this cantilever beam calculator',
+      paragraphs: [
+        'The pre-loaded case is a fixed-end cantilever under uniform load, the model for balconies, canopies and sign brackets. Set the cantilever length, then replace the uniform load with your actual loads: a rail or edge point load at the tip, or a partial-length UDL if the load does not reach the tip.',
+        'Everything interesting happens at the wall: maximum shear, maximum moment and maximum bending stress all sit at the fixed support, while deflection grows toward the free end. If your cantilever has a roller or pin prop at the tip, add it and the problem becomes a propped cantilever with very different, lower, wall moments.',
+      ],
+    },
+    {
+      heading: 'Reading the results for a cantilever design check',
+      paragraphs: [
+        'Check the wall moment first, since the connection or embedment there must resist it. For deflection, the common serviceability limit for cantilevers is L/180 measured against the cantilever length, which is stricter in effect than it sounds because the full cantilever length, not the back-span, is L. Tip deflection is what users see and feel, so watch the cursor at the free end of the deflection diagram.',
+      ],
+    },
+    {
+      heading: 'Common cantilever mistakes this tool helps you catch',
+      paragraphs: [
+        'The biggest mistake is forgetting the back-span: a cantilever held down by a beam continuing past the support develops uplift at the far end, so model the full overhanging beam rather than the cantilever alone, and check for negative (uplift) reactions that need anchorage. Second is underestimating tip deflection sensitivity; deflection scales with length cubed, so extending a canopy by 20% grows the tip sag by about 73%. Third is trusting the "fixed" support idealization blindly: a bolted bracket is not a perfect moment fixity, and real rotation at the wall increases tip deflection beyond the calculated value.',
+      ],
+    },
+  ],
+  'simply-supported-beam-calculator': [
+    {
+      heading: 'How to use this simply supported beam calculator',
+      paragraphs: [
+        'The pre-loaded case is the workhorse of structural analysis: a pin at one end, a roller at the other, and a point load at midspan. Set your real span, then build the actual load pattern; the calculator accepts any mix of point loads, applied moments, and uniform, triangular or trapezoidal distributed loads, placed anywhere along the beam.',
+        'Read the reactions first (they must sum to the total applied load, an instant sanity check), then the maximum moment at the point where the shear diagram crosses zero. Swap materials and sections live to see how E and I change deflection without touching the moment diagram at all.',
+      ],
+    },
+    {
+      heading: 'Reading the results for a simply supported design check',
+      paragraphs: [
+        'For strength, compare maximum bending stress to the material’s allowable stress; for serviceability, use L/360 on floors and L/240 on roofs. Note that in a simply supported beam the moment diagram depends only on loads and span, not on the section, so if bending fails you need a bigger section or less load, but if only deflection fails, a stiffer section solves it without changing the moments.',
+      ],
+    },
+    {
+      heading: 'Common simply supported beam mistakes this tool helps you catch',
+      paragraphs: [
+        'First is modelling a beam as simply supported when it is actually continuous over its supports: real continuity adds hogging moments over interior supports and reduces midspan sagging, so the simple model is conservative at midspan but unconservative at the supports. Second is placing point loads "roughly" instead of exactly; maximum moment from an off-center point load is P·a·b/L, which peaks at midspan, so a load you think is near midspan could be anywhere on a steep part of the influence line. Third is forgetting that rollers allow horizontal movement: if the real detail restrains the beam axially, temperature change adds forces this 2D vertical model intentionally ignores.',
+      ],
+    },
+  ],
+  'simple-beam-calculator': [
+    {
+      heading: 'How to use this simple beam calculator',
+      paragraphs: [
+        'This is the quick-answer setup: one span, a pin and a roller, and a uniform load already in place. Change three numbers, span, load and section, and you have reactions, maximum moment and maximum deflection in under a minute. It suits floor joists, deck beams, lintels and any member where the load is spread evenly along the length.',
+        'If your real load is a single heavy item rather than an even spread, delete the uniform load and drop in a point load where the item sits; the "Center point load" link below jumps straight to that case.',
+      ],
+    },
+    {
+      heading: 'Reading the results',
+      paragraphs: [
+        'Three numbers answer most quick questions: the reactions tell you what each support carries, the maximum moment (at midspan for a UDL) drives the stress check, and the maximum deflection tells you whether the beam will feel bouncy or crack the ceiling below. As a fast cross-check, the textbook values for a uniform load are R = wL/2 at each end, M = wL²/8, and δ = 5wL⁴/(384EI); the formulas page lists every standard case.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with quick beam checks',
+      paragraphs: [
+        'Speed causes characteristic errors. First: mixing units between the span (metres) and the load (kN per metre is not kN total), the unit pickers in the input panel keep every value labelled, so use them rather than converting in your head. Second: checking only strength and skipping deflection, which is what users actually complain about. Third: treating a quick elastic check as a full design; safety factors, load combinations and connection design still need to come from your code of practice.',
+      ],
+    },
+  ],
+  'simply-supported-point': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'A pin-and-roller beam with a single point load at midspan is the simplest case that shows every diagram feature: piecewise-constant shear, a triangular moment diagram peaking at the load, and a deflection curve that is steepest near the load, not at midspan where the curvature is highest.',
+        'The closed-form answers, R = P/2 each end, M = PL/4, δ = PL³/(48EI), are on the formulas page; try moving the load off center by dragging it and watch the reactions shift in proportion (R_A = P·b/L, R_B = P·a/L) while the moment peak moves with the load.',
+      ],
+    },
+    {
+      heading: 'What to watch for with point loads',
+      paragraphs: [
+        'Point loads concentrate everything: the moment peaks exactly under the load at P·a·b/L, which is maximized at midspan, so the worst position of a trolley wheel or safe is mid-span, a fact worth remembering when placing heavy equipment. Loads near a support produce small moments but high shear at that support; if your beam is a composite or thin-webbed section, that is where the shear check bites instead.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'The frequent error is forgetting self-weight: the pure point-load moment is a triangle, but real beams carry their own uniform load, which adds a parabola on top and moves the true maximum off the load point. Toggle self-weight on to see the combined picture. Second is treating the point-load deflection formula as universal; PL³/(48EI) only holds for the load exactly at midspan, and off-center loads need the general expression listed on the formulas page.',
+      ],
+    },
+  ],
+  'simply-supported-udl': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'The uniform load case is the reference against which floor and roof beams are judged: a straight-line shear diagram crossing zero at midspan, a parabolic moment diagram peaking at wL²/8, and a smooth deflection curve maximum at midspan of 5wL⁴/(384EI).',
+        'Try shortening the loaded length with the load start/end fields: a UDL over only part of the span moves the maximum moment toward the loaded region and reduces it, but also creates a shear diagram with a kinked shape students often sketch wrong by hand.',
+      ],
+    },
+    {
+      heading: 'What to watch for with uniform loads',
+      paragraphs: [
+        'Uniform loads are forgiving in bending but they accumulate quickly: doubling the tributary width doubles w, and since deflection scales with w times L⁴, a modest span increase hits deflection hard. For a 10% longer span at the same w, expect roughly 46% more deflection. This is why deflection, not strength, usually sizes residential floor beams.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'The two classic errors: converting area load to line load with the wrong tributary width (the beam carries the floor strip halfway to each neighbour, not its own footprint), and forgetting that w in the formulas is per unit length while catalogues often list load per square metre. A third subtle one is assuming M = wL²/8 holds for partial or triangular loads; it does not, and the calculator’s diagram is the fast way to get those cases right.',
+      ],
+    },
+  ],
+  'cantilever-udl': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'The uniformly loaded cantilever produces the two textbook parabolas of beam theory: a linear shear diagram from wL at the wall to zero at the tip, and a moment diagram reaching −wL²/2 at the fixed end. Deflection at the tip is wL⁴/(8EI), the largest tip value among the standard load patterns, which is why canopies and balconies are governed by stiffness.',
+        'Drag the load end point inward to model a load that stops short of the tip, common when finishes or planters sit near the wall only. The wall moment drops quickly: a UDL over only the inner half of a cantilever produces about 1/8 of the full-length wall moment.',
+      ],
+    },
+    {
+      heading: 'What to watch for in a cantilever UDL check',
+      paragraphs: [
+        'Bending stress at the wall and tip deflection are the two checks, and deflection usually wins. Use L/180 on the cantilever length, and remember that any flexibility in the real fixing adds rotation at the wall that multiplies straight into tip deflection, so the computed value is a lower bound unless the fixity is genuinely rigid.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'First is applying the simply supported intuition that "the middle is worst"; on a cantilever, the wall takes everything, and connections or welds near the wall see the peak demand. Second is forgetting load factors when mixing dead and live portions of the uniform load in a real design. Third, as with all cantilevers, is ignoring the back-span: if this member continues behind the support, check the uplift reaction at the far anchor using the overhanging preset instead of this isolated model.',
+      ],
+    },
+  ],
+  'cantilever-tip-load': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'A tip point load is the purest cantilever case: constant shear of P along the full length, a triangular moment diagram peaking at −P·L at the wall, and tip deflection PL³/(3EI). Compared with the uniform-load cantilever carrying the same total load (wL = P), the tip load produces DOUBLE the wall moment (PL vs wL²/2).',
+        'Drag the load inward along the beam and both the wall moment and tip deflection fall linearly and cubically respectively; a load at three-quarters length already halves the wall moment demand. That sensitivity is worth exploiting when you can position a bracket load close to its support.',
+      ],
+    },
+    {
+      heading: 'What to watch for with tip loads',
+      paragraphs: [
+        'The numbers to read are the wall reaction force and wall fixing moment, together they are exactly what the bracket, weld or embedment must resist. Tip deflection against L/180 is the serviceability check; note that for the same total load, a tip load deflects 8/3 times more than a uniform load, so converting a spread-out load into a single tip value is conservative by a wide margin but useful as a bound.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'Modelling a genuinely distributed load as a tip load "to be safe" is defensible for a bound but can hide where the real maximum stress sits when the load actually spreads over the member. The reverse is the dangerous one: modelling a concentrated load as an equivalent UDL halves the apparent wall moment and is unconservative. Second error: applying the tip-deflection formula to a load that is not at the tip; the closed form changes, and dragging the load in the calculator shows the corrected value instantly.',
+      ],
+    },
+  ],
+  'fixed-fixed-udl': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'A beam fixed at both ends under uniform load is statically indeterminate: the end moments of −wL²/12 cannot be found from equilibrium alone, they come from stiffness compatibility. The result is a beam that hogs over its supports (−wL²/12) and sags at midspan (+wL²/24), with maximum deflection of only wL⁴/(384EI), a fifth of the simply supported value.',
+        'Drag one fixed support to a pin and watch the diagrams transform into the propped-cantilever pattern; the midspan moment nearly doubles. That sensitivity to the end condition is exactly why this case matters: whether a real connection counts as "fixed" is a judgement call with large consequences.',
+      ],
+    },
+    {
+      heading: 'What to watch for in a fixed–fixed check',
+      paragraphs: [
+        'Two fibres need checking: the top fibre at the supports (hogging, stress from the wL²/12 end moment) and the bottom fibre at midspan. For symmetric sections the support moment governs. The end fixings or welds must also develop that moment, and the two supports must resist wL/2 each plus transfer the moment without rotation, which is a much harder detail to build than a simple bearing.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'The worst mistake is claiming fixity you do not have: a beam bolted to columns with flexible end plates behaves much closer to simply supported, and designing it for wL²/12 hogging while the connection actually rotates means the midspan moment in reality heads toward wL²/8, overstressing a section sized for wL²/24. Second: fixed–fixed beams attract large temperature forces from restrained expansion, which this vertical-load model intentionally excludes. Third: symmetrical support settlement has little effect, but DIFFERENTIAL settlement between the two fixed ends induces real moments; use the settlement input to check that if your foundations are uncertain.',
+      ],
+    },
+  ],
+  'overhanging-beam': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'The overhanging beam is two cases in one: the main span between supports behaves like a simply supported beam, while the overhang loads the right support like a cantilever bracket. The uniform load over the whole length produces hogging over the right support and sagging in the main span, and the interplay lets you actually tune the design: lengthening the overhang increases negative moment while reducing the positive midspan moment.',
+        'Drag the right support toward the tip and watch the hogging moment over it shrink; at some position the maximum negative and positive moments equalize, which is the minimum-material arrangement. Drag it too far and the left reaction approaches zero, the uplift boundary.',
+      ],
+    },
+    {
+      heading: 'What to watch for in an overhanging check',
+      paragraphs: [
+        'Check BOTH moment peaks: hogging at the interior support and sagging in mid-span, they use different fibres of the section and for asymmetric sections the top-fibre stress under hogging can govern. Watch the reactions for sign changes: as the overhang load grows relative to the main span, the far reaction drops and can go negative, meaning the support must be tied down rather than just bearing.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'First is analysing only the main span and ignoring that the overhang load directly loads the adjacent support and reverses curvature near it. Second is missing uplift: a heavily loaded overhang with a lightly loaded back-span lifts the far support, and a simple bearing detail cannot resist that. Third is deflection location bias: the maximum deflection may be at the overhang tip rather than midspan, so scan the whole deflection curve, not just the middle.',
+      ],
+    },
+  ],
+  'continuous-two-span': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'A two-span continuous beam under uniform load is the first genuinely indeterminate case most engineers meet: the middle support carries 10wL/8 while each end carries only 3wL/8, and the beam hogs over the middle support at −wL²/8. That asymmetry of reactions surprises everyone the first time: the middle post carries more than double what intuition ("a third of the total each") suggests.',
+        'Delete the middle support to see the single-span result superimposed in effect: midspan moment doubles and deflection grows more than fourfold. That comparison is the core argument for running members continuously over intermediate supports where construction allows.',
+      ],
+    },
+    {
+      heading: 'What to watch for in a continuous beam check',
+      paragraphs: [
+        'There are three checks, not one: hogging moment over the middle support, sagging moment in each span (maximum about 0.07wL², occurring around 0.375L from each end, not at midspan), and deflection in each span. The middle support reaction and its local crushing or post capacity often govern the whole design. Support settlement matters more here than in almost any other case: a middle support that settles 10 mm redistributes moments significantly, so use the settlement input if the foundations are not rock-solid.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'The classic error is splitting the beam into two simply supported spans: that model erases the hogging moment over the middle support, so the top reinforcement or continuity detail there is never designed, and cracks appear exactly over the post. Second is assuming symmetric loading in service; pattern loading (one span loaded, the other empty) worsens both the span moment and the mid-support reaction in ways the fully loaded diagram hides. Third is ignoring lateral restraint: a continuous compression flange over the hogging region can buckle if unbraced, a check outside this elastic model but flagged whenever you see a large negative moment.',
+      ],
+    },
+  ],
+  'gerber-hinge': [
+    {
+      heading: 'About this worked example',
+      paragraphs: [
+        'A Gerber beam splices an internal hinge into a continuous system, making it determinable while keeping the construction benefits of long members. The hinge transmits shear but no moment: the moment diagram drops to exactly zero at the hinge, which you can verify in the diagram below, and the suspended span between hinge and far support behaves like a simply supported beam hung from the rest of the structure.',
+        'Drag the hinge along its span to see the hinge position change the reactions and the moment peaks. The hinge location is a real design choice: Gerber girders in bridges and industrial buildings put hinges at points of contraflexure so the suspended span sees the smallest possible moments.',
+      ],
+    },
+    {
+      heading: 'What to watch for in a Gerber check',
+      paragraphs: [
+        'Check the deflection at the hinge: both sides deflect identically (they are connected) but their rotations differ sharply, so the deflection curve has a visible kink there. The hinge hardware itself must transfer the shear reaction, read it from the reaction jump in the shear diagram. Also check the suspended span as a standalone simply supported beam under its own loads, which this model does automatically by virtue of the hinge release.',
+      ],
+    },
+    {
+      heading: 'Common mistakes with this case',
+      paragraphs: [
+        'First is modelling the hinge as a full break with a support under it, which inserts a false reaction and completely changes the moment diagram; an internal hinge is a moment release, not a bearing. Second is forgetting that hinges demand detailing for movement: the two segments rotate differentially, so bearings and deck joints must accommodate that rotation. Third is assuming the hinge makes everything simply supported; only the suspended span gains that behavior, the anchor spans still carry their own continuity moments.',
+      ],
+    },
+  ],
+};
+const deepDive = DEEP_DIVE[pageSlug] ?? [];
 
 const faqLd = {
   '@context': 'https://schema.org',
@@ -42,22 +349,16 @@ const faqLd = {
         text: `This page pre-loads a configured model in the beam calculator. Edit positions and magnitudes directly, or drag elements on the diagram. Results update instantly in your browser.`,
       },
     },
-    {
-      '@type': 'Question',
-      name: 'Is this beam calculator free?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Yes: 100% free with no signup, no load limits, and no account. All analysis runs locally in your browser.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'What results do I get?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Support reactions, shear force and bending moment diagrams, slope and deflection curves, max/min values with locations, bending and average shear stress, and deflection-limit badges for L/240, L/360 and L/480.',
-      },
-    },
+  ],
+};
+
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://onlinebeamcalculator.com/' },
+    { '@type': 'ListItem', position: 2, name: 'Calculators', item: 'https://onlinebeamcalculator.com/calculator' },
+    { '@type': 'ListItem', position: 3, name: h1 },
   ],
 };
 ---
@@ -65,9 +366,18 @@ const faqLd = {
 <Layout
   title={pageTitle}
   description={pageDesc}
-  jsonLd={faqLd}
+  jsonLd={[faqLd, breadcrumbLd]}
 >
   <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
+    <nav aria-label="Breadcrumb" class="mb-sm text-caption text-mute">
+      <ol class="flex flex-wrap items-center gap-xxs">
+        <li><a class="hover:text-ink" href="/">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a class="hover:text-ink" href="/calculator">Calculators</a></li>
+        <li aria-hidden="true">/</li>
+        <li aria-current="page" class="text-body">{h1}</li>
+      </ol>
+    </nav>
     <div class="mb-md max-w-[48rem]">
       <div class="eyebrow uppercase mb-xxs">{isVariant ? 'Calculator' : 'Worked example'}</div>
       <h1 class="text-display-md font-semibold">{h1}</h1>
@@ -86,6 +396,25 @@ const faqLd = {
       <p>{preset.description}</p>
       <p>All diagrams use the Euler–Bernoulli beam theory with an exact finite-element solver that runs entirely in your browser. You can move supports by dragging them, switch unit systems at the top of the input panel, and export results as CSV or a printable report.</p>
       <p><a class="text-link hover:underline" href="/formulas">See closed-form formulas for this and similar cases →</a></p>
+    </section>
+    {deepDive.map((sec) => (
+      <section class="mt-xl max-w-[48rem] text-body-md text-body space-y-sm">
+        <h2 class="text-display-sm font-semibold text-ink">{sec.heading}</h2>
+        {sec.paragraphs.map((p) => <p>{p}</p>)}
+      </section>
+    ))}
+    <section class="mt-xl max-w-[48rem] text-body-sm text-body space-y-sm">
+      <h2 class="text-display-sm font-semibold text-ink">Related calculators</h2>
+      <ul class="space-y-xxs">
+        {related.map((r) => (
+          <li><a class="text-link hover:underline" href={`/calculator/${r.slug}`}>{r.label}</a></li>
+        ))}
+      </ul>
+      <p>
+        New to shear and moment diagrams? Start with the
+        <a class="text-link hover:underline" href="/guide"> SFD &amp; BMD guide</a>, or read
+        <a class="text-link hover:underline" href="/about"> how this calculator works</a>.
+      </p>
     </section>
   </div>
   <script>

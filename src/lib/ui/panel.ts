@@ -43,7 +43,7 @@ function row(label: string, ...els: HTMLElement[]): HTMLElement {
 }
 
 function sectionHead(title: string, addBtn?: { label: string; fn: () => void }): HTMLElement {
-  const d = h('div', 'flex items-center justify-between mt-md mb-xs');
+  const d = h('div', 'flex items-center justify-between mt-sm mb-xxs');
   d.append(h('div', 'eyebrow uppercase', title));
   if (addBtn) {
     const b = h('button', 'btn-secondary h-6 px-xs text-caption', addBtn.label);
@@ -64,7 +64,7 @@ export class InputPanel {
     this.rightRoot.textContent = '';
 
     // ── Header: units + actions ─────────────────────────────
-    const top = h('div', 'flex items-center justify-between mb-md');
+    const top = h('div', 'flex items-center justify-between mb-sm');
     top.append(h('div', 'eyebrow uppercase', 'Setup'));
     const tw = h('div', 'flex gap-xxs');
     for (const sys of ['metric', 'imperial'] as const) {

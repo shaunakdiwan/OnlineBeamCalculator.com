@@ -215,11 +215,8 @@
   header, footer, .no-print, #theme-toggle,
   #beam-canvas-wrap .toolbar,
   #input-panel-left .btn-secondary,
-  #input-panel-right .btn-secondary,
   #input-panel-left sectionHead,
-  #input-panel-right sectionHead,
-  #input-panel-left select.print-hide,
-  #input-panel-right select.print-hide {
+  #input-panel-left select.print-hide {
     display: none !important;
   }
   body { background: #fff; color-adjust: exact; print-color-adjust: exact; }
@@ -230,7 +227,7 @@
   #beam-app {
     display: block !important;
   }
-  #input-panel-left, #input-panel-right, #beam-canvas-wrap, #results-dashboard, #diagrams { margin-bottom: 14pt; }
+  #input-panel-left, #beam-canvas-wrap, #results-dashboard, #diagrams { margin-bottom: 14pt; }
   #beam-app::before {
     content: "OnlineBeamCalculator.com: Beam Analysis Report";
     display: block;

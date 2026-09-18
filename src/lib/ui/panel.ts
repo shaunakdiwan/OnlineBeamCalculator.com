@@ -56,14 +56,13 @@ function sectionHead(title: string, addBtn?: { label: string; fn: () => void }):
 }
 
 export class InputPanel {
-  constructor(private leftRoot: HTMLElement, private rightRoot: HTMLElement, private store: Store, private recompute: () => void) {}
+  constructor(private leftRoot: HTMLElement, private store: Store, private recompute: () => void) {}
 
   render() {
     const st = this.store.get();
     const m = st.model;
     const U = st.ui.units;
     this.leftRoot.textContent = '';
-    this.rightRoot.textContent = '';
 
     // ── Header: units + actions ─────────────────────────────
     const top = h('div', 'flex items-center justify-between mb-sm');
@@ -97,67 +96,6 @@ export class InputPanel {
     swl.htmlFor = 'selfweight';
     swRow.append(sw, swl);
     this.leftRoot.append(swRow);
-
-    // ── Material ────────────────────────────────────────────
-    this.rightRoot.append(sectionHead('Material'));
-    const matSel = document.createElement('select');
-    matSel.className = 'input w-full';
-    for (const mt of MATERIALS) matSel.add(new Option(mt.name, mt.id));
-    matSel.add(new Option('Custom…', 'custom'));
-    matSel.value = MATERIALS.some((x) => x.id === m.material.id) ? m.material.id : 'custom';
-    matSel.addEventListener('change', () => this.store.update((s) => {
-      const found = MATERIALS.find((x) => x.id === matSel.value);
-      if (found) s.model.material = { ...found };
-      else s.model.material.id = 'custom';
-    }));
-    this.rightRoot.append(matSel);
-    this.rightRoot.append(row('E', numInput(fromSI('pressure', m.material.E, U.pressure), U.pressure, (v) =>
-      this.store.update((s) => { s.model.material.E = toSI('pressure', v, U.pressure); s.model.material.id = 'custom'; })), h('span', 'text-caption text-mute w-10', UNITS.pressure.find(u=>u.id===U.pressure)?.label ?? '')));
-    this.rightRoot.append(row('Density', numInput(m.material.density, 'kg/m³', (v) =>
-      this.store.update((s) => { s.model.material.density = v; s.model.material.id = 'custom'; })), h('span', 'text-caption text-mute w-10', 'kg/m³')));
-    this.rightRoot.append(row('fy', numInput(fromSI('pressure', m.material.fy ?? 0, U.pressure), U.pressure, (v) =>
-      this.store.update((s) => { s.model.material.fy = toSI('pressure', v, U.pressure); })), h('span', 'text-caption text-mute w-10', UNITS.pressure.find(u=>u.id===U.pressure)?.label ?? '')));
-
-    // ── Section ─────────────────────────────────────────────
-    this.rightRoot.append(sectionHead('Section'));
-    const secSel = document.createElement('select');
-    secSel.className = 'input w-full';
-    secSel.add(new Option('Parametric', '', true, true));
-    for (const p of [
-      ['rect', 'Rectangle'], ['hollow-rect', 'Hollow rectangle'], ['circle', 'Circle'],
-      ['hollow-circle', 'Hollow circle'], ['i-beam', 'I-beam'], ['channel', 'Channel'],
-    ] as const) secSel.add(new Option(p[1], p[0]));
-    secSel.add(new Option('AISC W-shapes', '', true, true));
-    for (const w of W_SHAPES) secSel.add(new Option(w.designation, `W:${w.designation}`));
-    secSel.add(new Option('Custom (A, I)…', 'custom'));
-    // current value
-    secSel.value = m.section.id.startsWith('W:') ? m.section.id : m.section.id;
-    secSel.addEventListener('change', () => this.store.update((s) => {
-      const v = secSel.value;
-      if (v.startsWith('W:')) {
-        const w = W_SHAPES.find((x) => `W:${x.designation}` === v);
-        if (w) s.model.section = wShapeSection(w);
-      } else if (v === 'custom') {
-        s.model.section = { ...s.model.section, id: 'custom', name: 'Custom section' };
-      } else if (v) {
-        // sensible defaults by shape
-        const d = v === 'circle' || v === 'hollow-circle' ? { d: 0.2 } : {};
-        s.model.section = v === 'rect' ? makeSection({ kind: 'rect', b: 0.1, h: 0.2 })
-          : v === 'hollow-rect' ? makeSection({ kind: 'hollow-rect', b: 0.1, h: 0.2, t: 0.01 })
-          : v === 'circle' ? makeSection({ kind: 'circle', d: 0.2 })
-          : v === 'hollow-circle' ? makeSection({ kind: 'hollow-circle', d: 0.2, t: 0.01 })
-          : v === 'i-beam' ? makeSection({ kind: 'i-beam', h: 0.2, bf: 0.1, tf: 0.01, tw: 0.007 })
-          : makeSection({ kind: 'channel', h: 0.2, bf: 0.08, tf: 0.01, tw: 0.006 });
-        void d;
-      }
-    }));
-    this.rightRoot.append(secSel);
-    this.rightRoot.append(row('A', numInput(fromSI('area', m.section.A, U.area), U.area, (v) =>
-      this.store.update((s) => { s.model.section.A = toSI('area', v, U.area); })), h('span', 'text-caption text-mute w-10', UNITS.area.find(u=>u.id===U.area)?.label ?? '')));
-    this.rightRoot.append(row('I', numInput(fromSI('inertia', m.section.I, U.inertia), U.inertia, (v) =>
-      this.store.update((s) => { s.model.section.I = toSI('inertia', v, U.inertia); })), h('span', 'text-caption text-mute w-10', UNITS.inertia.find(u=>u.id===U.inertia)?.label ?? '')));
-    this.rightRoot.append(row('Depth', numInput(fromSI('length', m.section.depth, U.length), U.length, (v) =>
-      this.store.update((s) => { s.model.section.depth = toSI('length', v, U.length); s.model.section.cTop = s.model.section.depth / 2; s.model.section.cBot = s.model.section.depth / 2; })), h('span', 'text-caption text-mute w-10', UNITS.length.find(u=>u.id===U.length)?.label ?? '')));
 
     // ── Supports list ───────────────────────────────────────
     this.leftRoot.append(sectionHead('Supports', {
@@ -204,6 +142,67 @@ export class InputPanel {
       sel.addEventListener('change', () => this.store.update((s) => { s.ui.units[q] = sel.value; }));
       this.leftRoot.append(row(q, sel));
     }
+
+    // ── Material ────────────────────────────────────────────
+    this.leftRoot.append(sectionHead('Material'));
+    const matSel = document.createElement('select');
+    matSel.className = 'input w-full';
+    for (const mt of MATERIALS) matSel.add(new Option(mt.name, mt.id));
+    matSel.add(new Option('Custom…', 'custom'));
+    matSel.value = MATERIALS.some((x) => x.id === m.material.id) ? m.material.id : 'custom';
+    matSel.addEventListener('change', () => this.store.update((s) => {
+      const found = MATERIALS.find((x) => x.id === matSel.value);
+      if (found) s.model.material = { ...found };
+      else s.model.material.id = 'custom';
+    }));
+    this.leftRoot.append(matSel);
+    this.leftRoot.append(row('E', numInput(fromSI('pressure', m.material.E, U.pressure), U.pressure, (v) =>
+      this.store.update((s) => { s.model.material.E = toSI('pressure', v, U.pressure); s.model.material.id = 'custom'; })), h('span', 'text-caption text-mute w-10', UNITS.pressure.find(u=>u.id===U.pressure)?.label ?? '')));
+    this.leftRoot.append(row('Density', numInput(m.material.density, 'kg/m³', (v) =>
+      this.store.update((s) => { s.model.material.density = v; s.model.material.id = 'custom'; })), h('span', 'text-caption text-mute w-10', 'kg/m³')));
+    this.leftRoot.append(row('fy', numInput(fromSI('pressure', m.material.fy ?? 0, U.pressure), U.pressure, (v) =>
+      this.store.update((s) => { s.model.material.fy = toSI('pressure', v, U.pressure); })), h('span', 'text-caption text-mute w-10', UNITS.pressure.find(u=>u.id===U.pressure)?.label ?? '')));
+
+    // ── Section ─────────────────────────────────────────────
+    this.leftRoot.append(sectionHead('Section'));
+    const secSel = document.createElement('select');
+    secSel.className = 'input w-full';
+    secSel.add(new Option('Parametric', '', true, true));
+    for (const p of [
+      ['rect', 'Rectangle'], ['hollow-rect', 'Hollow rectangle'], ['circle', 'Circle'],
+      ['hollow-circle', 'Hollow circle'], ['i-beam', 'I-beam'], ['channel', 'Channel'],
+    ] as const) secSel.add(new Option(p[1], p[0]));
+    secSel.add(new Option('AISC W-shapes', '', true, true));
+    for (const w of W_SHAPES) secSel.add(new Option(w.designation, `W:${w.designation}`));
+    secSel.add(new Option('Custom (A, I)…', 'custom'));
+    // current value
+    secSel.value = m.section.id.startsWith('W:') ? m.section.id : m.section.id;
+    secSel.addEventListener('change', () => this.store.update((s) => {
+      const v = secSel.value;
+      if (v.startsWith('W:')) {
+        const w = W_SHAPES.find((x) => `W:${x.designation}` === v);
+        if (w) s.model.section = wShapeSection(w);
+      } else if (v === 'custom') {
+        s.model.section = { ...s.model.section, id: 'custom', name: 'Custom section' };
+      } else if (v) {
+        // sensible defaults by shape
+        const d = v === 'circle' || v === 'hollow-circle' ? { d: 0.2 } : {};
+        s.model.section = v === 'rect' ? makeSection({ kind: 'rect', b: 0.1, h: 0.2 })
+          : v === 'hollow-rect' ? makeSection({ kind: 'hollow-rect', b: 0.1, h: 0.2, t: 0.01 })
+          : v === 'circle' ? makeSection({ kind: 'circle', d: 0.2 })
+          : v === 'hollow-circle' ? makeSection({ kind: 'hollow-circle', d: 0.2, t: 0.01 })
+          : v === 'i-beam' ? makeSection({ kind: 'i-beam', h: 0.2, bf: 0.1, tf: 0.01, tw: 0.007 })
+          : makeSection({ kind: 'channel', h: 0.2, bf: 0.08, tf: 0.01, tw: 0.006 });
+        void d;
+      }
+    }));
+    this.leftRoot.append(secSel);
+    this.leftRoot.append(row('A', numInput(fromSI('area', m.section.A, U.area), U.area, (v) =>
+      this.store.update((s) => { s.model.section.A = toSI('area', v, U.area); })), h('span', 'text-caption text-mute w-10', UNITS.area.find(u=>u.id===U.area)?.label ?? '')));
+    this.leftRoot.append(row('I', numInput(fromSI('inertia', m.section.I, U.inertia), U.inertia, (v) =>
+      this.store.update((s) => { s.model.section.I = toSI('inertia', v, U.inertia); })), h('span', 'text-caption text-mute w-10', UNITS.inertia.find(u=>u.id===U.inertia)?.label ?? '')));
+    this.leftRoot.append(row('Depth', numInput(fromSI('length', m.section.depth, U.length), U.length, (v) =>
+      this.store.update((s) => { s.model.section.depth = toSI('length', v, U.length); s.model.section.cTop = s.model.section.depth / 2; s.model.section.cBot = s.model.section.depth / 2; })), h('span', 'text-caption text-mute w-10', UNITS.length.find(u=>u.id===U.length)?.label ?? '')));
   }
 
   private supportRow(sup: Support): HTMLElement {

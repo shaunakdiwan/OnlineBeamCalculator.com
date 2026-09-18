@@ -56,10 +56,10 @@ export class ResultsDashboard {
 
     this.root.innerHTML = `
       <div class="flex flex-wrap gap-md">
-        ${card('Max Shear', fV(maxAbsV.value), `@ x = ${formatSI('length', maxAbsV.x, U.length)}`, '#7928ca')}
-        ${card('Max Moment', fM(maxAbsM.value), `@ x = ${formatSI('length', maxAbsM.x, U.length)}`, '#0070f3')}
-        ${card('Max Deflection', fL(maxD.value), `@ x = ${formatSI('length', maxD.x, U.length)}`, '#ff0080')}
-        ${card('Max Bend. Stress', fP(maxStress), `@ x = ${formatSI('length', maxStressX, U.length)}`, '#f5a623')}
+        ${card('Max Shear', fV(maxAbsV.value), `at x = ${formatSI('length', maxAbsV.x, U.length)}`, '#7928ca')}
+        ${card('Max Moment', fM(maxAbsM.value), `at x = ${formatSI('length', maxAbsM.x, U.length)}`, '#0070f3')}
+        ${card('Max Deflection', fL(maxD.value), `at x = ${formatSI('length', maxD.x, U.length)}`, '#ff0080')}
+        ${card('Max Bend. Stress', fP(maxStress), `at x = ${formatSI('length', maxStressX, U.length)}`, '#f5a623')}
       </div>
       <div class="card p-md mt-md">
         <div class="flex items-center justify-between flex-wrap gap-xs">

@@ -130,6 +130,11 @@ export function fromSI(quantity: Quantity, siValue: number, unitId: string): num
   return siValue / findUnit(quantity, unitId).toSI;
 }
 
+function toSuperscript(n: string): string {
+  const map: Record<string, string> = { '-': '⁻', '+': '⁺', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+  return n.split('').map(c => map[c] || c).join('');
+}
+
 /** Format a SI value in a chosen unit with sensible precision. */
 export function formatSI(
   quantity: Quantity,
@@ -142,7 +147,15 @@ export function formatSI(
   const av = Math.abs(v);
   let s: string;
   if (av === 0) s = '0';
-  else if (av >= 1e6 || av < 1e-3) s = v.toExponential(2);
+  else if (av >= 1e6 || av < 1e-3) {
+    const exp = v.toExponential(digits - 1);
+    const parts = exp.split('e');
+    if (parts.length === 2 && parseInt(parts[1], 10) !== 0) {
+      s = `${parts[0]} × 10${toSuperscript(parts[1].replace('+', ''))}`;
+    } else {
+      s = exp;
+    }
+  }
   else s = Number(v.toPrecision(digits)).toString();
   return `${s} ${findUnit(quantity, unitId).label}`;
 }

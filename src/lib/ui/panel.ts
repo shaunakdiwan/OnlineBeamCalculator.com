@@ -46,7 +46,7 @@ function row(label: string, ...els: HTMLElement[]): HTMLElement {
 
 function sectionHead(title: string, addBtn?: { label: string; fn: () => void }): HTMLElement {
   const d = h('div', 'flex items-center justify-between mt-sm mb-xxs');
-  d.append(h('div', 'eyebrow uppercase', title));
+  d.append(h('div', 'eyebrow uppercase font-bold text-ink', title));
   if (addBtn) {
     const b = h('button', 'btn-secondary h-6 px-xs text-caption', addBtn.label);
     b.addEventListener('click', addBtn.fn);
@@ -66,7 +66,7 @@ export class InputPanel {
 
     // ── Header: units + actions ─────────────────────────────
     const top = h('div', 'flex items-center justify-between mb-sm');
-    top.append(h('div', 'eyebrow uppercase', 'Setup'));
+    top.append(h('div', 'eyebrow uppercase font-bold text-ink', 'Setup'));
     const tw = h('div', 'flex gap-xxs');
     for (const sys of ['metric', 'imperial'] as const) {
       const b = h('button', `px-sm py-[4px] rounded-full text-caption border ${st.ui.unitSystem === sys ? 'bg-ink text-on-primary border-ink' : 'bg-canvas text-body border-hairline'}`, sys === 'metric' ? 'Metric' : 'Imperial');

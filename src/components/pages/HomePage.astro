@@ -20,8 +20,9 @@ const { locale, copy } = Astro.props;
     <p class="mt-xs text-body-md md:text-body-lg text-body">{copy.hero}</p>
   </header>
 
-  <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
-    <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
+  <div id="beam-app" class="grid grid-cols-1 xl:grid-cols-[280px_280px_1fr] lg:grid-cols-[260px_260px_1fr] gap-lg">
+    <aside id="input-panel-left" class="card p-md min-w-0 overflow-x-auto flex flex-col gap-sm"></aside>
+    <aside id="input-panel-right" class="card p-md min-w-0 overflow-x-auto flex flex-col gap-sm"></aside>
     <section class="flex flex-col gap-lg min-w-0">
       <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
       <div id="results-dashboard"></div>

@@ -54,13 +54,14 @@ function sectionHead(title: string, addBtn?: { label: string; fn: () => void }):
 }
 
 export class InputPanel {
-  constructor(private root: HTMLElement, private store: Store, private recompute: () => void) {}
+  constructor(private leftRoot: HTMLElement, private rightRoot: HTMLElement, private store: Store, private recompute: () => void) {}
 
   render() {
     const st = this.store.get();
     const m = st.model;
     const U = st.ui.units;
-    this.root.textContent = '';
+    this.leftRoot.textContent = '';
+    this.rightRoot.textContent = '';
 
     // ── Header: units + actions ─────────────────────────────
     const top = h('div', 'flex items-center justify-between mb-md');
@@ -79,11 +80,11 @@ export class InputPanel {
       tw.append(b);
     }
     top.append(tw);
-    this.root.append(top);
+    this.leftRoot.append(top);
 
     // ── Beam length ─────────────────────────────────────────
-    this.root.append(sectionHead('Beam'));
-    this.root.append(row('Length', numInput(fromSI('length', m.length, U.length), U.length, (v) =>
+    this.leftRoot.append(sectionHead('Beam'));
+    this.leftRoot.append(row('Length', numInput(fromSI('length', m.length, U.length), U.length, (v) =>
       this.store.update((s) => { s.model.length = toSI('length', Math.max(0.01, v), U.length); })), h('span', 'text-caption text-mute w-10', UNITS.length.find(u=>u.id===U.length)?.label ?? '')));
 
     const swRow = h('div', 'flex items-center gap-xs mt-xs');
@@ -93,10 +94,10 @@ export class InputPanel {
     const swl = h('label', 'text-body-sm text-body', 'Include self-weight') as HTMLLabelElement;
     swl.htmlFor = 'selfweight';
     swRow.append(sw, swl);
-    this.root.append(swRow);
+    this.leftRoot.append(swRow);
 
     // ── Material ────────────────────────────────────────────
-    this.root.append(sectionHead('Material'));
+    this.rightRoot.append(sectionHead('Material'));
     const matSel = document.createElement('select');
     matSel.className = 'input w-full';
     for (const mt of MATERIALS) matSel.add(new Option(mt.name, mt.id));
@@ -107,16 +108,16 @@ export class InputPanel {
       if (found) s.model.material = { ...found };
       else s.model.material.id = 'custom';
     }));
-    this.root.append(matSel);
-    this.root.append(row('E', numInput(fromSI('pressure', m.material.E, U.pressure), U.pressure, (v) =>
+    this.rightRoot.append(matSel);
+    this.rightRoot.append(row('E', numInput(fromSI('pressure', m.material.E, U.pressure), U.pressure, (v) =>
       this.store.update((s) => { s.model.material.E = toSI('pressure', v, U.pressure); s.model.material.id = 'custom'; })), h('span', 'text-caption text-mute w-10', UNITS.pressure.find(u=>u.id===U.pressure)?.label ?? '')));
-    this.root.append(row('Density', numInput(m.material.density, 'kg/m³', (v) =>
+    this.rightRoot.append(row('Density', numInput(m.material.density, 'kg/m³', (v) =>
       this.store.update((s) => { s.model.material.density = v; s.model.material.id = 'custom'; })), h('span', 'text-caption text-mute w-10', 'kg/m³')));
-    this.root.append(row('fy', numInput(fromSI('pressure', m.material.fy ?? 0, U.pressure), U.pressure, (v) =>
+    this.rightRoot.append(row('fy', numInput(fromSI('pressure', m.material.fy ?? 0, U.pressure), U.pressure, (v) =>
       this.store.update((s) => { s.model.material.fy = toSI('pressure', v, U.pressure); })), h('span', 'text-caption text-mute w-10', UNITS.pressure.find(u=>u.id===U.pressure)?.label ?? '')));
 
     // ── Section ─────────────────────────────────────────────
-    this.root.append(sectionHead('Section'));
+    this.rightRoot.append(sectionHead('Section'));
     const secSel = document.createElement('select');
     secSel.className = 'input w-full';
     secSel.add(new Option('Parametric', '', true, true));
@@ -148,24 +149,24 @@ export class InputPanel {
         void d;
       }
     }));
-    this.root.append(secSel);
-    this.root.append(row('A', numInput(fromSI('area', m.section.A, U.area), U.area, (v) =>
+    this.rightRoot.append(secSel);
+    this.rightRoot.append(row('A', numInput(fromSI('area', m.section.A, U.area), U.area, (v) =>
       this.store.update((s) => { s.model.section.A = toSI('area', v, U.area); })), h('span', 'text-caption text-mute w-10', UNITS.area.find(u=>u.id===U.area)?.label ?? '')));
-    this.root.append(row('I', numInput(fromSI('inertia', m.section.I, U.inertia), U.inertia, (v) =>
+    this.rightRoot.append(row('I', numInput(fromSI('inertia', m.section.I, U.inertia), U.inertia, (v) =>
       this.store.update((s) => { s.model.section.I = toSI('inertia', v, U.inertia); })), h('span', 'text-caption text-mute w-10', UNITS.inertia.find(u=>u.id===U.inertia)?.label ?? '')));
-    this.root.append(row('Depth', numInput(fromSI('length', m.section.depth, U.length), U.length, (v) =>
+    this.rightRoot.append(row('Depth', numInput(fromSI('length', m.section.depth, U.length), U.length, (v) =>
       this.store.update((s) => { s.model.section.depth = toSI('length', v, U.length); s.model.section.cTop = s.model.section.depth / 2; s.model.section.cBot = s.model.section.depth / 2; })), h('span', 'text-caption text-mute w-10', UNITS.length.find(u=>u.id===U.length)?.label ?? '')));
 
     // ── Supports list ───────────────────────────────────────
-    this.root.append(sectionHead('Supports', {
+    this.leftRoot.append(sectionHead('Supports', {
       label: '+ Add',
       fn: () => this.store.update((s) => { s.model.supports.push({ id: uid(), x: s.model.length / 2, type: 'pin' }); }),
     }));
-    for (const sup of m.supports) this.root.append(this.supportRow(sup));
-    if (m.supports.length === 0) this.root.append(h('div', 'text-caption text-mute italic', 'No supports yet; click on the beam to add one.'));
+    for (const sup of m.supports) this.leftRoot.append(this.supportRow(sup));
+    if (m.supports.length === 0) this.leftRoot.append(h('div', 'text-caption text-mute italic', 'No supports yet; click on the beam to add one.'));
 
     // ── Hinges list ─────────────────────────────────────────
-    this.root.append(sectionHead('Internal hinges', {
+    this.leftRoot.append(sectionHead('Internal hinges', {
       label: '+ Add',
       fn: () => this.store.update((s) => { s.model.hinges.push({ id: uid(), x: s.model.length / 2 }); }),
     }));
@@ -178,28 +179,28 @@ export class InputPanel {
       const del = h('button', 'btn-secondary h-6 px-[6px] text-caption', '✕');
       del.addEventListener('click', () => this.store.update((s) => { s.model.hinges = s.model.hinges.filter((z) => z.id !== hg.id); }));
       r.append(del);
-      this.root.append(r);
+      this.leftRoot.append(r);
     }
 
     // ── Loads list ──────────────────────────────────────────
-    this.root.append(sectionHead('Loads', {
+    this.leftRoot.append(sectionHead('Loads', {
       label: '+ Add',
       fn: () => this.store.update((s) => {
         const L = s.model.length;
         s.model.loads.push({ id: uid(), type: 'point', x: L / 2, P: 10000 });
       }),
     }));
-    for (const l of m.loads) this.root.append(this.loadRow(l));
+    for (const l of m.loads) this.leftRoot.append(this.loadRow(l));
 
     // ── Granular units ──────────────────────────────────────
-    this.root.append(sectionHead('Display units'));
+    this.leftRoot.append(sectionHead('Display units'));
     for (const q of ['length', 'force', 'moment', 'distributed', 'pressure'] as Quantity[]) {
       const sel = document.createElement('select');
       sel.className = 'input w-full h-7 text-caption';
       for (const u of UNITS[q]) sel.add(new Option(u.label, u.id));
       sel.value = st.ui.units[q];
       sel.addEventListener('change', () => this.store.update((s) => { s.ui.units[q] = sel.value; }));
-      this.root.append(row(q, sel));
+      this.leftRoot.append(row(q, sel));
     }
   }
 

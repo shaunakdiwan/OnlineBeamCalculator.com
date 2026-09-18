@@ -12,11 +12,12 @@ import { PRESETS } from './presets';
 import { formatSI, fromSI } from '../units';
 
 export function initBeamApp(presetSlug?: string): Store | null {
-  const panelEl = document.getElementById('input-panel');
+  const panelLeftEl = document.getElementById('input-panel-left');
+  const panelRightEl = document.getElementById('input-panel-right');
   const canvasEl = document.getElementById('beam-canvas-wrap');
   const dashEl = document.getElementById('results-dashboard');
   const diagEl = document.getElementById('diagrams');
-  if (!panelEl || !canvasEl || !dashEl || !diagEl) return null;
+  if (!panelLeftEl || !panelRightEl || !canvasEl || !dashEl || !diagEl) return null;
 
   const store = new Store();
   // Load priority: URL hash > preset > last saved > default
@@ -33,7 +34,7 @@ export function initBeamApp(presetSlug?: string): Store | null {
 
   const toast = makeToaster();
   const canvas = new BeamCanvas(canvasEl, store, toast);
-  const panel = new InputPanel(panelEl, store, () => {});
+  const panel = new InputPanel(panelLeftEl, panelRightEl, store, () => {});
   const dash = new ResultsDashboard(dashEl, store);
   const diagrams = new Diagrams(diagEl, store);
 

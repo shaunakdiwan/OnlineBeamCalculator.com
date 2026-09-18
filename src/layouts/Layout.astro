@@ -248,14 +248,14 @@ const webAppLd = isHome
         </div>
       </div>
       <div class="border-t border-hairline">
-        <div class="mx-auto max-w-7xl px-lg py-md flex items-center justify-between text-caption text-mute">
+        <div class="mx-auto max-w-7xl px-lg py-md flex flex-col md:flex-row items-center justify-between gap-y-md md:gap-y-0 text-center md:text-left text-caption text-mute">
           <span>© {new Date().getFullYear()} OnlineBeamCalculator.com</span>
-          <span class="flex items-center gap-sm">
+          <span class="flex flex-wrap justify-center items-center gap-sm">
             <a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/privacy' : `/${locale}/privacy`}>{chrome.footer.bottomPrivacy}</a>
             <a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/terms' : `/${locale}/terms`}>{chrome.footer.bottomTerms}</a>
             <a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/contact' : `/${locale}/contact`}>{chrome.footer.bottomContact}</a>
           </span>
-          <span class="font-mono">{chrome.footer.runsClientSide}</span>
+          <span class="font-mono text-center">{chrome.footer.runsClientSide}</span>
         </div>
       </div>
     </footer>

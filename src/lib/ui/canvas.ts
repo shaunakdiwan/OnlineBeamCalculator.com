@@ -72,7 +72,7 @@ export class BeamCanvas {
     this.svg.appendChild(el('line', { x1: s.x0, x2: s.x1, y1: beamY + 56, y2: beamY + 56, stroke: P.hairline }));
     this.svg.appendChild(el('rect', { x: s.x0, y: beamY - 6, width: s.x1 - s.x0, height: 12, fill: P.ink, rx: 2 }));
 
-    const lt = el('text', { x: 500, y: VBH - 8, 'text-anchor': 'middle', fill: P.mute, 'font-size': 16, 'font-family': 'monospace' }) as unknown as SVGTextElement;
+    const lt = el('text', { x: 500, y: VBH - 8, 'text-anchor': 'middle', fill: P.mute, 'font-size': 18, 'font-family': 'monospace' }) as unknown as SVGTextElement;
     lt.textContent = `L = ${model.length} m · click on the beam to add, drag glyphs to move`;
     this.svg.appendChild(lt);
 
@@ -95,7 +95,7 @@ export class BeamCanvas {
         d += ` L${px},${beamY + 36}`;
         g.appendChild(el('path', { d, fill: 'none', stroke: P.ink, 'stroke-width': 2 }));
       }
-      const t = el('text', { x: px, y: beamY + 54, 'text-anchor': 'middle', fill: P.body, 'font-size': 15, 'font-family': 'monospace' }) as unknown as SVGTextElement;
+      const t = el('text', { x: px, y: beamY + 54, 'text-anchor': 'middle', fill: P.body, 'font-size': 17, 'font-family': 'monospace' }) as unknown as SVGTextElement;
       let label = sup.type;
       if (sup.type === 'spring' && sup.k) label += ` k=${sup.k.toExponential(1)}`;
       if (sup.settlement) label += ` Δ=${sup.settlement}`;
@@ -124,13 +124,13 @@ export class BeamCanvas {
         const y0 = down ? beamY - 52 : beamY - 18;
         const y1 = down ? beamY - 10 : beamY - 60;
         g.appendChild(el('line', { x1: px, y1: y0, x2: px, y2: y1, stroke: P.link, 'stroke-width': 3, 'marker-end': 'url(#obc-arrow)' }));
-        const t = el('text', { x: px, y: y0 - 8, 'text-anchor': 'middle', fill: P.link, 'font-size': 15, 'font-family': 'monospace' }) as unknown as SVGTextElement;
+        const t = el('text', { x: px, y: y0 - 8, 'text-anchor': 'middle', fill: P.link, 'font-size': 17, 'font-family': 'monospace' }) as unknown as SVGTextElement;
         t.textContent = `${compact(l.P)}N`;
         g.appendChild(t);
       } else if (l.type === 'moment') {
         const px = s.toPx(l.x);
         g.appendChild(el('path', { d: `M ${px - 14} ${beamY - 34} A 16 16 0 1 1 ${px + 14} ${beamY - 34}`, fill: 'none', stroke: P.magenta, 'stroke-width': 2.5, 'marker-end': 'url(#obc-arrowR)' }));
-        const t = el('text', { x: px, y: beamY - 58, 'text-anchor': 'middle', fill: P.magenta, 'font-size': 15, 'font-family': 'monospace' }) as unknown as SVGTextElement;
+        const t = el('text', { x: px, y: beamY - 58, 'text-anchor': 'middle', fill: P.magenta, 'font-size': 17, 'font-family': 'monospace' }) as unknown as SVGTextElement;
         t.textContent = `${compact(l.M)}N·m`;
         g.appendChild(t);
       } else {
@@ -148,7 +148,7 @@ export class BeamCanvas {
           const hh = h1 + ((h2 - h1) * i) / n;
           g.appendChild(el('line', { x1: px, y1: beamY - 8 - hh, x2: px, y2: beamY - 10, stroke: P.link, 'stroke-width': 1.5, 'marker-end': 'url(#obc-arrow)' }));
         }
-        const t = el('text', { x: (p1 + p2) / 2, y: beamY - 18 - Math.max(h1, h2), 'text-anchor': 'middle', fill: P.link, 'font-size': 15, 'font-family': 'monospace' }) as unknown as SVGTextElement;
+        const t = el('text', { x: (p1 + p2) / 2, y: beamY - 18 - Math.max(h1, h2), 'text-anchor': 'middle', fill: P.link, 'font-size': 17, 'font-family': 'monospace' }) as unknown as SVGTextElement;
         t.textContent = l.type === 'udl' ? `${compact(l.w)}N/m` : `${compact(w1)}→${compact(w2)}N/m`;
         g.appendChild(t);
         g.appendChild(el('circle', { cx: p1, cy: beamY - 8, r: 4, fill: P.link, 'data-kind': 'load', 'data-id': l.id, 'data-end': '1' }));

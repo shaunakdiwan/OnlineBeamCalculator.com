@@ -13,6 +13,7 @@ export interface Palette {
   slope: string;
   deflection: string;
   magenta: string;
+  error: string;
 }
 
 export function palette(): Palette {
@@ -32,6 +33,7 @@ export function palette(): Palette {
     slope: g('--color-diagram-slope', '#f5a623'),
     deflection: g('--color-diagram-deflection', '#ff0080'),
     magenta: g('--color-highlight-magenta', '#eb367f'),
+    error: g('--color-error', '#ee0000'),
   };
 }
 

@@ -176,13 +176,14 @@ const webAppLd = isHome
           <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/about' : `/${locale}/about`}>{chrome.nav.about}</a>
         </div>
         <div class="flex items-center gap-xs sm:gap-sm">
-          <button id="theme-toggle" class="btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
-          <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">{chrome.nav.freeBadge}</span>
-          <a href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`} class="btn-primary h-7 px-xs rounded-sm text-body-sm">{chrome.nav.openCalculator}</a>
-          <LanguageSwitcher />
           <button id="mobile-menu-toggle" class="md:hidden flex items-center justify-center p-[4px] text-body hover:text-ink rounded-sm border border-transparent hover:border-hairline" aria-label="Menu" aria-expanded="false">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
+          <button id="theme-toggle-desktop" class="hidden md:block btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
+          <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">{chrome.nav.freeBadge}</span>
+          <a href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`} class="btn-primary h-7 px-xs rounded-sm text-body-sm">{chrome.nav.openCalculator}</a>
+          <LanguageSwitcher />
+          <button id="theme-toggle-mobile" class="md:hidden btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
         </div>
       </nav>
       <div id="mobile-menu" class="hidden md:hidden border-t border-hairline bg-canvas absolute w-full left-0 top-full shadow-md">
@@ -196,12 +197,13 @@ const webAppLd = isHome
       </div>
       <script is:inline>
         (() => {
-          const b = document.getElementById('theme-toggle');
-          b?.addEventListener('click', () => {
+          const toggleTheme = () => {
             const dark = document.documentElement.classList.toggle('dark');
             try { localStorage.setItem('obc:theme', dark ? 'dark' : 'light'); } catch {}
             window.dispatchEvent(new CustomEvent('obc:theme', { detail: { dark } }));
-          });
+          };
+          document.getElementById('theme-toggle-desktop')?.addEventListener('click', toggleTheme);
+          document.getElementById('theme-toggle-mobile')?.addEventListener('click', toggleTheme);
 
           const mbToggle = document.getElementById('mobile-menu-toggle');
           const mbMenu = document.getElementById('mobile-menu');

@@ -110,7 +110,7 @@ export class Diagrams {
     // extrema markers
     for (const ex of [series.max, series.min]) {
       svg.appendChild(mk('circle', { cx: toPx(ex.x), cy: toPy(ex.value), r: 3, fill: color }));
-      const t = mk('text', { x: toPx(ex.x), y: toPy(ex.value) - 6, 'text-anchor': 'middle', fill: color, 'font-size': 10, 'font-family': 'monospace' });
+      const t = mk('text', { x: toPx(ex.x), y: toPy(ex.value) - 8, 'text-anchor': 'middle', fill: color, 'font-size': 13, 'font-family': 'monospace' });
       t.textContent = this.fmt(spec, ex.value * spec.sign);
       svg.appendChild(t);
     }
@@ -118,7 +118,7 @@ export class Diagrams {
     // crosshair
     const cross = mk('g', { visibility: 'hidden' }) as SVGGElement;
     const cline = mk('line', { x1: 0, x2: 0, y1: PADT, y2: H - PADB, stroke: P.hairlineStrong, 'stroke-dasharray': '3 2' });
-    const tip = mk('text', { x: 0, y: PADT - 4, fill: P.ink, 'font-size': 10, 'font-family': 'monospace' });
+    const tip = mk('text', { x: 0, y: PADT - 4, fill: P.ink, 'font-size': 13, 'font-family': 'monospace' });
     cross.append(cline, tip);
     svg.appendChild(cross);
 

@@ -56,7 +56,7 @@ export class Diagrams {
       this.root.appendChild(card);
       const svg = this.plot(holder, spec, result);
       head.querySelector('[data-extremes]')!.textContent =
-        `max ${this.fmt(spec, spec.series.max.value * spec.sign)} @ ${formatSI('length', spec.series.max.x, U.length)} · min ${this.fmt(spec, spec.series.min.value * spec.sign)} @ ${formatSI('length', spec.series.min.x, U.length)}`;
+        `max ${this.fmt(spec, spec.series.max.value * spec.sign)} at ${formatSI('length', spec.series.max.x, U.length)} · min ${this.fmt(spec, spec.series.min.value * spec.sign)} at ${formatSI('length', spec.series.min.x, U.length)}`;
       const toPx = (x: number) => 0; // placeholder replaced below
       this.charts.push({ spec, svg, toPx, plotH: () => 0 });
     }
@@ -70,7 +70,15 @@ export class Diagrams {
   }
 
   private fmt(spec: PlotSpec, v: number): string {
-    if (spec.title.startsWith('Slope')) return `${v.toExponential(3)} rad`;
+    if (spec.title.startsWith('Slope')) {
+      const parts = v.toExponential(3).split('e');
+      if (parts.length === 2 && parseInt(parts[1], 10) !== 0) {
+        const map: Record<string, string> = { '-': '⁻', '+': '⁺', '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' };
+        const exp = parts[1].split('').map(c => map[c] || c).join('');
+        return `${parts[0]} × 10${exp} rad`;
+      }
+      return `${v.toExponential(3)} rad`;
+    }
     return formatSI(spec.quantity, v, spec.unitId);
   }
 
@@ -110,7 +118,7 @@ export class Diagrams {
     // extrema markers
     for (const ex of [series.max, series.min]) {
       svg.appendChild(mk('circle', { cx: toPx(ex.x), cy: toPy(ex.value), r: 3, fill: color }));
-      const t = mk('text', { x: toPx(ex.x), y: toPy(ex.value) - 8, 'text-anchor': 'middle', fill: color, 'font-size': 13, 'font-family': 'monospace' });
+      const t = mk('text', { x: toPx(ex.x), y: toPy(ex.value) - 8, 'text-anchor': 'middle', fill: color, 'font-size': 15, 'font-family': 'monospace' });
       t.textContent = this.fmt(spec, ex.value * spec.sign);
       svg.appendChild(t);
     }
@@ -118,7 +126,7 @@ export class Diagrams {
     // crosshair
     const cross = mk('g', { visibility: 'hidden' }) as SVGGElement;
     const cline = mk('line', { x1: 0, x2: 0, y1: PADT, y2: H - PADB, stroke: P.hairlineStrong, 'stroke-dasharray': '3 2' });
-    const tip = mk('text', { x: 0, y: PADT - 4, fill: P.ink, 'font-size': 13, 'font-family': 'monospace' });
+    const tip = mk('text', { x: 0, y: PADT - 4, fill: P.ink, 'font-size': 15, 'font-family': 'monospace' });
     cross.append(cline, tip);
     svg.appendChild(cross);
 

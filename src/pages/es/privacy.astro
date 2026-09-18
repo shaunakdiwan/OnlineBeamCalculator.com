@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LegalPage from '../../components/pages/LegalPage.astro';
+import { es } from '../../i18n/es';
+---
+
+<Layout locale="es" title={es.privacy.title} description={es.privacy.description}>
+  <LegalPage locale="es" copy={es.privacy} />
+</Layout>

@@ -1,0 +1,88 @@
+---
+/**
+ * Shared HomePage component — renders the homepage for any locale.
+ */
+
+import type { HomeCopy } from '../../i18n/types';
+
+interface Props {
+  locale: string;
+  copy: HomeCopy;
+}
+
+const { locale, copy } = Astro.props;
+---
+
+<div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
+  <header class="mb-md max-w-[60rem]">
+    <div class="eyebrow uppercase mb-xxs">{copy.eyebrow}</div>
+    <h1 class="text-display-lg md:text-display-xl font-semibold">{copy.h1}</h1>
+    <p class="mt-xs text-body-md md:text-body-lg text-body">{copy.hero}</p>
+  </header>
+
+  <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+    <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
+    <section class="flex flex-col gap-lg min-w-0">
+      <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
+      <div id="results-dashboard"></div>
+      <div id="diagrams" class="flex flex-col gap-lg"></div>
+    </section>
+  </div>
+
+  <article class="mt-5xl max-w-[48rem] text-body-md text-body space-y-xl">
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s1.h2}</h2>
+      <p class="mt-sm">{copy.s1.p1}</p>
+      <p class="mt-sm">{copy.s1.p2}</p>
+    </section>
+
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s2.h2}</h2>
+      <h3 class="text-display-sm font-semibold text-ink mt-md">{copy.s2.beamTypes.h3}</h3>
+      <p class="mt-xs">{copy.s2.beamTypes.p}</p>
+      <h3 class="text-display-sm font-semibold text-ink mt-md">{copy.s2.supports.h3}</h3>
+      <p class="mt-xs">{copy.s2.supports.p}</p>
+      <h3 class="text-display-sm font-semibold text-ink mt-md">{copy.s2.loads.h3}</h3>
+      <p class="mt-xs">{copy.s2.loads.p}</p>
+    </section>
+
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s3.h2}</h2>
+      <p class="mt-sm">{copy.s3.p}</p>
+    </section>
+
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s4.h2}</h2>
+      <p class="mt-sm">{copy.s4.p1}</p>
+      <p class="mt-sm">{copy.s4.p2}</p>
+    </section>
+
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s5.h2}</h2>
+      <ol class="mt-sm list-decimal pl-lg space-y-xxs">
+        {copy.s5.items.map((item, i) => (
+          <li key={i}>{item}</li>
+        ))}
+      </ol>
+    </section>
+
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s6.h2}</h2>
+      <p class="mt-sm">{copy.s6.p1}</p>
+      <p class="mt-sm" set:html={copy.s6.p2} />
+    </section>
+
+    <section id="faq">
+      <div class="eyebrow uppercase mb-xxs">{copy.faqEyebrow}</div>
+      <h2 class="text-display-md font-semibold text-ink">{copy.faqH2}</h2>
+      <div class="mt-sm space-y-md">
+        {copy.faqVisible.map((faq, i) => (
+          <div key={i}>
+            <h3 class="text-body-md-strong text-ink">{faq.q}</h3>
+            <p class="mt-xxs" set:html={faq.a} />
+          </div>
+        ))}
+      </div>
+    </section>
+  </article>
+</div>

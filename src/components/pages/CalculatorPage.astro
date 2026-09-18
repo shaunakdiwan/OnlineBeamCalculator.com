@@ -1,0 +1,142 @@
+---
+/**
+ * Shared CalculatorPage component — renders a calculator preset/variant page
+ * for any locale. Receives locale-aware copy and the page slug.
+ * Does NOT include the client-side calculator app (that's mounted by the wrapper).
+ */
+
+import { canonicalUrlFor, getAlternates, stripLocalePath } from '../../i18n/config';
+import { katex } from 'katex';
+import 'katex/dist/katex.min.css';
+import type { DeepDiveSection } from '../../i18n/types';
+
+interface Props {
+  locale: string;
+  pageSlug: string;
+  copy: {
+    presets: Record<string, { name: string; description: string }>;
+    variants: Record<string, { title: string; h1: string; description: string; intro: string }>;
+    deepDive: Record<string, DeepDiveSection[]>;
+    related: Record<string, Record<string, string>>;
+    ui: {
+      eyebrowVariant: string;
+      eyebrowPreset: string;
+      preloadedNote: string;
+      breadcrumbHome: string;
+      breadcrumbCalculators: string;
+      aboutThisCaseH2: string;
+      eulerNote: string;
+      formulasLinkText: string;
+      relatedH2: string;
+      relatedOutro: string;
+      presetTitleSuffix: string;
+      presetDescSuffix: string;
+      faqQuestionVariant: (h1: string) => string;
+      faqQuestionPreset: (name: string) => string;
+      faqAnswer: string;
+    };
+  };
+  presetsList: { slug: string; name: string }[];
+  variantLandingsList: { slug: string; h1: string }[];
+}
+
+const { locale, pageSlug, copy, presetsList, variantLandingsList } = Astro.props;
+const isPreset = pageSlug in copy.presets;
+const isVariant = pageSlug in copy.variants;
+
+const preset = isPreset ? copy.presets[pageSlug as keyof typeof copy.presets] : null;
+const variant = isVariant ? copy.variants[pageSlug as keyof typeof copy.variants] : null;
+
+const pageTitle = isPreset ? preset!.name + copy.ui.presetTitleSuffix : variant!.title;
+const pageDescription = isPreset ? preset!.description + copy.ui.presetDescSuffix : variant!.description;
+const pageH1 = isPreset ? preset!.name : variant!.h1;
+const pageIntro = isPreset ? '' : variant!.intro;
+const deepDive = copy.deepDive[pageSlug] ?? [];
+const related = copy.related[pageSlug] ?? {};
+
+const path = `/calculator/${pageSlug}`;
+const canonical = canonicalUrlFor(path, locale as 'en' | 'es' | 'ru');
+
+// Breadcrumb JSON-LD
+const breadcrumbLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: copy.ui.breadcrumbHome, item: canonicalUrlFor('/', locale as 'en' | 'es' | 'ru') },
+    { '@type': 'ListItem', position: 2, name: copy.ui.breadcrumbCalculators, item: canonicalUrlFor('/calculator', locale as 'en' | 'es' | 'ru') },
+    { '@type': 'ListItem', position: 3, name: pageH1 },
+  ],
+};
+
+// FAQ JSON-LD
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: isVariant ? copy.ui.faqQuestionVariant(variant!.h1) : copy.ui.faqQuestionPreset(preset!.name),
+      acceptedAnswer: { '@type': 'Answer', text: copy.ui.faqAnswer },
+    },
+  ],
+};
+---
+
+<div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
+  <nav aria-label="Breadcrumb" class="mb-sm text-caption text-mute">
+    <ol class="flex flex-wrap items-center gap-xxs">
+      <li><a class="hover:text-ink" href={locale === 'en' ? '/' : `/${locale}`}>{copy.ui.breadcrumbHome}</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a class="hover:text-ink" href={locale === 'en' ? '/calculator' : `/${locale}/calculator`}>{copy.ui.breadcrumbCalculators}</a></li>
+      <li aria-hidden="true">/</li>
+      <li aria-current="page" class="text-body">{pageH1}</li>
+    </ol>
+  </nav>
+
+  <div class="mb-md max-w-[48rem]">
+    <div class="eyebrow uppercase mb-xxs">{isPreset ? copy.ui.eyebrowPreset : copy.ui.eyebrowVariant}</div>
+    <h1 class="text-display-md font-semibold">{pageH1}</h1>
+    {pageIntro && <p class="mt-xs text-body-md text-body">{pageIntro}</p>}
+    {!pageIntro && <p class="mt-xs text-body-md text-body">{copy.ui.preloadedNote}</p>}
+  </div>
+
+  <div id="beam-app" data-preset-slug={pageSlug} class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+    <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
+    <section class="flex flex-col gap-lg min-w-0">
+      <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
+      <div id="results-dashboard"></div>
+      <div id="diagrams" class="flex flex-col gap-lg"></div>
+    </section>
+  </div>
+
+  {deepDive.length > 0 && (
+    <section class="mt-xl max-w-[48rem] text-body-sm text-body space-y-sm">
+      <h2 class="text-display-sm font-semibold text-ink">{copy.ui.aboutThisCaseH2}</h2>
+      {deepDive.map((section, i) => (
+        <div class="space-y-xs">
+          <h3 class="text-body-md-strong text-ink">{section.heading}</h3>
+          {section.paragraphs.map((p, j) => (
+            <p key={j} set:html={p} />
+          ))}
+        </div>
+      ))}
+      <p><a class="text-link hover:underline" href={locale === 'en' ? '/formulas' : `/${locale}/formulas`}>{copy.ui.formulasLinkText}</a></p>
+    </section>
+  )}
+
+  {Object.keys(related).length > 0 && (
+    <section class="mt-xl max-w-[48rem] text-body-sm text-body space-y-sm">
+      <h2 class="text-display-sm font-semibold text-ink">{copy.ui.relatedH2}</h2>
+      <ul class="space-y-xxs">
+        {Object.entries(related).map(([targetSlug, label]) => (
+          <li key={targetSlug}>
+            <a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${targetSlug}` : `/${locale}/calculator/${targetSlug}`}>{label}</a>
+          </li>
+        ))}
+      </ul>
+      <p set:html={copy.ui.relatedOutro} />
+    </section>
+  )}
+</div>
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify([breadcrumbLd, faqLd])} />

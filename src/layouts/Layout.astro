@@ -2,6 +2,15 @@
 import '../styles/global.css';
 import '@fontsource-variable/geist';
 import '@fontsource-variable/geist-mono';
+import { getLocaleFromPath, PUBLISHED_LOCALES, OG_LOCALE_MAP, HREFLANG_MAP, DEFAULT_LOCALE, SITE } from '../i18n/config';
+import type { Locale } from '../i18n/config';
+import Hreflang from '../components/Hreflang.astro';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import { en } from '../i18n/en';
+import { es } from '../i18n/es';
+import type { LocaleCopy } from '../i18n/types';
+
+const COPY_MAP: Record<string, LocaleCopy> = { en, es };
 
 interface Props {
   title?: string;
@@ -12,52 +21,50 @@ interface Props {
   keywords?: string[];
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
   noindex?: boolean;
+  locale?: string;
 }
 
 const {
-  title = 'Beam Calculator — Free Online Shear, Moment & Deflection Diagrams',
-  description = 'Free online beam calculator for simply supported, cantilever, fixed, overhanging and continuous beams. Instant shear force, bending moment & deflection diagrams. No signup, no limits.',
+  title: explicitTitle,
+  description: explicitDescription,
   canonical,
   ogImage,
   ogType = 'website',
-  keywords,
+  keywords: explicitKeywords,
   jsonLd,
   noindex = false,
+  locale: explicitLocale,
 } = Astro.props;
 
-const site = 'https://onlinebeamcalculator.com';
+const locale = explicitLocale || getLocaleFromPath(Astro.url.pathname);
+const copy = COPY_MAP[locale] || COPY_MAP[DEFAULT_LOCALE];
+const { meta, chrome } = copy;
+const isDefaultLocale = locale === DEFAULT_LOCALE;
+const ogLocale = OG_LOCALE_MAP[locale as Locale] || OG_LOCALE_MAP[DEFAULT_LOCALE];
 const siteName = 'OnlineBeamCalculator.com';
-const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
-const isHome = path === '/';
-const canonicalUrl = canonical ?? new URL(path, site).href;
-const ogImageUrl = ogImage ?? `${site}/og.png`;
 
-const primaryKeywords = [
-  'beam calculator',
-  'free beam calculator',
-  'online beam calculator',
-  'beam calculator online',
-  'steel beam calculator',
-  'wood beam calculator',
-  'cantilever beam calculator',
-  'simply supported beam calculator',
-  'ridge beam calculator',
-  'simple beam calculator',
-];
-const keywordsStr = (keywords ?? primaryKeywords).join(', ');
+const title = explicitTitle ?? meta.defaultTitle;
+const description = explicitDescription ?? meta.defaultDescription;
+
+const path = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const isHome = path === '/' || path === `/${locale}`;
+const canonicalUrl = canonical ?? new URL(path, SITE).href;
+const ogImageUrl = ogImage ?? `${SITE}/og.png`;
+
+const keywordsStr = (explicitKeywords ?? meta.defaultKeywords).join(', ');
 
 const webAppLd = isHome
   ? {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      '@id': `${site}/#app`,
+      '@id': `${SITE}/#app`,
       name: 'Online Beam Calculator',
       alternateName: ['Beam Calculator', 'Free Beam Calculator', 'Online Beam Calculator'],
-      url: site,
+      url: SITE,
       applicationCategory: 'EngineeringApplication',
       applicationSubCategory: 'Structural Analysis',
       operatingSystem: 'Any',
-      inLanguage: 'en',
+      inLanguage: locale,
       isAccessibleForFree: true,
       offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       featureList: [
@@ -72,18 +79,18 @@ const webAppLd = isHome
       ],
       description,
       audience: { '@type': 'Audience', audienceType: 'Engineers, students, builders' },
-      provider: { '@type': 'Organization', name: siteName, url: site },
+      provider: { '@type': 'Organization', name: siteName, url: SITE },
     }
   : {
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
-      '@id': `${site}/#app`,
-      url: site,
+      '@id': `${SITE}/#app`,
+      url: SITE,
     };
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -125,8 +132,11 @@ const webAppLd = isHome
     <meta property="og:image" content={ogImageUrl} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="Online Beam Calculator: free shear, moment and deflection diagrams" />
-    <meta property="og:locale" content="en_US" />
+    <meta property="og:image:alt" content={meta.ogImageAlt} />
+    <meta property="og:locale" content={ogLocale} />
+    {PUBLISHED_LOCALES.filter(l => l !== locale).map((l) => (
+      <meta property="og:locale:alternate" content={OG_LOCALE_MAP[l] || OG_LOCALE_MAP[DEFAULT_LOCALE]} />
+    ))}
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -147,25 +157,29 @@ const webAppLd = isHome
     {jsonLd && (
       <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
+
+    <!-- Hreflang alternates (self + all published + x-default) -->
+    <Hreflang />
   </head>
   <body class="min-h-screen flex flex-col bg-canvas-soft text-ink font-sans">
     <header class="sticky top-0 z-40 bg-canvas border-b border-hairline">
       <nav class="mx-auto max-w-7xl px-md sm:px-lg min-h-16 py-xs flex flex-wrap items-center justify-between gap-xs" aria-label="Main">
-        <a href="/" class="flex items-center gap-xs font-semibold tracking-tight text-body-sm sm:text-body-md">
+        <a href={locale === DEFAULT_LOCALE ? '/' : `/${locale}`} class="flex items-center gap-xs font-semibold tracking-tight text-body-sm sm:text-body-md">
           <img src="/Website_logo-circle.png" alt="" width="28" height="28" class="h-7 w-7 rounded-full" />
           <span>OnlineBeamCalculator<span class="text-link">.com</span></span>
         </a>
         <div class="hidden md:flex items-center gap-xxs text-body-sm">
-          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/calculator">Calculator</a>
-          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/formulas">Formulas</a>
-          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/guide">Guide</a>
-          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/#faq">FAQ</a>
-          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href="/about">About</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`}>{chrome.nav.calculator}</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/formulas' : `/${locale}/formulas`}>{chrome.nav.formulas}</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/guide' : `/${locale}/guide`}>{chrome.nav.guide}</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/#faq' : `/${locale}/#faq`}>{chrome.nav.faq}</a>
+          <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/about' : `/${locale}/about`}>{chrome.nav.about}</a>
         </div>
         <div class="flex items-center gap-sm">
-          <button id="theme-toggle" class="btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
-          <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">100% FREE</span>
-          <a href="/calculator" class="btn-primary h-7 px-xs rounded-sm text-body-sm">Open calculator</a>
+          <button id="theme-toggle" class="btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
+          <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">{chrome.nav.freeBadge}</span>
+          <a href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`} class="btn-primary h-7 px-xs rounded-sm text-body-sm">{chrome.nav.openCalculator}</a>
+          <LanguageSwitcher />
         </div>
       </nav>
       <script is:inline>
@@ -183,7 +197,7 @@ const webAppLd = isHome
     <main class="flex-1">
       <noscript>
         <div class="mx-auto max-w-[48rem] px-lg py-xl text-center">
-          <p class="text-body-md text-body">The beam calculator needs JavaScript to run because all analysis happens in your browser. Please enable JavaScript and reload.</p>
+          <p class="text-body-md text-body">{chrome.noscript}</p>
         </div>
       </noscript>
       <slot />
@@ -192,56 +206,56 @@ const webAppLd = isHome
     <footer class="bg-canvas border-t border-hairline mt-4xl">
       <div class="mx-auto max-w-7xl px-lg py-4xl grid grid-cols-2 md:grid-cols-4 gap-xl text-body-sm text-body">
         <div>
-          <div class="eyebrow mb-sm uppercase">Calculators</div>
+          <div class="eyebrow mb-sm uppercase">{chrome.footer.calculatorsHead}</div>
           <ul class="space-y-xs">
-            <li><a class="hover:text-ink" href="/calculator">Beam calculator</a></li>
-            <li><a class="hover:text-ink" href="/calculator/simply-supported-beam-calculator">Simply supported beams</a></li>
-            <li><a class="hover:text-ink" href="/calculator/cantilever-beam-calculator">Cantilever beams</a></li>
-            <li><a class="hover:text-ink" href="/calculator/continuous-two-span">Continuous beams</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`}>{chrome.footer.linkBeamCalculator}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/simply-supported-beam-calculator' : `/${locale}/calculator/simply-supported-beam-calculator`}>{chrome.footer.linkSimplySupported}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/cantilever-beam-calculator' : `/${locale}/calculator/cantilever-beam-calculator`}>{chrome.footer.linkCantilever}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/continuous-two-span' : `/${locale}/calculator/continuous-two-span`}>{chrome.footer.linkContinuous}</a></li>
           </ul>
         </div>
         <div>
-          <div class="eyebrow mb-sm uppercase">Materials</div>
+          <div class="eyebrow mb-sm uppercase">{chrome.footer.materialsHead}</div>
           <ul class="space-y-xs">
-            <li><a class="hover:text-ink" href="/calculator/steel-beam-calculator">Steel beams</a></li>
-            <li><a class="hover:text-ink" href="/calculator/wood-beam-calculator">Wood beams</a></li>
-            <li><a class="hover:text-ink" href="/calculator/ridge-beam-calculator">Ridge beams</a></li>
-            <li><a class="hover:text-ink" href="/calculator/overhanging-beam">Overhanging beams</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/steel-beam-calculator' : `/${locale}/calculator/steel-beam-calculator`}>{chrome.footer.linkSteel}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/wood-beam-calculator' : `/${locale}/calculator/wood-beam-calculator`}>{chrome.footer.linkWood}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/ridge-beam-calculator' : `/${locale}/calculator/ridge-beam-calculator`}>{chrome.footer.linkRidge}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/overhanging-beam' : `/${locale}/calculator/overhanging-beam`}>{chrome.footer.linkOverhanging}</a></li>
           </ul>
         </div>
         <div>
-          <div class="eyebrow mb-sm uppercase">Learn</div>
+          <div class="eyebrow mb-sm uppercase">{chrome.footer.learnHead}</div>
           <ul class="space-y-xs">
-            <li><a class="hover:text-ink" href="/formulas">Beam formulas</a></li>
-            <li><a class="hover:text-ink" href="/guide">Reading SFD & BMD</a></li>
-            <li><a class="hover:text-ink" href="/guide#sign-conventions">Sign conventions</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/formulas' : `/${locale}/formulas`}>{chrome.footer.linkFormulas}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/guide' : `/${locale}/guide`}>{chrome.footer.linkSfdBmd}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/guide#sign-conventions' : `/${locale}/guide#sign-conventions`}>{chrome.footer.linkSignConventions}</a></li>
           </ul>
         </div>
         <div>
-          <div class="eyebrow mb-sm uppercase">Resources</div>
+          <div class="eyebrow mb-sm uppercase">{chrome.footer.resourcesHead}</div>
           <ul class="space-y-xs">
-            <li><a class="hover:text-ink" href="/calculator/fixed-fixed-udl">Fixed–fixed beam</a></li>
-            <li><a class="hover:text-ink" href="/calculator/overhanging-beam">Overhanging beam</a></li>
-            <li><a class="hover:text-ink" href="/about">About</a></li>
-            <li><a class="hover:text-ink" href="/contact">Contact us</a></li>
-            <li><a class="hover:text-ink" href="/privacy">Privacy policy</a></li>
-            <li><a class="hover:text-ink" href="/terms">Terms &amp; conditions</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/fixed-fixed-udl' : `/${locale}/calculator/fixed-fixed-udl`}>{chrome.footer.linkFixedFixed}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator/overhanging-beam' : `/${locale}/calculator/overhanging-beam`}>{chrome.footer.linkOverhanging}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/about' : `/${locale}/about`}>{chrome.footer.linkAbout}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/contact' : `/${locale}/contact`}>{chrome.footer.linkContactUs}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/privacy' : `/${locale}/privacy`}>{chrome.footer.linkPrivacyPolicy}</a></li>
+            <li><a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/terms' : `/${locale}/terms`}>{chrome.footer.linkTerms}</a></li>
           </ul>
         </div>
         <div>
-          <div class="eyebrow mb-sm uppercase">OnlineBeamCalculator.com</div>
-          <p class="text-caption text-mute max-w-[28ch]">Free structural beam analysis in your browser. No account, no limits, no install.</p>
+          <div class="eyebrow mb-sm uppercase">{chrome.footer.brandHead}</div>
+          <p class="text-caption text-mute max-w-[28ch]">{chrome.footer.tagline}</p>
         </div>
       </div>
       <div class="border-t border-hairline">
         <div class="mx-auto max-w-7xl px-lg py-md flex items-center justify-between text-caption text-mute">
           <span>© {new Date().getFullYear()} OnlineBeamCalculator.com</span>
           <span class="flex items-center gap-sm">
-            <a class="hover:text-ink" href="/privacy">Privacy</a>
-            <a class="hover:text-ink" href="/terms">Terms</a>
-            <a class="hover:text-ink" href="/contact">Contact</a>
+            <a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/privacy' : `/${locale}/privacy`}>{chrome.footer.bottomPrivacy}</a>
+            <a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/terms' : `/${locale}/terms`}>{chrome.footer.bottomTerms}</a>
+            <a class="hover:text-ink" href={locale === DEFAULT_LOCALE ? '/contact' : `/${locale}/contact`}>{chrome.footer.bottomContact}</a>
           </span>
-          <span class="font-mono">Runs 100% client-side</span>
+          <span class="font-mono">{chrome.footer.runsClientSide}</span>
         </div>
       </div>
     </footer>

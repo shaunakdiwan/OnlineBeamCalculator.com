@@ -1,0 +1,125 @@
+---
+/**
+ * Shared FormulasPage component — renders the formulas reference page for any locale.
+ * KaTeX TeX formulas are locale-neutral and defined here; only names/sketches come from copy.
+ */
+
+import katex from 'katex';
+import 'katex/dist/katex.min.css';
+import type { FormulasCopy } from '../../i18n/types';
+
+interface Props {
+  locale: string;
+  copy: FormulasCopy;
+}
+
+const { locale, copy } = Astro.props;
+const k = (tex: string) => katex.renderToString(tex, { throwOnError: false, displayMode: false });
+
+// TeX formulas (locale-neutral) — order must match FormulasCaseCopy[] in copy.cases
+const TEX_CASES: { reactions: string; Mmax: string; dmax: string }[] = [
+  {
+    reactions: 'R_A = R_B = \\frac{P}{2}',
+    Mmax: 'M_{max} = \\frac{PL}{4}\\ \\text{at } x = L/2',
+    dmax: '\\delta_{max} = \\frac{PL^3}{48\\,EI}',
+  },
+  {
+    reactions: 'R_A = \\frac{P\\,b}{L}, \\quad R_B = \\frac{P\\,a}{L}',
+    Mmax: 'M_{max} = \\frac{P a b}{L}\\ \\text{at } x = a',
+    dmax: '\\delta_{max} = \\frac{P a b \\,(L^2 - a^2 - b^2)^{3/2}}{9\\sqrt{3}\\,EIL}',
+  },
+  {
+    reactions: 'R_A = R_B = \\frac{wL}{2}',
+    Mmax: 'M_{max} = \\frac{wL^2}{8}\\ \\text{at midspan}',
+    dmax: '\\delta_{max} = \\frac{5\\,wL^4}{384\\,EI}',
+  },
+  {
+    reactions: 'R_A = -\\frac{M_0}{L}, \\quad R_B = +\\frac{M_0}{L}',
+    Mmax: '\\text{M jumps by } M_0 \\text{ at } x = a',
+    dmax: '\\text{(piecewise linear, no closed form)}',
+  },
+  {
+    reactions: 'R_A = P, \\quad M_A = -P\\,L',
+    Mmax: '|M|_{max} = P\\,L\\ \\text{at fixed end}',
+    dmax: '\\delta_{tip} = \\frac{P L^3}{3\\,EI}',
+  },
+  {
+    reactions: 'R_A = wL, \\quad M_A = -\\frac{wL^2}{2}',
+    Mmax: '|M|_{max} = \\frac{wL^2}{2}\\ \\text{at fixed end}',
+    dmax: '\\delta_{tip} = \\frac{wL^4}{8\\,EI}',
+  },
+  {
+    reactions: 'R_A = \\frac{wL}{2}, \\quad M_A = -\\frac{wL^2}{6}',
+    Mmax: '|M|_{max} = \\frac{wL^2}{6}\\ \\text{at wall}',
+    dmax: '\\delta_{tip} = \\frac{wL^4}{30\\,EI}',
+  },
+  {
+    reactions: 'R_B = \\frac{3\\,wL}{8}, \\quad R_A = \\frac{5\\,wL}{8}, \\quad M_A = -\\frac{wL^2}{8}',
+    Mmax: 'M_+ = \\frac{9\\,wL^2}{128}\\ \\text{at } x = \\tfrac{5L}{8}',
+    dmax: '\\delta_{max} \\approx 0.00541\\,\\frac{wL^4}{EI}\\ \\text{at } x \\approx 0.5785\\,L',
+  },
+  {
+    reactions: 'R_A = R_B = \\frac{wL}{2}, \\quad M_A = M_B = -\\frac{wL^2}{12}',
+    Mmax: 'M_+ = \\frac{wL^2}{24}\\ \\text{at midspan}',
+    dmax: '\\delta_{max} = \\frac{wL^4}{384\\,EI}',
+  },
+  {
+    reactions: 'R_A = R_B = \\frac{P}{2}, \\quad M_A = M_B = -\\frac{P\\,L}{8}',
+    Mmax: 'M_+ = \\frac{P\\,L}{8}\\ \\text{at midspan}',
+    dmax: '\\delta_{max} = \\frac{P\\,L^3}{192\\,EI}',
+  },
+  {
+    reactions: 'R_A = R_C = \\frac{3\\,wL}{8}, \\quad R_B = \\frac{10\\,wL}{8}',
+    Mmax: 'M_- = \\frac{wL^2}{8}\\ \\text{over B;} \\quad M_+ = \\frac{9\\,wL^2}{128}',
+    dmax: '\\delta \\approx 0.0052\\,\\frac{wL^4}{EI}\\ \\text{per span}',
+  },
+  {
+    reactions: 'R_A = R_B = \\frac{wL}{2}',
+    Mmax: 'M_{\\text{supports}} = -\\frac{w\\,a^2}{2}',
+    dmax: '\\text{depends on } a/L',
+  },
+];
+---
+
+<div class="mx-auto max-w-7xl px-lg py-xl">
+  <div class="eyebrow uppercase mb-xxs">{copy.eyebrow}</div>
+  <h1 class="text-display-lg font-semibold">{copy.h1}</h1>
+  <p class="mt-sm text-body-md text-body max-w-[48rem]">{copy.intro}</p>
+
+  <div class="mt-xl grid gap-lg">
+    {copy.cases.map((c, i) => (
+      <article class="card p-md" key={i}>
+        <div class="mb-sm">
+          <h2 class="text-display-sm font-semibold">{c.name}</h2>
+          <p class="text-body-sm text-body mt-xxs">{c.sketch}</p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-md">
+          <div>
+            <div class="eyebrow uppercase mb-xxs">{copy.colReactions}</div>
+            <div class="katex-wrap" set:html={k(TEX_CASES[i].reactions)}></div>
+          </div>
+          <div>
+            <div class="eyebrow uppercase mb-xxs">{copy.colMoment}</div>
+            <div class="katex-wrap" set:html={k(TEX_CASES[i].Mmax)}></div>
+          </div>
+          <div>
+            <div class="eyebrow uppercase mb-xxs">{copy.colDeflection}</div>
+            <div class="katex-wrap" set:html={k(TEX_CASES[i].dmax)}></div>
+          </div>
+        </div>
+      </article>
+    ))}
+  </div>
+
+  <div class="mt-2xl max-w-[48rem] text-body-sm text-body">
+    <h2 class="text-display-sm font-semibold text-ink">{copy.liveH2}</h2>
+    <p class="mt-xs" set:html={copy.liveP} />
+  </div>
+
+  <p class="mt-lg text-caption text-mute max-w-[48rem]">{copy.legend}</p>
+</div>
+
+<style is:global>
+  .katex-wrap .katex { font-size: 1.05em; }
+  .katex-wrap .katex-display { margin: 0.25em 0; }
+</style>

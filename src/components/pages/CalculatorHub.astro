@@ -1,0 +1,67 @@
+---
+/**
+ * Shared CalculatorHub component — renders the calculator index page for any locale.
+ */
+
+import type { HubCopy } from '../../i18n/types';
+import { PRESETS, VARIANT_LANDINGS } from '../../lib/ui/presets';
+
+interface Props {
+  locale: string;
+  copy: HubCopy;
+}
+
+const { locale, copy } = Astro.props;
+---
+
+<div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
+  <h1 class="text-display-md font-semibold mb-md">{copy.h1}</h1>
+  <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
+    <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
+    <section class="flex flex-col gap-lg min-w-0">
+      <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
+      <div id="results-dashboard"></div>
+      <div id="diagrams" class="flex flex-col gap-lg"></div>
+    </section>
+  </div>
+
+  <div class="mt-5xl max-w-[48rem] text-body-md text-body space-y-xl">
+    <section>
+      <h2 class="text-display-md font-semibold text-ink">{copy.s1.h2}</h2>
+      <p class="mt-sm">{copy.s1.p}</p>
+    </section>
+
+    <section>
+      <h2 class="text-display-sm font-semibold text-ink">{copy.byTypeH2}</h2>
+      <ul class="mt-sm grid gap-xxs sm:grid-cols-2 text-body-sm">
+        {VARIANT_LANDINGS.map((v) => (
+          <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${v.slug}` : `/${locale}/calculator/${v.slug}`}>{v.h1}</a></li>
+        ))}
+        {copy.byTypeExtra.map((label, i) => {
+          const slugs = ['fixed-fixed-udl', 'overhanging-beam', 'continuous-two-span', 'gerber-hinge'];
+          return <li key={slugs[i]}><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${slugs[i]}` : `/${locale}/calculator/${slugs[i]}`}>{label}</a></li>;
+        })}
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-display-sm font-semibold text-ink">{copy.workedH2}</h2>
+      <p class="mt-xs text-body-sm">{copy.workedIntro}</p>
+      <ul class="mt-sm grid gap-xxs sm:grid-cols-2 text-body-sm">
+        {PRESETS.map((p) => (
+          <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${p.slug}` : `/${locale}/calculator/${p.slug}`}>{p.name}</a></li>
+        ))}
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="text-display-sm font-semibold text-ink">{copy.whichH2}</h2>
+      <p class="mt-xs text-body-sm" set:html={copy.whichP} />
+    </section>
+  </div>
+</div>
+
+<script>
+  import { initBeamApp } from '../../lib/ui/app';
+  initBeamApp();
+</script>

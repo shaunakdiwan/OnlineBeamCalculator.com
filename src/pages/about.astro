@@ -1,23 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import AboutPage from '../components/pages/AboutPage.astro';
+import { en } from '../i18n/en';
 ---
 
-<Layout title="About: Free Beam Calculator" description="Why this calculator exists: unlimited spans, springs, hinges, trapezoid loads and instant diagrams: 100% free with no account.">
-  <div class="mx-auto max-w-[48rem] px-lg py-xl">
-    <div class="eyebrow uppercase mb-xxs">About</div>
-    <h1 class="text-display-lg font-semibold">A beam calculator that stays out of your way</h1>
-    <div class="mt-lg space-y-md text-body-md text-body">
-      <p>OnlineBeamCalculator.com is a free structural analysis tool for engineers, students and builders. It runs an exact finite-element beam solver entirely in your browser: no account, no upload, no server, no cost.</p>
-      <p>It supports unlimited spans, pin/roller/fixed/spring supports, internal hinges (moment releases), point loads, moments, uniform and linearly varying (trapezoidal) distributed loads, self-weight, prescribed support settlement, and full metric/imperial unit switching with granular unit pickers.</p>
-      <p>Results include reactions, shear/moment/slope/deflection diagrams with point queries, max/min values with locations, bending and average shear stress, and deflection serviceability checks (L/240, L/360, L/480). Everything can be exported as CSV or printed as a report, and models can be shared via a link: no login ever required.</p>
-      <h2 class="text-display-sm font-semibold text-ink">Assumptions & limitations</h2>
-      <ul class="list-disc pl-md space-y-xxs">
-        <li>Euler–Bernoulli beam theory (plane sections remain plane; shear deformation neglected).</li>
-        <li>Linear-elastic, prismatic section over the whole beam (stepped sections are not yet supported).</li>
-        <li>2D vertical bending only; no axial/torsional analysis.</li>
-        <li>Average shear stress V/A only; for local web shear checks use a code-based design tool.</li>
-        <li>Results are for analysis aid only; verify critical designs against applicable codes of practice.</li>
-      </ul>
-    </div>
-  </div>
+<Layout locale="en" title={en.about.title} description={en.about.description}>
+  <AboutPage locale="en" copy={en.about} />
 </Layout>

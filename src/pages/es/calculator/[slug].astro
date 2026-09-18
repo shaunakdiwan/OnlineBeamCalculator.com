@@ -1,0 +1,37 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CalculatorPage from '../../../components/pages/CalculatorPage.astro';
+import { es } from '../../../i18n/es';
+import { PRESETS, VARIANT_LANDINGS } from '../../../lib/ui/presets';
+import { PRESET_SLUGS, VARIANT_SLUGS } from '../../../i18n/types';
+import type { CalculatorSlug } from '../../../i18n/types';
+
+export async function getStaticPaths() {
+  const allSlugs: CalculatorSlug[] = [...PRESET_SLUGS, ...VARIANT_SLUGS];
+  return allSlugs.map((slug) => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const pageSlug = slug as CalculatorSlug;
+
+const presetsList = PRESETS.map((p) => ({ slug: p.slug, name: p.name }));
+const variantLandingsList = VARIANT_LANDINGS.map((v) => ({ slug: v.slug, h1: v.h1 }));
+
+const metaTitle = pageSlug in es.calculators.presets
+  ? es.calculators.presets[pageSlug as keyof typeof es.calculators.presets].name + es.calculators.ui.presetTitleSuffix
+  : es.calculators.variants[pageSlug as keyof typeof es.calculators.variants].title;
+
+const metaDescription = pageSlug in es.calculators.presets
+  ? es.calculators.presets[pageSlug as keyof typeof es.calculators.presets].description + es.calculators.ui.presetDescSuffix
+  : es.calculators.variants[pageSlug as keyof typeof es.calculators.variants].description;
+---
+
+<Layout locale="es" title={metaTitle} description={metaDescription}>
+  <CalculatorPage
+    locale="es"
+    pageSlug={pageSlug}
+    copy={es.calculators}
+    presetsList={presetsList}
+    variantLandingsList={variantLandingsList}
+  />
+</Layout>

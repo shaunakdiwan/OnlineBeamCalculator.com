@@ -1,28 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ContactPage from '../components/pages/ContactPage.astro';
+import { en } from '../i18n/en';
 ---
 
-<Layout title="Contact Us | OnlineBeamCalculator.com" description="Get in touch with OnlineBeamCalculator.com: bug reports, feature requests and general questions about the free beam calculator.">
-  <div class="mx-auto max-w-[48rem] px-lg py-xl">
-    <div class="eyebrow uppercase mb-xxs">Contact</div>
-    <h1 class="text-display-lg font-semibold">Contact us</h1>
-    <div class="mt-lg space-y-md text-body-md text-body">
-      <p>Feedback, bug reports and feature requests shape this tool. If a result looks off, a load case misbehaves, or you are missing a feature you need, we want to hear about it.</p>
-
-      <h2 class="text-display-sm font-semibold text-ink">Email</h2>
-      <p>Reach us at <a class="text-link hover:underline" href="mailto:support@onlinebeamcalculator.com">support@onlinebeamcalculator.com</a>. We aim to reply within a few working days.</p>
-
-      <h2 class="text-display-sm font-semibold text-ink">Reporting a wrong result</h2>
-      <p>The fastest way to get a bug fixed is to include:</p>
-      <ul class="list-disc pl-md space-y-xxs">
-        <li>The share link of the model (use the copy-link button in the calculator; the full model is encoded in the URL).</li>
-        <li>What you expected to see, and what the tool reported.</li>
-        <li>Your browser and operating system, if the issue looks visual.</li>
-      </ul>
-      <p>Because everything runs client-side, the share link is usually all we need to reproduce the problem exactly.</p>
-
-      <h2 class="text-display-sm font-semibold text-ink">Feature requests</h2>
-      <p>Stepped sections, more load types, additional serviceability checks, exports: tell us what would make the tool more useful in your workflow and it will be considered for a future version.</p>
-    </div>
-  </div>
+<Layout locale="en" title={en.contact.title} description={en.contact.description}>
+  <ContactPage locale="en" copy={en.contact} />
 </Layout>

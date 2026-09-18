@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ContactPage from '../../components/pages/ContactPage.astro';
+import { es } from '../../i18n/es';
+---
+
+<Layout locale="es" title={es.contact.title} description={es.contact.description}>
+  <ContactPage locale="es" copy={es.contact} />
+</Layout>

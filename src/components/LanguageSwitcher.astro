@@ -1,0 +1,44 @@
+---
+/**
+ * Language switcher - links to the equivalent page in each published locale.
+ * Current locale is marked active (aria-current="page").
+ * Usage: <LanguageSwitcher /> in Layout header.
+ */
+
+import { PUBLISHED_LOCALES, DEFAULT_LOCALE, OG_LOCALE_MAP, localePath, getLocaleFromPath } from '../i18n/config';
+const locale = getLocaleFromPath(Astro.url.pathname);
+
+// Get the locale-less path for building alternate URLs
+function getRootPath(pathname: string): string {
+  const parts = pathname.split('/').filter(Boolean);
+  if (parts[0] && PUBLISHED_LOCALES.includes(parts[0] as 'en' | 'es' | 'ru')) {
+    return '/' + parts.slice(1).join('/');
+  }
+  return pathname;
+}
+const rootPath = getRootPath(Astro.url.pathname);
+---
+
+<nav class="flex items-center gap-xs" aria-label="Language switcher">
+  {
+    PUBLISHED_LOCALES.map((loc) => {
+      const href = localePath(rootPath, loc);
+      const isActive = loc === locale;
+      const label = loc.toUpperCase();
+      return (
+        <a
+          href={href}
+          class={`px-sm py-xs rounded-full text-body-sm font-medium transition-colors ${
+            isActive
+              ? 'bg-accent text-accent-fg'
+              : 'text-body hover:text-ink'
+          }`}
+          aria-current={isActive ? 'page' : undefined}
+          hreflang={loc}
+        >
+          {label}
+        </a>
+      );
+    })
+  }
+</nav>

@@ -1,0 +1,36 @@
+---
+/**
+ * Shared LegalPage component — renders privacy/terms pages for any locale.
+ */
+
+import type { LegalCopy } from '../../i18n/types';
+
+interface Props {
+  locale: string;
+  copy: LegalCopy;
+}
+
+const { locale, copy } = Astro.props;
+---
+
+<div class="mx-auto max-w-[48rem] px-lg py-xl">
+  <div class="eyebrow uppercase mb-xxs">{copy.eyebrow}</div>
+  <h1 class="text-display-lg font-semibold">{copy.h1}</h1>
+  <p class="mt-xxs text-body-sm text-mute">{copy.updated}</p>
+  <div class="mt-lg space-y-md text-body-md text-body">
+    {copy.blocks.map((block, i) => (
+      <section key={i} class="space-y-xs">
+        <h2 class="text-display-sm font-semibold text-ink">{block.h2}</h2>
+        {block.p && <p>{block.p}</p>}
+        {block.pHtml && <p set:html={block.pHtml} />}
+        {block.items && (
+          <ul class="list-disc pl-md space-y-xxs">
+            {block.items.map((item, j) => (
+              <li key={j}>{item}</li>
+            ))}
+          </ul>
+        )}
+      </section>
+    ))}
+  </div>
+</div>

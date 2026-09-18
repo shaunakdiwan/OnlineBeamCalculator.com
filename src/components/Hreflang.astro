@@ -1,0 +1,16 @@
+---
+/**
+ * Hreflang component - emits <link rel="alternate" hreflang="..."> tags
+ * for every published locale plus x-default.
+ * Usage: <Hreflang /> in Layout head (reads Astro.url.pathname automatically).
+ */
+
+import { getAlternates } from '../i18n/config';
+const alternates = getAlternates(Astro.url.pathname);
+---
+
+{
+  alternates.map(({ hreflang, url }) => (
+    <link rel="alternate" hreflang={hreflang} href={url} />
+  ))
+}

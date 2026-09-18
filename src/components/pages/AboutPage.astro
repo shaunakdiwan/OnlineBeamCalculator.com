@@ -1,0 +1,30 @@
+---
+/**
+ * Shared AboutPage component — renders the about page for any locale.
+ */
+
+import type { AboutCopy } from '../../i18n/types';
+
+interface Props {
+  locale: string;
+  copy: AboutCopy;
+}
+
+const { locale, copy } = Astro.props;
+---
+
+<div class="mx-auto max-w-[48rem] px-lg py-xl">
+  <div class="eyebrow uppercase mb-xxs">{copy.eyebrow}</div>
+  <h1 class="text-display-lg font-semibold">{copy.h1}</h1>
+  <div class="mt-lg space-y-md text-body-md text-body">
+    <p>{copy.p1}</p>
+    <p>{copy.p2}</p>
+    <p>{copy.p3}</p>
+    <h2 class="text-display-sm font-semibold text-ink">{copy.assumptionsH2}</h2>
+    <ul class="list-disc pl-md space-y-xxs">
+      {copy.assumptions.map((item, i) => (
+        <li key={i}>{item}</li>
+      ))}
+    </ul>
+  </div>
+</div>

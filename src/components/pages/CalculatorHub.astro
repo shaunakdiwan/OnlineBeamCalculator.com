@@ -5,6 +5,7 @@
 
 import type { HubCopy } from '../../i18n/types';
 import { PRESETS, VARIANT_LANDINGS } from '../../lib/ui/presets';
+import BeamCalculatorApp from '../calculator/BeamCalculatorApp.astro';
 
 interface Props {
   locale: string;
@@ -16,14 +17,7 @@ const { locale, copy } = Astro.props;
 
 <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
   <h1 class="text-display-md font-semibold mb-md">{copy.h1}</h1>
-  <div id="beam-app" class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
-    <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
-    <section class="flex flex-col gap-lg min-w-0">
-      <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
-      <div id="results-dashboard"></div>
-      <div id="diagrams" class="flex flex-col gap-lg"></div>
-    </section>
-  </div>
+  <BeamCalculatorApp />
 
   <div class="mt-5xl max-w-[48rem] text-body-md text-body space-y-xl">
     <section>
@@ -60,8 +54,4 @@ const { locale, copy } = Astro.props;
     </section>
   </div>
 </div>
-
-<script>
-  import { initBeamApp } from '../../lib/ui/app';
-  initBeamApp();
-</script>
+

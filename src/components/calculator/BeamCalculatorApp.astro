@@ -1,0 +1,23 @@
+---
+interface Props {
+  presetSlug?: string;
+}
+
+const { presetSlug } = Astro.props;
+---
+
+<div id="beam-app" data-preset-slug={presetSlug} class="grid grid-cols-1 xl:grid-cols-[280px_280px_1fr] lg:grid-cols-[260px_260px_1fr] gap-lg">
+  <aside id="input-panel-left" class="card p-md min-w-0 overflow-x-auto flex flex-col gap-sm"></aside>
+  <aside id="input-panel-right" class="card p-md min-w-0 overflow-x-auto flex flex-col gap-sm"></aside>
+  <section class="flex flex-col gap-lg min-w-0">
+    <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
+    <div id="results-dashboard"></div>
+    <div id="diagrams" class="flex flex-col gap-lg"></div>
+  </section>
+</div>
+
+<script>
+  import { initBeamApp } from '../../lib/ui/app';
+  const el = document.getElementById('beam-app');
+  initBeamApp(el?.dataset.presetSlug);
+</script>

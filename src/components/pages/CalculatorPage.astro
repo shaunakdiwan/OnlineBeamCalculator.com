@@ -9,6 +9,7 @@ import { canonicalUrlFor, getAlternates, stripLocalePath } from '../../i18n/conf
 import { katex } from 'katex';
 import 'katex/dist/katex.min.css';
 import type { DeepDiveSection } from '../../i18n/types';
+import BeamCalculatorApp from '../calculator/BeamCalculatorApp.astro';
 
 interface Props {
   locale: string;
@@ -100,14 +101,7 @@ const faqLd = {
     {!pageIntro && <p class="mt-xs text-body-md text-body" set:html={copy.ui.preloadedNote} />}
   </div>
 
-  <div id="beam-app" data-preset-slug={pageSlug} class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
-    <aside id="input-panel" class="card p-md min-w-0 overflow-x-auto"></aside>
-    <section class="flex flex-col gap-lg min-w-0">
-      <div id="beam-canvas-wrap" class="card p-md overflow-x-auto"></div>
-      <div id="results-dashboard"></div>
-      <div id="diagrams" class="flex flex-col gap-lg"></div>
-    </section>
-  </div>
+  <BeamCalculatorApp presetSlug={pageSlug} />
 
   {deepDive.length > 0 && (
     <section class="mt-xl max-w-[48rem] text-body-sm text-body space-y-sm">
@@ -140,9 +134,4 @@ const faqLd = {
 </div>
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify([breadcrumbLd, faqLd])} />
-
-<script>
-  import { initBeamApp } from '../../lib/ui/app';
-  const el = document.getElementById('beam-app');
-  initBeamApp(el?.dataset.presetSlug);
-</script>
+

@@ -175,13 +175,25 @@ const webAppLd = isHome
           <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/#faq' : `/${locale}/#faq`}>{chrome.nav.faq}</a>
           <a class="px-sm py-xs rounded-full text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/about' : `/${locale}/about`}>{chrome.nav.about}</a>
         </div>
-        <div class="flex items-center gap-sm">
+        <div class="flex items-center gap-xs sm:gap-sm">
           <button id="theme-toggle" class="btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
           <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">{chrome.nav.freeBadge}</span>
           <a href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`} class="btn-primary h-7 px-xs rounded-sm text-body-sm">{chrome.nav.openCalculator}</a>
           <LanguageSwitcher />
+          <button id="mobile-menu-toggle" class="md:hidden flex items-center justify-center p-[4px] text-body hover:text-ink rounded-sm border border-transparent hover:border-hairline" aria-label="Menu" aria-expanded="false">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
         </div>
       </nav>
+      <div id="mobile-menu" class="hidden md:hidden border-t border-hairline bg-canvas absolute w-full left-0 top-full shadow-md">
+        <div class="flex flex-col py-sm px-md text-body-md">
+          <a class="py-sm border-b border-hairline/50 text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`}>{chrome.nav.calculator}</a>
+          <a class="py-sm border-b border-hairline/50 text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/formulas' : `/${locale}/formulas`}>{chrome.nav.formulas}</a>
+          <a class="py-sm border-b border-hairline/50 text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/guide' : `/${locale}/guide`}>{chrome.nav.guide}</a>
+          <a class="py-sm border-b border-hairline/50 text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/#faq' : `/${locale}/#faq`}>{chrome.nav.faq}</a>
+          <a class="py-sm text-body hover:text-ink" href={locale === DEFAULT_LOCALE ? '/about' : `/${locale}/about`}>{chrome.nav.about}</a>
+        </div>
+      </div>
       <script is:inline>
         (() => {
           const b = document.getElementById('theme-toggle');
@@ -190,6 +202,28 @@ const webAppLd = isHome
             try { localStorage.setItem('obc:theme', dark ? 'dark' : 'light'); } catch {}
             window.dispatchEvent(new CustomEvent('obc:theme', { detail: { dark } }));
           });
+
+          const mbToggle = document.getElementById('mobile-menu-toggle');
+          const mbMenu = document.getElementById('mobile-menu');
+          if (mbToggle && mbMenu) {
+            const closeMenu = () => {
+              mbMenu.classList.add('hidden');
+              mbToggle.setAttribute('aria-expanded', 'false');
+            };
+            mbToggle.addEventListener('click', (e) => {
+              e.stopPropagation();
+              if (mbToggle.getAttribute('aria-expanded') === 'true') {
+                closeMenu();
+              } else {
+                mbMenu.classList.remove('hidden');
+                mbToggle.setAttribute('aria-expanded', 'true');
+              }
+            });
+            document.addEventListener('click', (e) => {
+              if (!mbMenu.contains(e.target) && !mbToggle.contains(e.target)) closeMenu();
+            });
+            mbMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', closeMenu));
+          }
         })();
       </script>
     </header>

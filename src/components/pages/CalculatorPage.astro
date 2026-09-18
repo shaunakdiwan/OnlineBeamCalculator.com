@@ -96,8 +96,8 @@ const faqLd = {
   <div class="mb-md max-w-[48rem]">
     <div class="eyebrow uppercase mb-xxs">{isPreset ? copy.ui.eyebrowPreset : copy.ui.eyebrowVariant}</div>
     <h1 class="text-display-md font-semibold">{pageH1}</h1>
-    {pageIntro && <p class="mt-xs text-body-md text-body">{pageIntro}</p>}
-    {!pageIntro && <p class="mt-xs text-body-md text-body">{copy.ui.preloadedNote}</p>}
+    {pageIntro && <p class="mt-xs text-body-md text-body" set:html={pageIntro} />}
+    {!pageIntro && <p class="mt-xs text-body-md text-body" set:html={copy.ui.preloadedNote} />}
   </div>
 
   <div id="beam-app" data-preset-slug={pageSlug} class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-lg">
@@ -140,3 +140,9 @@ const faqLd = {
 </div>
 
 <script is:inline type="application/ld+json" set:html={JSON.stringify([breadcrumbLd, faqLd])} />
+
+<script>
+  import { initBeamApp } from '../../lib/ui/app';
+  const el = document.getElementById('beam-app');
+  initBeamApp(el?.dataset.presetSlug);
+</script>

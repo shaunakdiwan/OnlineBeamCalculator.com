@@ -89,7 +89,6 @@ export function initBeamApp(presetSlug?: string): Store | null {
     } catch (e) {
       result = null;
       error = e instanceof StabilityError ? e.message : (e instanceof Error ? e.message : String(e));
-      toast(error, 4000, true);
     }
     store.result = result;
     store.error = error;

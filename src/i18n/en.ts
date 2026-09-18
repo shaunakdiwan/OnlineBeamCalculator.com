@@ -475,7 +475,7 @@ const terms: LegalCopy = {
     },
     {
       h2: 'Accuracy and limitations',
-      p: 'The solver uses Euler-Bernoulli beam theory under the assumptions stated on the <a class="text-link hover:underline" href="/about">about page</a>. While we validate results against closed-form solutions, we do not warrant that output is error-free or suitable for any particular purpose.',
+      pHtml: 'The solver uses Euler-Bernoulli beam theory under the assumptions stated on the <a class="text-link hover:underline" href="/about">about page</a>. While we validate results against closed-form solutions, we do not warrant that output is error-free or suitable for any particular purpose.',
     },
     {
       h2: 'Acceptable use',

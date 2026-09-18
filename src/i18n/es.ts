@@ -479,7 +479,7 @@ const terms: LegalCopy = {
     },
     {
       h2: 'Precisión y limitaciones',
-      p: 'El solver utiliza la teoría de vigas de Euler–Bernoulli bajo las suposiciones indicadas en la <a class="text-link hover:underline" href="/es/about">página de información</a>. Aunque validamos los resultados contra soluciones de forma cerrada, no garantizamos que los resultados estén libres de errores o sean adecuados para ningún propósito particular.',
+      pHtml: 'El solver utiliza la teoría de vigas de Euler–Bernoulli bajo las suposiciones indicadas en la <a class="text-link hover:underline" href="/es/about">página de información</a>. Aunque validamos los resultados contra soluciones de forma cerrada, no garantizamos que los resultados estén libres de errores o sean adecuados para ningún propósito particular.',
     },
     {
       h2: 'Uso aceptable',

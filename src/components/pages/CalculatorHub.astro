@@ -46,7 +46,7 @@ const { locale, copy } = Astro.props;
 
     <section>
       <h2 class="text-display-sm font-semibold text-ink">{copy.workedH2}</h2>
-      <p class="mt-xs text-body-sm">{copy.workedIntro}</p>
+      <p class="mt-xs text-body-sm" set:html={copy.workedIntro} />
       <ul class="mt-sm grid gap-xxs sm:grid-cols-2 text-body-sm">
         {PRESETS.map((p) => (
           <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${p.slug}` : `/${locale}/calculator/${p.slug}`}>{p.name}</a></li>

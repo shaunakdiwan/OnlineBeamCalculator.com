@@ -42,3 +42,14 @@ const rootPath = getRootPath(Astro.url.pathname);
     })
   }
 </nav>
+
+<script>
+  document.querySelectorAll('nav[aria-label="Language switcher"] a').forEach(a => {
+    a.addEventListener('click', (e) => {
+      if (window.location.hash) {
+        e.preventDefault();
+        window.location.href = a.getAttribute('href') + window.location.hash;
+      }
+    });
+  });
+</script>

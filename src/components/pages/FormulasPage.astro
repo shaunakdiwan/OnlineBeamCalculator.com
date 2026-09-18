@@ -84,7 +84,7 @@ const TEX_CASES: { reactions: string; Mmax: string; dmax: string }[] = [
 <div class="mx-auto max-w-7xl px-lg py-xl">
   <div class="eyebrow uppercase mb-xxs">{copy.eyebrow}</div>
   <h1 class="text-display-lg font-semibold">{copy.h1}</h1>
-  <p class="mt-sm text-body-md text-body max-w-[48rem]">{copy.intro}</p>
+  <p class="mt-sm text-body-md text-body max-w-[48rem]" set:html={copy.intro} />
 
   <div class="mt-xl grid gap-lg">
     {copy.cases.map((c, i) => (
@@ -116,7 +116,7 @@ const TEX_CASES: { reactions: string; Mmax: string; dmax: string }[] = [
     <p class="mt-xs" set:html={copy.liveP} />
   </div>
 
-  <p class="mt-lg text-caption text-mute max-w-[48rem]">{copy.legend}</p>
+  <p class="mt-lg text-caption text-mute max-w-[48rem]" set:html={copy.legend} />
 </div>
 
 <style is:global>

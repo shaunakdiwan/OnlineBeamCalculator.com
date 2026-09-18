@@ -118,7 +118,10 @@ export class Diagrams {
     // extrema markers
     for (const ex of [series.max, series.min]) {
       svg.appendChild(mk('circle', { cx: toPx(ex.x), cy: toPy(ex.value), r: 3, fill: color }));
-      const t = mk('text', { x: toPx(ex.x), y: toPy(ex.value) - 8, 'text-anchor': 'middle', fill: color, 'font-size': 17, 'font-family': 'monospace' });
+      let anchor = 'middle';
+      if (toPx(ex.x) < PADL + 80) anchor = 'start';
+      else if (toPx(ex.x) > W - PADR - 80) anchor = 'end';
+      const t = mk('text', { x: toPx(ex.x), y: toPy(ex.value) - 8, 'text-anchor': anchor, fill: color, 'font-size': 17, 'font-family': 'monospace' });
       t.textContent = this.fmt(spec, ex.value * spec.sign);
       svg.appendChild(t);
     }
@@ -141,7 +144,13 @@ export class Diagrams {
       const sx = series.x[bi];
       cline.setAttribute('x1', String(toPx(sx)));
       cline.setAttribute('x2', String(toPx(sx)));
-      tip.setAttribute('x', String(Math.min(toPx(sx) + 4, W - 200)));
+      if (toPx(sx) > W / 2) {
+        tip.setAttribute('text-anchor', 'end');
+        tip.setAttribute('x', String(toPx(sx) - 8));
+      } else {
+        tip.setAttribute('text-anchor', 'start');
+        tip.setAttribute('x', String(toPx(sx) + 8));
+      }
       tip.textContent = `x=${formatSI('length', sx, this.store.get().ui.units.length)}  ${spec.title.split(' ')[0]}=${this.fmt(spec, series.values[bi] * spec.sign)}`;
       cross.setAttribute('visibility', 'visible');
     });

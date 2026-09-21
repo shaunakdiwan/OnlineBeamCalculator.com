@@ -21,9 +21,9 @@ import type {
 } from './types';
 
 const meta: MetaCopy = {
-  defaultTitle: 'Beam Calculator — Free Online Shear, Moment & Deflection Diagrams',
+  defaultTitle: 'Beam Calculator — Free Shear, Moment & Deflection Diagrams',
   defaultDescription:
-    'Free online beam calculator for simply supported, cantilever, fixed, overhanging and continuous beams. Instant shear force, bending moment & deflection diagrams. No signup, no limits.',
+    'Free beam calculator. Analyze simply supported, cantilever & continuous beams with instant shear force & bending moment diagrams. No signup, no limits.',
   defaultKeywords: [
     'beam calculator',
     'free beam calculator',

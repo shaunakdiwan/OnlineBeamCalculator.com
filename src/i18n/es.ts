@@ -24,9 +24,9 @@ import type {
 } from './types';
 
 const meta: MetaCopy = {
-  defaultTitle: 'Calculadora de vigas — Diagramas de esfuerzo cortante, momento flector y deflexión gratis',
+  defaultTitle: 'Calculadora de vigas — Diagramas de cortante y momento gratis',
   defaultDescription:
-    'Calculadora de vigas online y gratuita para vigas simplemente apoyadas, en voladizo, empotradas, con voladizo y continuas. Diagramas instantáneos de esfuerzo cortante, momento flector y deflexión. Sin registro.',
+    'Calculadora de vigas gratuita. Analiza vigas simplemente apoyadas, en voladizo y continuas con diagramas instantáneos de cortante y momento. Sin registro.',
   defaultKeywords: [
     'calculadora de vigas',
     'calculadora de vigas online',

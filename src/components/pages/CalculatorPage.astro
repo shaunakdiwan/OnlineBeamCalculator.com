@@ -6,7 +6,7 @@
  */
 
 import { canonicalUrlFor, getAlternates, stripLocalePath } from '../../i18n/config';
-import { katex } from 'katex';
+import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import type { DeepDiveSection } from '../../i18n/types';
 import BeamCalculatorApp from '../calculator/BeamCalculatorApp.astro';
@@ -110,7 +110,7 @@ const faqLd = {
         <div class="space-y-xs">
           <h3 class="text-body-md-strong text-ink">{section.heading}</h3>
           {section.paragraphs.map((p, j) => (
-            <p key={j} set:html={p} />
+            <p set:html={p} />
           ))}
         </div>
       ))}
@@ -123,7 +123,7 @@ const faqLd = {
       <h2 class="text-display-sm font-semibold text-ink">{copy.ui.relatedH2}</h2>
       <ul class="space-y-xxs">
         {Object.entries(related).map(([targetSlug, label]) => (
-          <li key={targetSlug}>
+          <li>
             <a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${targetSlug}` : `/${locale}/calculator/${targetSlug}`}>{label}</a>
           </li>
         ))}

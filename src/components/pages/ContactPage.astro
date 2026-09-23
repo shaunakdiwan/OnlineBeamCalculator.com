@@ -26,7 +26,7 @@ const { locale, copy } = Astro.props;
     <p>{copy.reportIntro}</p>
     <ul class="list-disc pl-md space-y-xxs">
       {copy.reportItems.map((item, i) => (
-        <li key={i}>{item}</li>
+        <li>{item}</li>
       ))}
     </ul>
     <p>{copy.reportOutro}</p>

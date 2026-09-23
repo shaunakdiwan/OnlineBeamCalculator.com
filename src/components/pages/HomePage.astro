@@ -55,7 +55,7 @@ const { locale, copy } = Astro.props;
       <h2 class="text-display-md font-semibold text-ink">{copy.s5.h2}</h2>
       <ol class="mt-sm list-decimal pl-lg space-y-xxs">
         {copy.s5.items.map((item, i) => (
-          <li key={i}>{item}</li>
+          <li>{item}</li>
         ))}
       </ol>
     </section>
@@ -71,7 +71,7 @@ const { locale, copy } = Astro.props;
       <h2 class="text-display-md font-semibold text-ink">{copy.faqH2}</h2>
       <div class="mt-sm space-y-md">
         {copy.faqVisible.map((faq, i) => (
-          <div key={i}>
+          <div>
             <h3 class="text-body-md-strong text-ink">{faq.q}</h3>
             <p class="mt-xxs" set:html={faq.a} />
           </div>

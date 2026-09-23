@@ -33,7 +33,7 @@ const { locale, copy } = Astro.props;
         ))}
         {copy.byTypeExtra.map((label, i) => {
           const slugs = ['fixed-fixed-udl', 'overhanging-beam', 'continuous-two-span', 'gerber-hinge'];
-          return <li key={slugs[i]}><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${slugs[i]}` : `/${locale}/calculator/${slugs[i]}`}>{label}</a></li>;
+          return <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${slugs[i]}` : `/${locale}/calculator/${slugs[i]}`}>{label}</a></li>;
         })}
       </ul>
     </section>

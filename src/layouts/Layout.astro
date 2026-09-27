@@ -58,7 +58,7 @@ const webAppLd = isHome
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       '@id': `${SITE}/#app`,
-      name: 'Online Beam Calculator',
+      name: siteName,
       alternateName: ['Beam Calculator', 'Free Beam Calculator', 'Online Beam Calculator'],
       url: SITE,
       applicationCategory: 'EngineeringApplication',
@@ -66,7 +66,6 @@ const webAppLd = isHome
       operatingSystem: 'Any',
       inLanguage: locale,
       isAccessibleForFree: true,
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
       featureList: [
         'Simply supported, cantilever, fixed, overhanging, and continuous beam analysis',
         'Shear force (SFD) and bending moment (BMD) diagrams',
@@ -85,7 +84,12 @@ const webAppLd = isHome
       '@context': 'https://schema.org',
       '@type': 'WebApplication',
       '@id': `${SITE}/#app`,
+      name: siteName,
       url: SITE,
+      applicationCategory: 'EngineeringApplication',
+      operatingSystem: 'Any',
+      inLanguage: locale,
+      isAccessibleForFree: true,
     };
 ---
 

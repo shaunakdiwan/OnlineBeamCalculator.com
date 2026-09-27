@@ -353,6 +353,27 @@ const guide: GuideCopy = {
     h2: 'Stresses and serviceability',
     p: 'Bending stress is computed as σ = M·c/I separately for the top and bottom fibres (cTop, cBot may differ for asymmetric sections). Average shear stress is V/A: a coarse check; webs of I-sections carry significantly higher peak shear. Deflection badges compare against the common serviceability limits L/240, L/360 and L/480.',
   },
+  api: {
+    h2: 'Calculator capabilities (API & LLM Reference)',
+    p: 'This tool is a client-side web application. It does not provide a REST API, but the following plain-text description is provided for AI crawlers, LLMs, and technically-minded users to understand its exact capabilities without executing the JavaScript interface.',
+    inputsH3: 'Supported inputs',
+    inputsList: [
+      '<strong>Beam length:</strong> any positive value.',
+      '<strong>Supports:</strong> Pin, Roller, Fixed, Spring (with adjustable stiffness), Internal Hinge (moment release). Can be placed anywhere, including overhangs.',
+      '<strong>Loads:</strong> Point load, Applied moment, Uniform distributed load (UDL), Triangular load, Trapezoidal load (linearly varying). Loads can start and end anywhere on the beam.',
+      '<strong>Materials:</strong> Custom Young\'s Modulus (E), Density, and Allowable Yield Stress. Presets included for Steel, Wood, Aluminum, and Concrete.',
+      '<strong>Sections:</strong> Custom Area (A) and Moment of Inertia (I). Presets included for Rectangular, Circular, Hollow sections, I-beams, and AISC W-shapes.',
+      '<strong>Other:</strong> Toggleable self-weight (calculated from area and density), support settlement.'
+    ],
+    outputsH3: 'Computed outputs',
+    outputsList: [
+      '<strong>Reactions:</strong> Vertical force and bending moment at every support.',
+      '<strong>Diagrams:</strong> Piecewise-exact Shear Force (SFD), Bending Moment (BMD), Slope, and Deflection diagrams.',
+      '<strong>Extrema:</strong> Exact magnitude and location (x) of the maximum shear force, maximum sagging/hogging moment, and maximum deflection.',
+      '<strong>Stress:</strong> Maximum bending stress (calculated as M·c/I) and average shear stress (V/A).',
+      '<strong>Serviceability:</strong> Pass/fail checks for L/240, L/360, and L/480 deflection limits.'
+    ]
+  },
 };
 
 const about: AboutCopy = {

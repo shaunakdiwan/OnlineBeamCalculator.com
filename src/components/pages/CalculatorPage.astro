@@ -81,6 +81,17 @@ const faqLd = {
     },
   ],
 };
+
+// SoftwareApplication JSON-LD
+const softwareLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: pageTitle,
+  description: pageDescription,
+  applicationCategory: 'EngineeringApplication',
+  operatingSystem: 'Any',
+  url: canonical,
+};
 ---
 
 <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
@@ -133,5 +144,5 @@ const faqLd = {
   )}
 </div>
 
-<script is:inline type="application/ld+json" set:html={JSON.stringify([breadcrumbLd, faqLd])} />
+<script is:inline type="application/ld+json" set:html={JSON.stringify([breadcrumbLd, faqLd, softwareLd])} />
 

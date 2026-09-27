@@ -159,6 +159,14 @@ export interface GuideCopy {
   method: { h2: string; p: string };
   tryIt: { h2: string; p: TrustedHtml };
   stresses: { h2: string; p: string };
+  api: {
+    h2: string;
+    p: string;
+    inputsH3: string;
+    inputsList: TrustedHtml[];
+    outputsH3: string;
+    outputsList: TrustedHtml[];
+  };
 }
 
 export interface AboutCopy {

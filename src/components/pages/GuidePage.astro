@@ -50,5 +50,21 @@ const { locale, copy } = Astro.props;
       <h2 class="text-display-sm font-semibold text-ink mb-sm">{copy.stresses.h2}</h2>
       <p>{copy.stresses.p}</p>
     </section>
+    <section id="capabilities">
+      <h2 class="text-display-sm font-semibold text-ink mb-sm">{copy.api.h2}</h2>
+      <p class="mb-sm">{copy.api.p}</p>
+      <h3 class="text-body-md-strong text-ink mb-xxs">{copy.api.inputsH3}</h3>
+      <ul class="list-disc pl-md space-y-xxs mb-sm">
+        {copy.api.inputsList.map((item, i) => (
+          <li key={i} set:html={item} />
+        ))}
+      </ul>
+      <h3 class="text-body-md-strong text-ink mb-xxs">{copy.api.outputsH3}</h3>
+      <ul class="list-disc pl-md space-y-xxs">
+        {copy.api.outputsList.map((item, i) => (
+          <li key={i} set:html={item} />
+        ))}
+      </ul>
+    </section>
   </div>
 </div>

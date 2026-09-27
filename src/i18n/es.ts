@@ -357,6 +357,27 @@ const guide: GuideCopy = {
     h2: 'Tensiones y servicio',
     p: 'La tensión de flexión se calcula como σ = M·c/I por separado para las fibras superior e inferior (cSup, cInf pueden diferir en secciones asimétricas). La tensión cortante media es V/A: una comprobación aproximada; las almas de perfiles I soportan un cortante pico significativamente mayor. Las etiquetas de deflexión comparan contra los límites de servicio habituales L/240, L/360 y L/480.',
   },
+  api: {
+    h2: 'Capacidades de la calculadora (API y Referencia para LLM)',
+    p: 'Esta herramienta es una aplicación web del lado del cliente. No proporciona una API REST, pero la siguiente descripción en texto plano se incluye para que rastreadores de IA, LLMs y usuarios técnicos entiendan sus capacidades exactas sin ejecutar la interfaz JavaScript.',
+    inputsH3: 'Entradas admitidas',
+    inputsList: [
+      '<strong>Longitud de la viga:</strong> cualquier valor positivo.',
+      '<strong>Apoyos:</strong> Articulado, Rodillo, Empotramiento, Resorte (con rigidez ajustable), Rótula interna (liberación de momento). Pueden colocarse en cualquier lugar, incluidos los voladizos.',
+      '<strong>Cargas:</strong> Carga puntual, Momento aplicado, Carga uniformemente distribuida (UDL), Carga triangular, Carga trapezoidal (variación lineal). Las cargas pueden comenzar y terminar en cualquier lugar de la viga.',
+      '<strong>Materiales:</strong> Módulo de Young (E), Densidad y Límite elástico personalizables. Se incluyen perfiles preestablecidos para Acero, Madera, Aluminio y Hormigón.',
+      '<strong>Secciones:</strong> Área (A) y Momento de Inercia (I) personalizables. Se incluyen perfiles para secciones rectangulares, circulares, huecas, vigas en I y perfiles W de AISC.',
+      '<strong>Otros:</strong> Peso propio conmutable (calculado a partir del área y la densidad), asentamiento de apoyos.'
+    ],
+    outputsH3: 'Resultados calculados',
+    outputsList: [
+      '<strong>Reacciones:</strong> Fuerza vertical y momento flector en cada apoyo.',
+      '<strong>Diagramas:</strong> Diagramas exactos por tramos de Esfuerzo Cortante (SFD), Momento Flector (BMD), Pendiente y Deflexión.',
+      '<strong>Extremos:</strong> Magnitud y ubicación exacta (x) del esfuerzo cortante máximo, momento máximo (positivo/negativo) y deflexión máxima.',
+      '<strong>Esfuerzo:</strong> Esfuerzo de flexión máximo (calculado como M·c/I) y esfuerzo cortante promedio (V/A).',
+      '<strong>Servicio:</strong> Comprobaciones de aprobado/reprobado para límites de deflexión L/240, L/360 y L/480.'
+    ]
+  },
 };
 
 const about: AboutCopy = {

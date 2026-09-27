@@ -84,16 +84,59 @@ export class ResultsDashboard {
             </tbody>
           </table>
         </div>
-        <div class="mt-sm flex items-center gap-sm text-caption text-mute">
-          <span>Sign convention:</span>
-          <button id="signconv" class="btn-secondary h-6 px-xs text-caption">${st.ui.signConvention === 'sagging-positive' ? 'sagging +' : 'hogging +'}</button>
-          <span class="font-mono">${sign > 0 ? 'V: +left face up' : 'V: +left face down'} · M: ${sign > 0 ? '+sagging' : '+hogging'}</span>
+        <div class="mt-sm flex flex-wrap items-center justify-between gap-sm text-caption text-mute">
+          <div class="flex flex-wrap items-center gap-sm">
+            <span>Sign convention:</span>
+            <button id="signconv" class="btn-secondary h-6 px-xs text-caption">${st.ui.signConvention === 'sagging-positive' ? 'sagging +' : 'hogging +'}</button>
+            <span class="font-mono">${sign > 0 ? 'V: +left face up' : 'V: +left face down'} · M: ${sign > 0 ? '+sagging' : '+hogging'}</span>
+          </div>
+          <button id="copy-summary" class="btn-primary h-6 px-xs text-caption flex items-center gap-xxs" aria-label="Copy summary to clipboard" title="Copy summary as markdown">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copy summary
+          </button>
         </div>
       </div>`;
 
     this.root.querySelector('#signconv')?.addEventListener('click', () => {
       this.store.update((s) => {
         s.ui.signConvention = s.ui.signConvention === 'sagging-positive' ? 'hogging-positive' : 'sagging-positive';
+      });
+    });
+
+    this.root.querySelector('#copy-summary')?.addEventListener('click', (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      
+      let md = `## Beam Analysis Summary\n\n`;
+      md += `### Inputs\n`;
+      md += `- **Beam Length:** ${formatSI('length', L, U.length)}\n`;
+      
+      if (st.model.loads.length > 0) {
+        md += `- **Loads:**\n`;
+        st.model.loads.forEach((ld) => {
+          if (ld.type === 'point') md += `  - Point load: ${formatSI('force', ld.value, U.force)} at x = ${formatSI('length', ld.x, U.length)}\n`;
+          else if (ld.type === 'moment') md += `  - Moment: ${formatSI('moment', ld.value, U.moment)} at x = ${formatSI('length', ld.x, U.length)}\n`;
+          else if (ld.type === 'udl') md += `  - Uniform load: ${formatSI('force', ld.w, U.force)}/${U.length} from x = ${formatSI('length', ld.x0, U.length)} to ${formatSI('length', ld.x1, U.length)}\n`;
+          else if (ld.type === 'trapezoid') md += `  - Trapezoidal load: ${formatSI('force', ld.w0, U.force)}/${U.length} to ${formatSI('force', ld.w1, U.force)}/${U.length} from x = ${formatSI('length', ld.x0, U.length)} to ${formatSI('length', ld.x1, U.length)}\n`;
+        });
+      }
+      
+      md += `\n### Results\n`;
+      md += `- **Max Shear:** ${fV(maxAbsV.value)} at x = ${formatSI('length', maxAbsV.x, U.length)}\n`;
+      md += `- **Max Moment:** ${fM(maxAbsM.value)} at x = ${formatSI('length', maxAbsM.x, U.length)}\n`;
+      md += `- **Max Deflection:** ${fL(maxD.value)} at x = ${formatSI('length', maxD.x, U.length)} (L/${isFinite(ratio) ? Math.round(ratio) : 'rigid'})\n`;
+      md += `- **Max Bending Stress:** ${fP(maxStress)} at x = ${formatSI('length', maxStressX, U.length)}\n\n`;
+      
+      md += `### Reactions\n`;
+      result.reactions.forEach((r, i) => {
+        md += `- **Support ${i + 1} (${r.type})** at x = ${formatSI('length', r.x, U.length)}: `;
+        md += `V = ${formatSI('force', -r.R, U.force)} ↑, `;
+        md += `M = ${Math.abs(r.M) > 1e-9 ? formatSI('moment', r.M, U.moment) : '0'}\n`;
+      });
+      
+      navigator.clipboard.writeText(md).then(() => {
+        const orig = btn.innerHTML;
+        btn.innerHTML = 'Copied!';
+        setTimeout(() => btn.innerHTML = orig, 2000);
       });
     });
   }

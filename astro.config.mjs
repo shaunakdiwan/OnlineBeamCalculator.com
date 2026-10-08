@@ -9,7 +9,7 @@ export default defineConfig({
   site: 'https://onlinebeamcalculator.com',
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'es'],
+    locales: ['en', 'es', 'fr', 'de', 'ru'],
     routing: {
       prefixDefaultLocale: false,
     },
@@ -24,6 +24,9 @@ export default defineConfig({
         locales: {
           en: 'en',
           es: 'es',
+          fr: 'fr',
+          de: 'de',
+          ru: 'ru',
         },
       },
       serialize(item) {

@@ -3,16 +3,17 @@
  * Shared CalculatorHub component — renders the calculator index page for any locale.
  */
 
-import type { HubCopy } from '../../i18n/types';
+import type { HubCopy, CalculatorsCopy, PresetSlug, VariantSlug } from '../../i18n/types';
 import { PRESETS, VARIANT_LANDINGS } from '../../lib/ui/presets';
 import BeamCalculatorApp from '../calculator/BeamCalculatorApp.astro';
 
 interface Props {
   locale: string;
   copy: HubCopy;
+  calculators: CalculatorsCopy;
 }
 
-const { locale, copy } = Astro.props;
+const { locale, copy, calculators } = Astro.props;
 ---
 
 <div class="mx-auto max-w-7xl px-md sm:px-lg py-lg">
@@ -29,7 +30,7 @@ const { locale, copy } = Astro.props;
       <h2 class="text-display-sm font-semibold text-ink">{copy.byTypeH2}</h2>
       <ul class="mt-sm grid gap-xxs sm:grid-cols-2 text-body-sm">
         {VARIANT_LANDINGS.map((v) => (
-          <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${v.slug}` : `/${locale}/calculator/${v.slug}`}>{v.h1}</a></li>
+          <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${v.slug}` : `/${locale}/calculator/${v.slug}`}>{calculators.variants[v.slug as VariantSlug].h1}</a></li>
         ))}
         {copy.byTypeExtra.map((label, i) => {
           const slugs = ['fixed-fixed-udl', 'overhanging-beam', 'continuous-two-span', 'gerber-hinge'];
@@ -43,7 +44,7 @@ const { locale, copy } = Astro.props;
       <p class="mt-xs text-body-sm" set:html={copy.workedIntro} />
       <ul class="mt-sm grid gap-xxs sm:grid-cols-2 text-body-sm">
         {PRESETS.map((p) => (
-          <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${p.slug}` : `/${locale}/calculator/${p.slug}`}>{p.name}</a></li>
+          <li><a class="text-link hover:underline" href={locale === 'en' ? `/calculator/${p.slug}` : `/${locale}/calculator/${p.slug}`}>{calculators.presets[p.slug as PresetSlug].name}</a></li>
         ))}
       </ul>
     </section>

@@ -3,19 +3,21 @@
  * Single source of truth for locales, URL construction, and hreflang alternates.
  */
 
-export type Locale = 'en' | 'es' | 'ru';
+export type Locale = 'en' | 'es' | 'fr' | 'de' | 'ru';
 
-export const LOCALES: Locale[] = ['en', 'es', 'ru'];
+export const LOCALES: Locale[] = ['en', 'es', 'fr', 'de', 'ru'];
 
 export const DEFAULT_LOCALE: Locale = 'en';
 
 /** Published locales (phased rollout). Update when adding a language. */
-export const PUBLISHED_LOCALES: Locale[] = ['en', 'es'];
+export const PUBLISHED_LOCALES: Locale[] = ['en', 'es', 'fr', 'de', 'ru'];
 
 /** Map locale code → hreflang value (generic targets all markets). */
 export const HREFLANG_MAP: Record<Locale, string> = {
   en: 'en',
   es: 'es',
+  fr: 'fr',
+  de: 'de',
   ru: 'ru',
 };
 
@@ -23,6 +25,8 @@ export const HREFLANG_MAP: Record<Locale, string> = {
 export const OG_LOCALE_MAP: Record<Locale, string> = {
   en: 'en_US',
   es: 'es_ES',
+  fr: 'fr_FR',
+  de: 'de_DE',
   ru: 'ru_RU',
 };
 

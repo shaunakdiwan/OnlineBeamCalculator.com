@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import HomePage from '../../components/pages/HomePage.astro';
+import { de } from '../../i18n/de';
+---
+
+<Layout locale="de" title={de.home.title} description={de.home.description} jsonLd={de.home.faqLd}>
+  <HomePage locale="de" copy={de.home} />
+
+</Layout>

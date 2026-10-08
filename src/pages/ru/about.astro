@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import AboutPage from '../../components/pages/AboutPage.astro';
+import { ru } from '../../i18n/ru';
+---
+
+<Layout locale="ru" title={ru.about.title} description={ru.about.description}>
+  <AboutPage locale="ru" copy={ru.about} />
+</Layout>

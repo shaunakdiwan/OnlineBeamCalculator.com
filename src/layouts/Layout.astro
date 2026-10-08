@@ -8,9 +8,12 @@ import Hreflang from '../components/Hreflang.astro';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 import { en } from '../i18n/en';
 import { es } from '../i18n/es';
+import { fr } from '../i18n/fr';
+import { de } from '../i18n/de';
+import { ru } from '../i18n/ru';
 import type { LocaleCopy } from '../i18n/types';
 
-const COPY_MAP: Record<string, LocaleCopy> = { en, es };
+const COPY_MAP: Record<string, LocaleCopy> = { en, es, fr, de, ru };
 
 interface Props {
   title?: string;
@@ -162,8 +165,8 @@ const webAppLd = isHome
       <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
 
-    <!-- Hreflang alternates (self + all published + x-default) -->
-    <Hreflang />
+    <!-- Hreflang alternates (self + all published + x-default); skipped on noindex pages (404/500) which have no translated equivalents -->
+    {!noindex && <Hreflang />}
   </head>
   <body class="min-h-screen flex flex-col bg-canvas-soft text-ink font-sans">
     <header class="sticky top-0 z-40 bg-canvas border-b border-hairline">
@@ -186,7 +189,7 @@ const webAppLd = isHome
           <button id="theme-toggle-desktop" class="hidden md:block btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
           <span class="eyebrow hidden sm:inline border border-hairline rounded-full px-xs py-[2px] bg-canvas-soft">{chrome.nav.freeBadge}</span>
           <a href={locale === DEFAULT_LOCALE ? '/calculator' : `/${locale}/calculator`} class="btn-primary h-7 px-xs rounded-sm text-body-sm">{chrome.nav.openCalculator}</a>
-          <LanguageSwitcher />
+          {!noindex && <LanguageSwitcher />}
           <button id="theme-toggle-mobile" class="md:hidden btn-secondary h-7 px-xs rounded-sm text-body-sm" aria-label={chrome.nav.toggleTheme} title={chrome.nav.toggleTheme}>◐</button>
         </div>
       </nav>

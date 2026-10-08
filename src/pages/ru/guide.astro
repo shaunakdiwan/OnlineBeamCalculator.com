@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GuidePage from '../../components/pages/GuidePage.astro';
+import { ru } from '../../i18n/ru';
+---
+
+<Layout locale="ru" title={ru.guide.title} description={ru.guide.description}>
+  <GuidePage locale="ru" copy={ru.guide} />
+</Layout>

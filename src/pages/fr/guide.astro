@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import GuidePage from '../../components/pages/GuidePage.astro';
+import { fr } from '../../i18n/fr';
+---
+
+<Layout locale="fr" title={fr.guide.title} description={fr.guide.description}>
+  <GuidePage locale="fr" copy={fr.guide} />
+</Layout>

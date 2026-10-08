@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import LegalPage from '../../components/pages/LegalPage.astro';
+import { ru } from '../../i18n/ru';
+---
+
+<Layout locale="ru" title={ru.terms.title} description={ru.terms.description}>
+  <LegalPage locale="ru" copy={ru.terms} />
+</Layout>

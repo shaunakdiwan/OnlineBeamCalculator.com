@@ -1,0 +1,9 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import CalculatorHub from '../../../components/pages/CalculatorHub.astro';
+import { de } from '../../../i18n/de';
+---
+
+<Layout locale="de" title={de.hub.title} description={de.hub.description} keywords={de.hub.keywords}>
+  <CalculatorHub locale="de" copy={de.hub} calculators={de.calculators} />
+</Layout>

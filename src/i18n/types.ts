@@ -4,7 +4,7 @@
  * `astro check`, not just at runtime.
  */
 
-export type Locale = 'en' | 'es' | 'ru';
+export type Locale = 'en' | 'es' | 'fr' | 'de' | 'ru';
 
 /** Markup rendered via set:html. Only ever sourced from our own copy modules. */
 export type TrustedHtml = string;

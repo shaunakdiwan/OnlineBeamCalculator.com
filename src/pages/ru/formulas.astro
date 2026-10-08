@@ -1,0 +1,9 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import FormulasPage from '../../components/pages/FormulasPage.astro';
+import { ru } from '../../i18n/ru';
+---
+
+<Layout locale="ru" title={ru.formulas.title} description={ru.formulas.description}>
+  <FormulasPage locale="ru" copy={ru.formulas} />
+</Layout>

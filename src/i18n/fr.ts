@@ -196,7 +196,7 @@ const home: HomeCopy = {
     },
     {
       q: "Puis-je l'utiliser comme calculateur de poutres bois ou acier ?",
-      a: "Oui. Choisissez parmi les matériaux prédéfinis — acier structurel, aluminium, béton et bois — ou saisissez un module de Young personnalisé. Une bibliothèque de profilés W AISC courants est incluse pour le calcul acier, et les sections rectangulaires conviennent aux poutres bois.",
+      a: "Oui. Choisissez parmi les matériaux prédéfinis (acier structurel, aluminium, béton et bois) ou saisissez un module de Young personnalisé. Une bibliothèque de profilés W AISC courants est incluse pour le calcul acier, et les sections rectangulaires conviennent aux poutres bois.",
     },
     {
       q: "Quels types de poutres l'outil prend-il en charge ?",
@@ -670,7 +670,7 @@ const deepDive = {
     {
       heading: "Erreurs courantes en bois que cet outil aide à détecter",
       paragraphs: [
-        "Utiliser les dimensions nominales plutôt que réelles du bois de sciage (un 2×12 fait 1,5″ × 11,25″) surestime nettement la capacité. Oublier de modéliser le faîtier en porte-à-faux lorsqu'il dépasse le mur sous-estime le moment d'extrémité. Et modéliser un faîtier multi-appuis comme une suite de travées sur appuis simples oublie le moment négatif sur les poteaux intermédiaires — utilisez plutôt le calculateur de poutre continue.",
+        "Utiliser les dimensions nominales plutôt que réelles du bois de sciage (un 2×12 fait 1,5″ × 11,25″) surestime nettement la capacité. Oublier de modéliser le faîtier en porte-à-faux lorsqu'il dépasse le mur sous-estime le moment d'extrémité. Et modéliser un faîtier multi-appuis comme une suite de travées sur appuis simples oublie le moment négatif sur les poteaux intermédiaires : utilisez plutôt le calculateur de poutre continue.",
       ],
     },
   ],
@@ -686,7 +686,7 @@ const deepDive = {
       heading: "Lecture des résultats pour une panne faîtière",
       paragraphs: [
         "Le tableau de bord affiche le moment maximal (généralement à mi-portée pour un faîtier sur appuis simples, ou sur l'appui intermédiaire pour un faîtier en porte-à-faux) et la flèche maximale. Comparez la contrainte de flexion à F_b de la norme NDS ou aux valeurs de calcul du produit. Vérifiez la flèche vis-à-vis de L/240 pour les toits ; L/360 si le faîtier porte un plafond fini en dessous.",
-        "Si le faîtier est continu sur trois appuis ou plus, passez au calculateur de poutre continue à deux travées et ajoutez des appuis si besoin — le moment négatif sur l'appui intermédiaire est généralement le critère dimensionnant.",
+        "Si le faîtier est continu sur trois appuis ou plus, passez au calculateur de poutre continue à deux travées et ajoutez des appuis si besoin : le moment négatif sur l'appui intermédiaire est généralement le critère dimensionnant.",
       ],
     },
     {
@@ -708,7 +708,7 @@ const deepDive = {
       heading: "Lecture des résultats pour une console",
       paragraphs: [
         "La force de réaction d'encastrement et le moment d'encastrement sont exactement ce que le corbeau, la soudure ou le scellement doit reprendre. La flèche d'extrémité vis-à-vis de L/180 est la vérification de service courante ; notez qu'à charge totale égale, une charge en extrémité provoque 8/3 fois plus de flèche qu'une charge uniforme, donc convertir une charge étalée en une valeur unique en extrémité est conservateur avec une large marge, mais utile comme borne.",
-        "La contrainte de flexion est rapportée à l'encastrement (maximale) et à chaque point de charge. La contrainte de cisaillement moyenne vaut V/A à l'encastrement ; pour les profilés en I, le cisaillement d'âme est supérieur — utilisez un outil réglementaire pour les vérifications d'âme détaillées.",
+        "La contrainte de flexion est rapportée à l'encastrement (maximale) et à chaque point de charge. La contrainte de cisaillement moyenne vaut V/A à l'encastrement ; pour les profilés en I, le cisaillement d'âme est supérieur : utilisez un outil réglementaire pour les vérifications d'âme détaillées.",
       ],
     },
     {
@@ -729,14 +729,14 @@ const deepDive = {
     {
       heading: "Lecture des résultats pour une poutre sur appuis simples",
       paragraphs: [
-        "Les réactions en A et B sont les charges d'appui pour le dimensionnement de vos liaisons. Le moment maximal (avec sa position) pilote la vérification du module de flexion : σ = M·c/I. La flèche maximale (avec sa position) pilote la vérification de service vis-à-vis de L/360 ou L/240. Les diagrammes sont exacts par morceaux — survolez-les pour lire V et M en tout point.",
+        "Les réactions en A et B sont les charges d'appui pour le dimensionnement de vos liaisons. Le moment maximal (avec sa position) pilote la vérification du module de flexion : σ = M·c/I. La flèche maximale (avec sa position) pilote la vérification de service vis-à-vis de L/360 ou L/240. Les diagrammes sont exacts par morceaux : survolez-les pour lire V et M en tout point.",
         "Pour une poutre avec porte-à-faux, le moment positif maximal peut être en travée et le moment négatif maximal à l'appui ; les deux sont rapportés. Exportez le CSV pour les tables complètes V/M/θ/δ si vous devez les injecter dans un tableur.",
       ],
     },
     {
       heading: "Erreurs courantes sur appuis simples que cet outil aide à détecter",
       paragraphs: [
-        "Oublier qu'une poutre en porte-à-faux chargée sur son porte-à-faux développe un moment négatif à l'appui, qui peut exiger un maintien latéral de l'aile supérieure ou une section plus grande. Sous-estimer l'aire tributaire lors de la conversion de charges surfaciques en charges linéiques. Et supposer qu'une poutre multi-travées peut être analysée comme des travées indépendantes sur appuis simples — les moments sur appuis intermédiaires ne sont pas nuls, et le calculateur de poutre continue doit être utilisé.",
+        "Oublier qu'une poutre en porte-à-faux chargée sur son porte-à-faux développe un moment négatif à l'appui, qui peut exiger un maintien latéral de l'aile supérieure ou une section plus grande. Sous-estimer l'aire tributaire lors de la conversion de charges surfaciques en charges linéiques. Et supposer qu'une poutre multi-travées peut être analysée comme des travées indépendantes sur appuis simples : les moments sur appuis intermédiaires ne sont pas nuls, et le calculateur de poutre continue doit être utilisé.",
       ],
     },
   ],
@@ -744,7 +744,7 @@ const deepDive = {
     {
       heading: "Comment utiliser ce calculateur de poutre simple",
       paragraphs: [
-        "C'est le cas minimal sur appuis simples : une travée, une charge (uniforme ou ponctuelle centrale), une section rectangulaire ou en I. Saisissez la portée, la charge et les dimensions de section (ou choisissez un profilé I). Pas de positionnement d'appuis, pas d'appuis élastiques, pas d'option de poids propre — juste le cas du manuel.",
+        "C'est le cas minimal sur appuis simples : une travée, une charge (uniforme ou ponctuelle centrale), une section rectangulaire ou en I. Saisissez la portée, la charge et les dimensions de section (ou choisissez un profilé I). Pas de positionnement d'appuis, pas d'appuis élastiques, pas d'option de poids propre : juste le cas du manuel.",
       ],
     },
     {
@@ -771,7 +771,7 @@ const deepDive = {
     {
       heading: "Points de vigilance avec les charges ponctuelles centrales",
       paragraphs: [
-        "Les charges réelles sont rarement exactement à mi-portée. Déplacez la charge hors du centre et observez les réactions se décaler (R_A = P·b/L, R_B = P·a/L) et le moment maximal suivre la charge (M_max = P·a·b/L). La courbe de flèche devient asymétrique — le maximum n'est plus à mi-portée.",
+        "Les charges réelles sont rarement exactement à mi-portée. Déplacez la charge hors du centre et observez les réactions se décaler (R_A = P·b/L, R_B = P·a/L) et le moment maximal suivre la charge (M_max = P·a·b/L). La courbe de flèche devient asymétrique : le maximum n'est plus à mi-portée.",
         "Si vous avez plusieurs charges ponctuelles, la superposition s'applique : additionnez les moments et les flèches de chaque charge. Le calculateur le fait automatiquement lorsque vous ajoutez plusieurs charges, pas besoin de faire le calcul à la main.",
       ],
     },
@@ -793,7 +793,7 @@ const deepDive = {
     {
       heading: "Points de vigilance avec les charges uniformes",
       paragraphs: [
-        "Une charge uniforme partielle (ne couvrant pas toute la portée) produit des réactions différentes et un diagramme de moment par morceaux au sommet plus plat. Faites glisser les extrémités de charge pour modéliser une couverture partielle — le calculateur la traite exactement. Pour une poutre de toit, la charge uniforme est généralement la charge surfacique tributaire × l'entraxe ; veillez à ne pas compter deux fois le poids propre (activez-le séparément).",
+        "Une charge uniforme partielle (ne couvrant pas toute la portée) produit des réactions différentes et un diagramme de moment par morceaux au sommet plus plat. Faites glisser les extrémités de charge pour modéliser une couverture partielle : le calculateur la traite exactement. Pour une poutre de toit, la charge uniforme est généralement la charge surfacique tributaire × l'entraxe ; veillez à ne pas compter deux fois le poids propre (activez-le séparément).",
         "Comparez avec le cas de la <a class=\"text-link hover:underline\" href=\"/fr/calculator/simply-supported-point\">charge ponctuelle centrale</a> : à charge totale égale (wL = P), la charge uniforme donne la moitié du moment à mi-portée et 5/8 de la flèche à mi-portée. Une charge uniforme est toujours moins exigeante qu'une charge ponctuelle centrale à charge totale égale.",
       ],
     },
@@ -816,7 +816,7 @@ const deepDive = {
       heading: "Points de vigilance avec les charges uniformes en console",
       paragraphs: [
         "Une console avec la même charge totale qu'une charge en extrémité (wL = P) produit la moitié du moment d'encastrement (wL²/2 contre PL) et 3/8 de la flèche d'extrémité (wL⁴/8EI contre PL³/3EI = wL⁴/3EI). Une charge en extrémité est donc une borne bien plus conservatrice qu'une charge uniforme à charge totale égale.",
-        "Si la charge est triangulaire (0 à l'extrémité, w à l'encastrement), le moment d'encastrement descend à wL²/6 et la flèche d'extrémité à wL⁴/30EI — le cas triangulaire est moins exigeant que les deux. Le calculateur permet de faire glisser la forme de charge pour voir la transition.",
+        "Si la charge est triangulaire (0 à l'extrémité, w à l'encastrement), le moment d'encastrement descend à wL²/6 et la flèche d'extrémité à wL⁴/30EI : le cas triangulaire est moins exigeant que les deux. Le calculateur permet de faire glisser la forme de charge pour voir la transition.",
       ],
     },
     {
@@ -837,7 +837,7 @@ const deepDive = {
     {
       heading: "Points de vigilance avec les charges en extrémité",
       paragraphs: [
-        "Les chiffres à lire sont la force de réaction d'encastrement et le moment d'encastrement — ensemble, ils sont exactement ce que le corbeau, la soudure ou le scellement doit reprendre. La flèche d'extrémité vis-à-vis de L/180 est la vérification de service ; notez qu'à charge totale égale, une charge en extrémité provoque 8/3 fois plus de flèche qu'une charge uniforme, donc convertir une charge étalée en une valeur unique en extrémité est conservateur avec une large marge, mais utile comme borne.",
+        "Les chiffres à lire sont la force de réaction d'encastrement et le moment d'encastrement : ensemble, ils sont exactement ce que le corbeau, la soudure ou le scellement doit reprendre. La flèche d'extrémité vis-à-vis de L/180 est la vérification de service ; notez qu'à charge totale égale, une charge en extrémité provoque 8/3 fois plus de flèche qu'une charge uniforme, donc convertir une charge étalée en une valeur unique en extrémité est conservateur avec une large marge, mais utile comme borne.",
         "Faites glisser la charge vers l'intérieur de la poutre : le moment d'encastrement et la flèche d'extrémité chutent respectivement linéairement et au cube ; une charge aux trois quarts de la longueur divise déjà par deux la demande de moment d'encastrement. Cette sensibilité vaut la peine d'être exploitée lorsque vous pouvez positionner une charge de corbeau près de son appui.",
       ],
     },
@@ -859,7 +859,7 @@ const deepDive = {
     {
       heading: "Points de vigilance avec les poutres bi-encastrées",
       paragraphs: [
-        "Les moments sur appuis (wL²/12) sont plus grands en valeur absolue que le moment à mi-portée (wL²/24). Le dimensionnement est généralement gouverné par le moment négatif aux appuis — l'aile supérieure y est comprimée, le maintien au déversement de l'aile supérieure est donc critique.",
+        "Les moments sur appuis (wL²/12) sont plus grands en valeur absolue que le moment à mi-portée (wL²/24). Le dimensionnement est généralement gouverné par le moment négatif aux appuis : l'aile supérieure y est comprimée, le maintien au déversement de l'aile supérieure est donc critique.",
         "Si l'encastrement n'est pas parfait (les liaisons réelles ont une certaine souplesse), les moments réels se situent entre les cas bi-encastré et sur appuis simples. Le calculateur complet permet de modéliser des appuis rotatifs élastiques pour l'étudier.",
       ],
     },
@@ -882,7 +882,7 @@ const deepDive = {
       heading: "Points de vigilance avec les poutres en porte-à-faux",
       paragraphs: [
         "Le moment d'appui dimensionne les petits porte-à-faux (c'est le moment de liaison ou d'ancrage). Pour de grands porte-à-faux, le moment en travée peut dépasser le moment d'appui. Le calculateur fournit les deux pour vérifier les deux emplacements.",
-        "Les porte-à-faux asymétriques (a différent de chaque côté) produisent réactions et moments asymétriques — le calculateur complet le gère : ajoutez des appuis à des positions arbitraires et une charge uniforme sur toute la longueur.",
+        "Les porte-à-faux asymétriques (a différent de chaque côté) produisent réactions et moments asymétriques : le calculateur complet le gère : ajoutez des appuis à des positions arbitraires et une charge uniforme sur toute la longueur.",
       ],
     },
     {
@@ -903,14 +903,14 @@ const deepDive = {
     {
       heading: "Points de vigilance avec les poutres continues",
       paragraphs: [
-        "L'appui intermédiaire B reprend 1,25× la charge totale d'une travée (10/8 contre 8/8 pour un appui simple), et le moment négatif sur B (wL²/8) est plus grand en valeur absolue que le moment à mi-portée d'une poutre sur appuis simples (wL²/8 contre wL²/8 — égaux ici, mais pour des travées inégales le moment intermédiaire domine).",
+        "L'appui intermédiaire B reprend 1,25× la charge totale d'une travée (10/8 contre 8/8 pour un appui simple), et le moment négatif sur B (wL²/8) est plus grand en valeur absolue que le moment à mi-portée d'une poutre sur appuis simples (wL²/8 contre wL²/8, égaux ici, mais pour des travées inégales le moment intermédiaire domine).",
         "Le moment positif à mi-travée (9wL²/128 ≈ 0,07 wL²) est plus faible que le moment à mi-portée sur appuis simples (wL²/8 = 0,125 wL²) car la continuité freine la flèche. C'est pourquoi les poutres continues sont plus économes : moment en travée réduit à portée égale.",
       ],
     },
     {
       heading: "Erreurs courantes avec les poutres continues",
       paragraphs: [
-        "Analyser une poutre continue comme une suite de travées sur appuis simples oublie le moment négatif sur l'appui intermédiaire — la liaison et le maintien de l'aile supérieure y sont critiques. Supposer que la réaction d'appui intermédiaire vaut seulement wL (c'est 1,25 wL ici, et davantage avec des travées inégales). Oublier que le tassement d'un appui intermédiaire redistribue fortement les moments — le calculateur prend en charge le tassement imposé pour l'étudier.",
+        "Analyser une poutre continue comme une suite de travées sur appuis simples oublie le moment négatif sur l'appui intermédiaire : la liaison et le maintien de l'aile supérieure y sont critiques. Supposer que la réaction d'appui intermédiaire vaut seulement wL (c'est 1,25 wL ici, et davantage avec des travées inégales). Oublier que le tassement d'un appui intermédiaire redistribue fortement les moments : le calculateur prend en charge le tassement imposé pour l'étudier.",
       ],
     },
   ],
@@ -932,7 +932,7 @@ const deepDive = {
     {
       heading: "Erreurs courantes avec les poutres de Gerber",
       paragraphs: [
-        "Oublier que la rotule doit être une vraie libération de moment — une liaison partielle qui transmet un peu de moment annule l'intérêt du système et crée une structure hyperstatique qui se comporte autrement. Ne pas vérifier la capacité au cisaillement à la rotule : elle reprend tout l'effort tranchant de la travée. Et supposer que les travées peuvent être dimensionnées indépendamment — l'effort tranchant à la rotule est le même des deux côtés, la liaison doit donc être dimensionnée pour le plus grand des deux cisaillements de travée.",
+        "Oublier que la rotule doit être une vraie libération de moment : une liaison partielle qui transmet un peu de moment annule l'intérêt du système et crée une structure hyperstatique qui se comporte autrement. Ne pas vérifier la capacité au cisaillement à la rotule : elle reprend tout l'effort tranchant de la travée. Et supposer que les travées peuvent être dimensionnées indépendamment : l'effort tranchant à la rotule est le même des deux côtés, la liaison doit donc être dimensionnée pour le plus grand des deux cisaillements de travée.",
       ],
     },
   ],

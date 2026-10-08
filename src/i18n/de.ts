@@ -95,13 +95,13 @@ const home: HomeCopy = {
   eyebrow: "Kostenlos · Ohne Anmeldung · Läuft in Ihrem Browser",
   h1: "Balkenrechner",
   hero:
-    "Berechnen Sie online Einfeldträger, Kragträger, eingespannte Träger, Träger mit Kragarm und Durchlaufträger. Erhalten Sie sofort Diagramme für Querkraft, Biegemoment, Neigung und Durchbiegung – mit Auflagerkräften, Spannungen und Nachweisen gegen die gebrauchstauglichkeitsüblichen Grenzwerte.",
+    "Berechnen Sie online Einfeldträger, Kragträger, eingespannte Träger, Träger mit Kragarm und Durchlaufträger. Erhalten Sie sofort Diagramme für Querkraft, Biegemoment, Neigung und Durchbiegung sowie Auflagerkräfte, Spannungen und Nachweise gegen die gebrauchstauglichkeitsüblichen Grenzwerte.",
   s1: {
     h2: "Ein kostenloser Online-Balkenrechner, der wie ein echtes Werkzeug funktioniert",
     p1:
-      "Dieser Balkenrechner ist für Ingenieure, Studierende, Metallbauer und Heimwerker gebaut, die schnelle, genaue Antworten auf statische Fragen brauchen – ohne Softwareinstallation und ohne Konto. Er führt einen vollständigen Euler–Bernoulli-Finite-Elemente-Löser direkt in Ihrem Browser aus, sodass Ergebnisse während der Eingabe sofort erscheinen. Keine Lastbegrenzung, keine gesperrten Funktionen, kein Anmeldeformular: Seite öffnen und rechnen.",
+      "Dieser Balkenrechner ist für Ingenieure, Studierende, Metallbauer und Heimwerker gebaut, die schnelle, genaue Antworten auf statische Fragen brauchen, ohne Softwareinstallation und ohne Konto. Er führt einen vollständigen Euler–Bernoulli-Finite-Elemente-Löser direkt in Ihrem Browser aus, sodass Ergebnisse während der Eingabe sofort erscheinen. Keine Lastbegrenzung, keine gesperrten Funktionen, kein Anmeldeformular: Seite öffnen und rechnen.",
     p2:
-      "Ob Sie ihn einfachen Balkenrechner, Online-Balkenrechner oder Statik-Tool nennen – der Ablauf ist derselbe: Balkenlänge festlegen, Lager setzen, Lasten hinzufügen und die Diagramme ablesen. Die Drag-and-drop-Zeichenfläche lässt sich wie ein echter Editor bedienen, und jede Änderung wird in unter einer Millisekunde neu berechnet.",
+      "Ob Sie ihn einfachen Balkenrechner, Online-Balkenrechner oder Statik-Tool nennen: Der Ablauf ist derselbe: Balkenlänge festlegen, Lager setzen, Lasten hinzufügen und die Diagramme ablesen. Die Drag-and-drop-Zeichenfläche lässt sich wie ein echter Editor bedienen, und jede Änderung wird in unter einer Millisekunde neu berechnet.",
   },
   s2: {
     h2: "Was dieser Balkenrechner berechnen kann",
@@ -111,31 +111,31 @@ const home: HomeCopy = {
     },
     supports: {
       h3: "Lager und Verbindungen",
-      p: "Festlager, Loslager, Einspannungen und Federauflager können überall entlang des Balkens platziert werden, auch an Kragarmen. Die Federsteifigkeit ist frei einstellbar, und eine Stützensenkung lässt sich vorgeben, um Setzungsunterschiede zu untersuchen. Innere Gelenke erzeugen echte Momentengelenke zwischen den Feldern – unverzichtbar für die Modellierung von Gerberträgern.",
+      p: "Festlager, Loslager, Einspannungen und Federauflager können überall entlang des Balkens platziert werden, auch an Kragarmen. Die Federsteifigkeit ist frei einstellbar, und eine Stützensenkung lässt sich vorgeben, um Setzungsunterschiede zu untersuchen. Innere Gelenke erzeugen echte Momentengelenke zwischen den Feldern, unverzichtbar für die Modellierung von Gerberträgern.",
     },
     loads: {
       h3: "Lasten",
-      p: "Fügen Sie beliebig viele Lasten hinzu: Einzellasten, aufgebrachte Momente, Gleichlasten (Streckenlasten), Dreieckslasten und allgemein linear veränderliche Trapezlasten mit unabhängigen Anfangs- und Endintensitäten. Lasten können überall auf dem Balken beginnen und enden, und eine Eigengewicht-Option wendet das Gewicht des Balkens automatisch als Streckenlast an – berechnet aus Querschnittsfläche und Dichte des Materials.",
+      p: "Fügen Sie beliebig viele Lasten hinzu: Einzellasten, aufgebrachte Momente, Gleichlasten (Streckenlasten), Dreieckslasten und allgemein linear veränderliche Trapezlasten mit unabhängigen Anfangs- und Endintensitäten. Lasten können überall auf dem Balken beginnen und enden, und eine Eigengewicht-Option wendet das Gewicht des Balkens automatisch als Streckenlast an, berechnet aus Querschnittsfläche und Dichte des Materials.",
     },
   },
   s3: {
     h2: "Ein Stahlträger-Rechner und ein Holzträger-Rechner in einem",
-    p: "Die Material- und Querschnittsbibliotheken machen dieses Tool gleichermaßen als Stahlträger-Rechner und als Holzträger-Rechner nützlich. Voreinstellungen umfassen Baustahl (A36), Aluminium (6061-T6), Beton und Holz – jeweils mit realistischem Elastizitätsmodul, Dichte und Streckgrenze. Die Querschnittsbibliothek deckt Rechtecke, Hohlquerschnitte, Kreise, I-Profile, U-Profile und eine kuratierte Auswahl gängiger AISC-W-Profile ab, und Fläche und Flächenträgheitsmoment lassen sich jederzeit von Hand eingeben. Zur Bemessung eines Firstträgers im Dachbau modellieren Sie den First als Einfeld- oder überkragenden Holzbalken mit Sparren-Einzellasten: Der Rechner liefert Auflagerkräfte, maximales Moment und Durchbiegung, um das Ergebnis mit zulässigen Stützweiten-Tabellen zu vergleichen.",
+    p: "Die Material- und Querschnittsbibliotheken machen dieses Tool gleichermaßen als Stahlträger-Rechner und als Holzträger-Rechner nützlich. Voreinstellungen umfassen Baustahl (A36), Aluminium (6061-T6), Beton und Holz, jeweils mit realistischem Elastizitätsmodul, Dichte und Streckgrenze. Die Querschnittsbibliothek deckt Rechtecke, Hohlquerschnitte, Kreise, I-Profile, U-Profile und eine kuratierte Auswahl gängiger AISC-W-Profile ab, und Fläche und Flächenträgheitsmoment lassen sich jederzeit von Hand eingeben. Zur Bemessung eines Firstträgers im Dachbau modellieren Sie den First als Einfeld- oder überkragenden Holzbalken mit Sparren-Einzellasten: Der Rechner liefert Auflagerkräfte, maximales Moment und Durchbiegung, um das Ergebnis mit zulässigen Stützweiten-Tabellen zu vergleichen.",
   },
   s4: {
     h2: "Ergebnisse, mit denen Sie wirklich arbeiten können",
     p1:
-      "Ein Dashboard zeigt maximale Querkraft, maximales Biegemoment, maximale Durchbiegung und maximale Biegespannung mit der exakten Position jedes Werts – ohne langes Suchen im Diagramm. Darunter lassen sich die interaktiven Diagramme für Querkraft, Biegemoment, Neigung und Durchbiegung per Maus oder Touch an jeder Stelle der Stützweite abfragen. Durchbiegungs-Badges prüfen den Balken automatisch gegen die üblichen Grenzwerte L/240, L/360 und L/480.",
+      "Ein Dashboard zeigt maximale Querkraft, maximales Biegemoment, maximale Durchbiegung und maximale Biegespannung mit der exakten Position jedes Werts, ohne langes Suchen im Diagramm. Darunter lassen sich die interaktiven Diagramme für Querkraft, Biegemoment, Neigung und Durchbiegung per Maus oder Touch an jeder Stelle der Stützweite abfragen. Durchbiegungs-Badges prüfen den Balken automatisch gegen die üblichen Grenzwerte L/240, L/360 und L/480.",
     p2:
       "Alles ist für echte Arbeitsabläufe gebaut: vollständige metrische und imperiale Einheitensysteme mit feinen Einheitenwählern (mm, cm, m, in, ft; N, kN, lb, kip; Pa, MPa, GPa, psi, ksi), Umschaltung der Vorzeichenkonvention, Rückgängig und Wiederholen, teilbare Links, die das gesamte Modell in der URL codieren, CSV-Export aller Diagrammdaten und ein druckoptimierter Bericht als PDF.",
   },
   s5: {
     h2: "So benutzen Sie den Balkenrechner",
     items: [
-      "Balkenlänge festlegen und eine Voreinstellung aus dem Beispiele-Menü wählen – oder von null beginnen.",
+      "Balkenlänge festlegen und eine Voreinstellung aus dem Beispiele-Menü wählen oder von null beginnen.",
       "Auf den Balken klicken, um Lager und Gelenke hinzuzufügen; Symbole per Drag-and-drop verschieben.",
       "Lasten im Eingabepanel hinzufügen: Einzellasten, Momente, Gleichlasten, Dreiecks- oder Trapezlasten.",
-      "Material und Querschnitt wählen – oder eigene Werte eingeben.",
+      "Material und Querschnitt wählen oder eigene Werte eingeben.",
       "Auflagerkräfte und Maximalwerte im Dashboard ablesen; mit der Maus über die Diagramme fahren, um Punkte abzufragen.",
       "Link teilen, CSV herunterladen oder den Bericht für Ihre Unterlagen drucken.",
     ],
@@ -168,7 +168,7 @@ const home: HomeCopy = {
     },
     {
       q: "Kann ich mein Modell teilen oder speichern?",
-      a: "Ja. Das Modell ist in der URL codiert – der Link teilt den exakten Balken. Ihr letztes Modell wird zusätzlich automatisch im Browser gespeichert.",
+      a: "Ja. Das Modell ist in der URL codiert: Der Link teilt den exakten Balken. Ihr letztes Modell wird zusätzlich automatisch im Browser gespeichert.",
     },
     {
       q: "Wie berechne ich die Last auf einem Balken?",
@@ -194,11 +194,11 @@ const home: HomeCopy = {
     },
     {
       q: "Ist dieser Balkenrechner wirklich kostenlos?",
-      a: "Ja. Unbegrenzt viele Lasten, unbegrenzt viele Felder, alle Querschnittsbibliotheken, CSV-Export und Druckberichte sind vollständig kostenlos – ohne Anmeldung, ohne Testphase und ohne Paywall.",
+      a: "Ja. Unbegrenzt viele Lasten, unbegrenzt viele Felder, alle Querschnittsbibliotheken, CSV-Export und Druckberichte sind vollständig kostenlos, ohne Anmeldung, ohne Testphase und ohne Paywall.",
     },
     {
       q: "Kann ich ihn als Holz- oder Stahlträger-Rechner benutzen?",
-      a: "Ja. Wählen Sie aus den Materialvoreinstellungen – Baustahl, Aluminium, Beton und Holz – oder geben Sie einen eigenen Elastizitätsmodul ein. Eine Bibliothek gängiger AISC-W-Profile ist für die Stahlbemessung enthalten, und Rechteckquerschnitte funktionieren für Holzträger.",
+      a: "Ja. Wählen Sie aus den Materialvoreinstellungen (Baustahl, Aluminium, Beton und Holz) oder geben Sie einen eigenen Elastizitätsmodul ein. Eine Bibliothek gängiger AISC-W-Profile ist für die Stahlbemessung enthalten, und Rechteckquerschnitte funktionieren für Holzträger.",
     },
     {
       q: "Welche Balkentypen werden unterstützt?",
@@ -206,7 +206,7 @@ const home: HomeCopy = {
     },
     {
       q: "Kann ich mein Balkenmodell teilen oder speichern?",
-      a: "Ja. Das gesamte Modell wird in die URL serialisiert – Sie können den Link kopieren, um den exakten Balken mit Kollegen zu teilen, oder ihn als Lesezeichen speichern. Ihr letztes Modell wird zusätzlich lokal in Ihrem Browser gespeichert.",
+      a: "Ja. Das gesamte Modell wird in die URL serialisiert: Sie können den Link kopieren, um den exakten Balken mit Kollegen zu teilen, oder ihn als Lesezeichen speichern. Ihr letztes Modell wird zusätzlich lokal in Ihrem Browser gespeichert.",
     },
     {
       q: "Wie berechne ich die Last auf einem Balken?",
@@ -240,7 +240,7 @@ const hub: HubCopy = {
   h1: "Online-Balkenrechner",
   s1: {
     h2: "Alle Balkenfälle in einem Verzeichnis",
-    p: "Das Tool oben startet leer. Wenn Ihr Problem einer Standardkonfiguration entspricht, laden die Rechner unten sie fertig konfiguriert: Tauschen Sie einfach Stützweite, Lasten und Querschnitt aus. Alle sind dasselbe kostenlose Tool in Ihrem Browser – mit denselben Auflagerkräften, Querkraft- und Biegemomentdiagrammen, Neigungs- und Durchbiegungslinien und Spannungsnachweisen.",
+    p: "Das Tool oben startet leer. Wenn Ihr Problem einer Standardkonfiguration entspricht, laden die Rechner unten sie fertig konfiguriert: Tauschen Sie einfach Stützweite, Lasten und Querschnitt aus. Alle sind dasselbe kostenlose Tool in Ihrem Browser, mit denselben Auflagerkräften, Querkraft- und Biegemomentdiagrammen, Neigungs- und Durchbiegungslinien und Spannungsnachweisen.",
   },
   byTypeH2: "Rechner nach Balkentyp",
   byTypeExtra: [
@@ -391,7 +391,7 @@ const guide: GuideCopy = {
 const about: AboutCopy = {
   title: "Über uns: Kostenloser Balkenrechner",
   description:
-    "Warum es diesen Rechner gibt: unbegrenzte Felder, Federauflager, Gelenke, Trapezlasten und sofortige Diagramme – 100% kostenlos, ohne Konto.",
+    "Warum es diesen Rechner gibt: unbegrenzte Felder, Federauflager, Gelenke, Trapezlasten und sofortige Diagramme: 100% kostenlos, ohne Konto.",
   eyebrow: "Über uns",
   h1: "Ein Balkenrechner, der Ihnen nicht im Weg steht",
   p1:
@@ -432,7 +432,7 @@ const contact: ContactCopy = {
     "Weil alles clientseitig läuft, genügt der Teilen-Link meist, um das Problem exakt zu reproduzieren.",
   featureH2: "Funktionswünsche",
   featureP:
-    "Abgestufte Querschnitte, weitere Lasttypen, zusätzliche Gebrauchstauglichkeitsnachweise, Exporte: Sagen Sie uns, was das Tool in Ihrem Arbeitsablauf nützlicher machen würde – es wird für eine spätere Version geprüft.",
+    "Abgestufte Querschnitte, weitere Lasttypen, zusätzliche Gebrauchstauglichkeitsnachweise, Exporte: Sagen Sie uns, was das Tool in Ihrem Arbeitsablauf nützlicher machen würde, es wird für eine spätere Version geprüft.",
 };
 
 const privacy: LegalCopy = {
@@ -470,7 +470,7 @@ const privacy: LegalCopy = {
     {
       h2: "Drittanbieter",
       pHtml:
-        "Schriftarten sind in die Website eingebettet und werden von derselben Quelle ausgeliefert. Wir verwenden Google Analytics (GA4), um die aggregierte Nutzung der Website zu verstehen – etwa Seitenaufrufe und Referrer; dies umfasst ein Skript von googletagmanager.com und die üblichen GA-Cookies. Wir betten keine Werbenetzwerke oder Social-Media-Tracker ein, und Ihre Berechnungseingaben werden niemals an Google oder sonst jemanden gesendet.",
+        "Schriftarten sind in die Website eingebettet und werden von derselben Quelle ausgeliefert. Wir verwenden Google Analytics (GA4), um die aggregierte Nutzung der Website zu verstehen, etwa Seitenaufrufe und Referrer; dies umfasst ein Skript von googletagmanager.com und die üblichen GA-Cookies. Wir betten keine Werbenetzwerke oder Social-Media-Tracker ein, und Ihre Berechnungseingaben werden niemals an Google oder sonst jemanden gesendet.",
     },
     {
       h2: "Kinder",
@@ -527,11 +527,11 @@ const terms: LegalCopy = {
     },
     {
       h2: "Haftungsbeschränkung",
-      p: "Soweit gesetzlich zulässig, haften OnlineBeamCalculator.com und seine Betreiber nicht für direkte, indirekte, zufällige oder Folgeschäden aus der Nutzung der Website oder dem Vertrauen auf ihre Ausgaben – einschließlich, aber nicht beschränkt auf Strukturversagen, Kostenüberschreitungen oder Projektverzögerungen.",
+      p: "Soweit gesetzlich zulässig, haften OnlineBeamCalculator.com und seine Betreiber nicht für direkte, indirekte, zufällige oder Folgeschäden aus der Nutzung der Website oder dem Vertrauen auf ihre Ausgaben, einschließlich, aber nicht beschränkt auf Strukturversagen, Kostenüberschreitungen oder Projektverzögerungen.",
     },
     {
       h2: "Verfügbarkeit",
-      p: "Wir können jeden Teil der Website jederzeit ohne Vorankündigung ändern, aussetzen oder einstellen. Da der Rechner vollständig clientseitig läuft, können Sie Modelle auch als Links speichern und teilen – unabhängig von unserem fortgesetzten Betrieb.",
+      p: "Wir können jeden Teil der Website jederzeit ohne Vorankündigung ändern, aussetzen oder einstellen. Da der Rechner vollständig clientseitig läuft, können Sie Modelle auch als Links speichern und teilen, unabhängig von unserem fortgesetzten Betrieb.",
     },
     {
       h2: "Anwendbares Recht",
@@ -672,7 +672,7 @@ const deepDive = {
     {
       heading: "Häufige Holzträger-Fehler, die dieses Tool aufdeckt",
       paragraphs: [
-        "Nennmaße statt Istmaße zu verwenden (ein 2×12 misst 1,5″ × 11,25″) überschätzt die Tragfähigkeit deutlich. Wird der First als überkragend modelliert, wenn er über die Wand hinausragt, bleibt das Endmoment unberücksichtigt. Und einen mehrfach gestützten First als Reihe von Einfeldträgern zu modellieren, übersieht das Stützmoment über den Innenstützen – nutzen Sie stattdessen den Durchlaufträger-Rechner.",
+        "Nennmaße statt Istmaße zu verwenden (ein 2×12 misst 1,5″ × 11,25″) überschätzt die Tragfähigkeit deutlich. Wird der First als überkragend modelliert, wenn er über die Wand hinausragt, bleibt das Endmoment unberücksichtigt. Und einen mehrfach gestützten First als Reihe von Einfeldträgern zu modellieren, übersieht das Stützmoment über den Innenstützen, nutzen Sie stattdessen den Durchlaufträger-Rechner.",
       ],
     },
   ],
@@ -688,7 +688,7 @@ const deepDive = {
       heading: "Die Ergebnisse für einen Firstträger lesen",
       paragraphs: [
         "Das Dashboard zeigt das maximale Moment (typisch bei Feldmitte für einen Einfeld-First bzw. über der Innenstütze für einen überkragenden First) und die maximale Durchbiegung. Vergleichen Sie die Biegespannung mit F_b aus der NDS oder den rechnerischen Werten des Produkts. Prüfen Sie die Durchbiegung gegen L/240 für Dächer; L/360, wenn der First eine fertige Decke darunter trägt.",
-        "Läuft der First über drei oder mehr Stützen, wechseln Sie zum zweifeldrigen Durchlaufträger-Rechner und fügen Sie bei Bedarf weitere Stützen hinzu – das Stützmoment über der mittleren Stütze ist typischerweise bemessungsentscheidend.",
+        "Läuft der First über drei oder mehr Stützen, wechseln Sie zum zweifeldrigen Durchlaufträger-Rechner und fügen Sie bei Bedarf weitere Stützen hinzu: das Stützmoment über der mittleren Stütze ist typischerweise bemessungsentscheidend.",
       ],
     },
     {
@@ -709,8 +709,8 @@ const deepDive = {
     {
       heading: "Die Ergebnisse für einen Kragträger lesen",
       paragraphs: [
-        "Die Einspannreaktionskraft und das Einspannmoment sind exakt das, was Konsole, Schweißnaht oder Verankerung aufnehmen muss. Die Enddurchbiegung gegen L/180 ist der übliche Gebrauchstauglichkeitsnachweis; bei gleicher Gesamtlast lenkt eine Endlast 8/3-mal mehr durch als eine Gleichlast – eine verteilte Last auf einen einzelnen Endwert zu reduzieren ist also mit weiter Margene konservativ, aber als Grenzwert nützlich.",
-        "Die Biegespannung wird an der Einspannung (Maximum) und an jedem Lastpunkt angegeben. Die mittlere Schubspannung beträgt V/A an der Einspannung; bei I-Profilen liegt die Stegschubspannung höher – für detaillierte Stegprüfungen nutzen Sie ein normbasiertes Tool.",
+        "Die Einspannreaktionskraft und das Einspannmoment sind exakt das, was Konsole, Schweißnaht oder Verankerung aufnehmen muss. Die Enddurchbiegung gegen L/180 ist der übliche Gebrauchstauglichkeitsnachweis; bei gleicher Gesamtlast lenkt eine Endlast 8/3-mal mehr durch als eine Gleichlast, eine verteilte Last auf einen einzelnen Endwert zu reduzieren ist also mit weiter Margene konservativ, aber als Grenzwert nützlich.",
+        "Die Biegespannung wird an der Einspannung (Maximum) und an jedem Lastpunkt angegeben. Die mittlere Schubspannung beträgt V/A an der Einspannung; bei I-Profilen liegt die Stegschubspannung höher, für detaillierte Stegprüfungen nutzen Sie ein normbasiertes Tool.",
       ],
     },
     {
@@ -731,14 +731,14 @@ const deepDive = {
     {
       heading: "Die Ergebnisse für einen Einfeldträger lesen",
       paragraphs: [
-        "Die Auflagerkräfte in A und B sind die Stützlasten für Ihre Verbindungsbemessung. Das maximale Moment (mit Position) treibt den Widerstandsmoment-Nachweis: σ = M·c/I. Die maximale Durchbiegung (mit Position) treibt den Gebrauchstauglichkeitsnachweis gegen L/360 oder L/240. Die Diagramme sind abschnittsweise exakt – fahren Sie mit der Maus darüber, um V und M an jedem Punkt zu lesen.",
+        "Die Auflagerkräfte in A und B sind die Stützlasten für Ihre Verbindungsbemessung. Das maximale Moment (mit Position) treibt den Widerstandsmoment-Nachweis: σ = M·c/I. Die maximale Durchbiegung (mit Position) treibt den Gebrauchstauglichkeitsnachweis gegen L/360 oder L/240. Die Diagramme sind abschnittsweise exakt, fahren Sie mit der Maus darüber, um V und M an jedem Punkt zu lesen.",
         "Bei einem Träger mit Kragarmen kann das maximale Feldmoment in der Spannweite und das maximale Stützmoment am Auflager liegen; beide werden angegeben. Exportieren Sie die CSV für die vollständigen V/M/θ/δ-Tabellen, wenn Sie sie in eine Tabelle übernehmen wollen.",
       ],
     },
     {
       heading: "Häufige Einfeldträger-Fehler, die dieses Tool aufdeckt",
       paragraphs: [
-        "Zu vergessen, dass ein überkragender Träger mit Last auf dem Kragarm ein Stützmoment am Auflager erzeugt, das Zuggurverbände oder einen größeren Querschnitt erfordern kann. Die mitwirkende Fläche bei der Umwandlung von Flächenlasten in Streckenlasten zu unterschätzen. Und anzunehmen, ein Mehrfeldträger lasse sich als unabhängige Einfeldträger analysieren – die Innenstützmomente sind nicht null, der Durchlaufträger-Rechner muss her.",
+        "Zu vergessen, dass ein überkragender Träger mit Last auf dem Kragarm ein Stützmoment am Auflager erzeugt, das Zuggurverbände oder einen größeren Querschnitt erfordern kann. Die mitwirkende Fläche bei der Umwandlung von Flächenlasten in Streckenlasten zu unterschätzen. Und anzunehmen, ein Mehrfeldträger lasse sich als unabhängige Einfeldträger analysieren: die Innenstützmomente sind nicht null, der Durchlaufträger-Rechner muss her.",
       ],
     },
   ],
@@ -746,7 +746,7 @@ const deepDive = {
     {
       heading: "So benutzen Sie diesen einfachen Balkenrechner",
       paragraphs: [
-        "Das ist der minimale Einfeldfall: ein Feld, eine Last (Gleichlast oder mittige Einzellast), ein Rechteck- oder I-Querschnitt. Geben Sie Stützweite, Last und Querschnittsmaße ein (oder wählen Sie ein I-Profil). Keine Lagerpositionierung, keine Federauflager, kein Eigengewicht – nur der Lehrbuchfall.",
+        "Das ist der minimale Einfeldfall: ein Feld, eine Last (Gleichlast oder mittige Einzellast), ein Rechteck- oder I-Querschnitt. Geben Sie Stützweite, Last und Querschnittsmaße ein (oder wählen Sie ein I-Profil). Keine Lagerpositionierung, keine Federauflager, kein Eigengewicht, nur der Lehrbuchfall.",
       ],
     },
     {
@@ -758,7 +758,7 @@ const deepDive = {
     {
       heading: "Grenzen",
       paragraphs: [
-        "Kein Eigengewicht, keine Kragarme, keine Federauflager, keine inneren Gelenke, keine Durchläufe. Die Ergebnisse sind die exakten geschlossenen Lehrbuchlösungen des Einlastfalls – identisch mit dem vollständigen Löser, wenn nur eine Last vorhanden ist. Für alles andere ist der vollständige Rechner das richtige Werkzeug.",
+        "Kein Eigengewicht, keine Kragarme, keine Federauflager, keine inneren Gelenke, keine Durchläufe. Die Ergebnisse sind die exakten geschlossenen Lehrbuchlösungen des Einlastfalls, identisch mit dem vollständigen Löser, wenn nur eine Last vorhanden ist. Für alles andere ist der vollständige Rechner das richtige Werkzeug.",
       ],
     },
   ],
@@ -773,8 +773,8 @@ const deepDive = {
     {
       heading: "Worauf bei mittigen Einzellasten zu achten ist",
       paragraphs: [
-        "Reale Lasten sitzen selten exakt bei Feldmitte. Ziehen Sie die Last von der Mitte weg und sehen Sie zu, wie die Auflagerkräfte wandern (R_A = P·b/L, R_B = P·a/L) und das maximale Moment zum Lastpunkt folgt (M_max = P·a·b/L). Die Biegelinie wird unsymmetrisch – das Maximum liegt nicht mehr bei Feldmitte.",
-        "Bei mehreren Einzellasten gilt Superposition: Addieren Sie Momente und Durchbiegungen jeder Last. Der Rechner macht das automatisch, sobald Sie mehrere Lasten hinzufügen – von Hand rechnen ist nicht nötig.",
+        "Reale Lasten sitzen selten exakt bei Feldmitte. Ziehen Sie die Last von der Mitte weg und sehen Sie zu, wie die Auflagerkräfte wandern (R_A = P·b/L, R_B = P·a/L) und das maximale Moment zum Lastpunkt folgt (M_max = P·a·b/L). Die Biegelinie wird unsymmetrisch: das Maximum liegt nicht mehr bei Feldmitte.",
+        "Bei mehreren Einzellasten gilt Superposition: Addieren Sie Momente und Durchbiegungen jeder Last. Der Rechner macht das automatisch, sobald Sie mehrere Lasten hinzufügen, von Hand rechnen ist nicht nötig.",
       ],
     },
     {
@@ -795,7 +795,7 @@ const deepDive = {
     {
       heading: "Worauf bei Gleichlasten zu achten ist",
       paragraphs: [
-        "Eine Teil-Gleichlast (nicht über die gesamte Stützweite) erzeugt andere Auflagerkräfte und ein abschnittsweises Momentendiagramm mit flacherem Scheitel. Ziehen Sie die Lastenden, um Teilflächen zu modellieren – der Rechner behandelt dies exakt. Für einen Dachbalken ist die Gleichlast typischerweise die mitwirkende Flächenlast × Abstand; achten Sie darauf, das Eigengewicht nicht doppelt zu zählen (separat umschalten).",
+        "Eine Teil-Gleichlast (nicht über die gesamte Stützweite) erzeugt andere Auflagerkräfte und ein abschnittsweises Momentendiagramm mit flacherem Scheitel. Ziehen Sie die Lastenden, um Teilflächen zu modellieren, der Rechner behandelt dies exakt. Für einen Dachbalken ist die Gleichlast typischerweise die mitwirkende Flächenlast × Abstand; achten Sie darauf, das Eigengewicht nicht doppelt zu zählen (separat umschalten).",
         "Vergleichen Sie mit dem Fall der <a class=\"text-link hover:underline\" href=\"/de/calculator/simply-supported-point\">mittigen Einzellast</a>: Bei gleicher Gesamtlast (wL = P) ergibt die Gleichlast das halbe Feldmoment und 5/8 der Felddurchbiegung. Eine Gleichlast ist bei gleicher Gesamtlast immer weniger anspruchsvoll als eine mittige Einzellast.",
       ],
     },
@@ -818,7 +818,7 @@ const deepDive = {
       heading: "Worauf bei Krag-Gleichlasten zu achten ist",
       paragraphs: [
         "Ein Kragträger mit derselben Gesamtlast wie eine Endlast (wL = P) erzeugt das halbe Einspannmoment (wL²/2 statt PL) und 3/8 der Enddurchbiegung (wL⁴/8EI statt PL³/3EI = wL⁴/3EI). Eine Endlast ist also bei gleicher Gesamtlast eine deutlich konservativere Grenzbetrachtung als eine Gleichlast.",
-        "Ist die Last dreieckförmig (0 am Ende, w an der Einspannung), sinkt das Einspannmoment auf wL²/6 und die Enddurchbiegung auf wL⁴/30EI – der Dreiecksfall ist weniger anspruchsvoll als beide anderen. Im Rechner können Sie die Lastform ziehen, um den Übergang zu sehen.",
+        "Ist die Last dreieckförmig (0 am Ende, w an der Einspannung), sinkt das Einspannmoment auf wL²/6 und die Enddurchbiegung auf wL⁴/30EI: der Dreiecksfall ist weniger anspruchsvoll als beide anderen. Im Rechner können Sie die Lastform ziehen, um den Übergang zu sehen.",
       ],
     },
     {
@@ -839,7 +839,7 @@ const deepDive = {
     {
       heading: "Worauf bei Endlasten zu achten ist",
       paragraphs: [
-        "Die abzulesenden Werte sind die Einspannreaktionskraft und das Einspannmoment – zusammen sind sie exakt das, was Konsole, Schweißnaht oder Verankerung aufnehmen muss. Die Enddurchbiegung gegen L/180 ist der Gebrauchstauglichkeitsnachweis; bei gleicher Gesamtlast lenkt eine Endlast 8/3-mal mehr durch als eine Gleichlast – eine verteilte Last auf einen einzelnen Endwert zu reduzieren ist also mit weiter Margene konservativ, aber als Grenzwert nützlich.",
+        "Die abzulesenden Werte sind die Einspannreaktionskraft und das Einspannmoment, zusammen sind sie exakt das, was Konsole, Schweißnaht oder Verankerung aufnehmen muss. Die Enddurchbiegung gegen L/180 ist der Gebrauchstauglichkeitsnachweis; bei gleicher Gesamtlast lenkt eine Endlast 8/3-mal mehr durch als eine Gleichlast, eine verteilte Last auf einen einzelnen Endwert zu reduzieren ist also mit weiter Margene konservativ, aber als Grenzwert nützlich.",
         "Ziehen Sie die Last entlang des Balkens nach innen: Einspannmoment und Enddurchbiegung fallen linear bzw. mit der dritten Potenz; eine Last bei drei Viertel der Länge halbiert bereits die Einspannmoment-Beanspruchung. Diese Empfindlichkeit lohnt sich auszunutzen, wenn Sie eine Konsollast nahe ihrer Stütze platzieren können.",
       ],
     },
@@ -861,7 +861,7 @@ const deepDive = {
     {
       heading: "Worauf bei beidseitig eingespannten Trägern zu achten ist",
       paragraphs: [
-        "Die Stützmomente (wL²/12) sind betragsmäßig größer als das Feldmoment (wL²/24). Bemessungsentscheidend ist typischerweise das Stützmoment an den Auflagern – dort liegt der Obergurt auf Druck, die seitliche Halterung des Obergurts ist kritisch.",
+        "Die Stützmomente (wL²/12) sind betragsmäßig größer als das Feldmoment (wL²/24). Bemessungsentscheidend ist typischerweise das Stützmoment an den Auflagern, dort liegt der Obergurt auf Druck, die seitliche Halterung des Obergurts ist kritisch.",
         "Ist die Einspannung nicht perfekt (reale Verbindungen haben Nachgiebigkeit), liegen die tatsächlichen Momente zwischen den Fällen beidseitig eingespannt und Einfeldträger. Der vollständige Rechner erlaubt die Modellierung elastischer Drehfedern, um dies zu untersuchen.",
       ],
     },
@@ -884,7 +884,7 @@ const deepDive = {
       heading: "Worauf bei überkragenden Trägern zu achten ist",
       paragraphs: [
         "Das Stützmoment ist bei kleinen Kragarmen bemessungsentscheidend (es ist das Anschluss-/Verankerungsmoment). Bei großen Kragarmen kann das Feldmoment das Stützmoment übertreffen. Der Rechner gibt beide aus, damit Sie beide Stellen prüfen können.",
-        "Unsymmetrische Kragarme (unterschiedliches a auf jeder Seite) erzeugen unsymmetrische Auflagerkräfte und Momente – der vollständige Rechner handhabt das: fügen Sie Stützen an beliebigen Positionen und eine Gleichlast über die volle Länge hinzu.",
+        "Unsymmetrische Kragarme (unterschiedliches a auf jeder Seite) erzeugen unsymmetrische Auflagerkräfte und Momente, der vollständige Rechner handhabt das: fügen Sie Stützen an beliebigen Positionen und eine Gleichlast über die volle Länge hinzu.",
       ],
     },
     {
@@ -905,14 +905,14 @@ const deepDive = {
     {
       heading: "Worauf bei Durchlaufträgern zu achten ist",
       paragraphs: [
-        "Die Innenstütze B trägt das 1,25-fache der Gesamtlast eines Feldes (10/8 gegenüber 8/8 bei einer einfachen Stütze), und das Stützmoment über B (wL²/8) ist betragsmäßig größer als das Feldmoment eines Einfeldträgers (wL²/8 – hier gleich groß, aber bei ungleichen Feldern dominiert das Innenmoment).",
+        "Die Innenstütze B trägt das 1,25-fache der Gesamtlast eines Feldes (10/8 gegenüber 8/8 bei einer einfachen Stütze), und das Stützmoment über B (wL²/8) ist betragsmäßig größer als das Feldmoment eines Einfeldträgers (wL²/8, hier gleich groß, aber bei ungleichen Feldern dominiert das Innenmoment).",
         "Das positive Feldmoment (9wL²/128 ≈ 0,07 wL²) ist kleiner als das Einfeld-Feldmoment (wL²/8 = 0,125 wL²), weil der Durchlauf die Durchbiegung behindert. Daher sind Durchlaufträger effizienter: kleineres Feldmoment bei gleicher Stützweite.",
       ],
     },
     {
       heading: "Häufige Fehler bei Durchlaufträgern",
       paragraphs: [
-        "Einen Durchlaufträger als Reihe von Einfeldträgern zu analysieren übersieht das Stützmoment über der Innenstütze – Anschluss und Obergurtverbände sind dort kritisch. Anzunehmen, die Innenstützenreaktion sei nur wL (hier ist sie 1,25 wL, bei ungleichen Feldern auch höher). Zu vergessen, dass eine Stützensenkung an einer Innenstütze die Momente erheblich umverteilt – der Rechner unterstützt vorgegebene Stützensenkung, um dies zu untersuchen.",
+        "Einen Durchlaufträger als Reihe von Einfeldträgern zu analysieren übersieht das Stützmoment über der Innenstütze: Anschluss und Obergurtverbände sind dort kritisch. Anzunehmen, die Innenstützenreaktion sei nur wL (hier ist sie 1,25 wL, bei ungleichen Feldern auch höher). Zu vergessen, dass eine Stützensenkung an einer Innenstütze die Momente erheblich umverteilt, der Rechner unterstützt vorgegebene Stützensenkung, um dies zu untersuchen.",
       ],
     },
   ],
@@ -934,7 +934,7 @@ const deepDive = {
     {
       heading: "Häufige Fehler bei Gerberträgern",
       paragraphs: [
-        "Zu vergessen, dass das Gelenk eine echte Momentenfreigabe sein muss – eine teilweise Verbindung, die noch Moment überträgt, zunichtemacht den Zweck und erzeugt ein unbestimmtes System, das sich anders verhält. Die Querkrafttragfähigkeit am Gelenk nicht zu prüfen: Es trägt die gesamte Feldquerkraft. Und anzunehmen, die Felder ließen sich unabhängig bemessen – die Gelenkquerkraft ist auf beiden Seiten gleich, die Verbindung muss also für die größere der beiden Feldquerkräfte bemessen werden.",
+        "Zu vergessen, dass das Gelenk eine echte Momentenfreigabe sein muss: eine teilweise Verbindung, die noch Moment überträgt, zunichtemacht den Zweck und erzeugt ein unbestimmtes System, das sich anders verhält. Die Querkrafttragfähigkeit am Gelenk nicht zu prüfen: Es trägt die gesamte Feldquerkraft. Und anzunehmen, die Felder ließen sich unabhängig bemessen: die Gelenkquerkraft ist auf beiden Seiten gleich, die Verbindung muss also für die größere der beiden Feldquerkräfte bemessen werden.",
       ],
     },
   ],

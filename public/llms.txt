@@ -6,7 +6,7 @@ Public site: https://onlinebeamcalculator.com
 ## API (for scripts and AI assistants)
 - POST https://onlinebeamcalculator.com/api/calculate accepts a JSON beam description and returns reactions, maximum shear / moment / deflection / bending stress with positions, and sampled shear, moment, slope and deflection arrays.
 - Machine-readable contract: OpenAPI 3.1 spec at https://onlinebeamcalculator.com/openapi.json
-- No API key. CORS is open. Requests are limited to 65,536 bytes, 12 supports, 8 internal hinges and 40 loads, and a light rate limit (~30 requests per 10 s per IP).
+- No API key. CORS is open. Requests are limited to 65,536 bytes, 10 supports, 4 internal hinges and 30 loads, and a light rate limit (~30 requests per 10 s per IP).
 - Units are explicit in request and response via the optional `units` object; anything unspecified defaults to SI (m, N, N·m, N/m, Pa). Imperial unit ids (ft, lb, kip, psi, in², in⁴, ...) are supported.
 - Sign conventions: loads are downward-positive (applied moments clockwise-positive); reactions are upward-positive; internal moments are sagging-positive; deflection is downward-negative.
 - Invalid input returns 422 with per-field details; unstable structures (mechanisms) return 422 with error code `unstable` and a message explaining how to fix the model — never garbage numbers.

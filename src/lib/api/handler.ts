@@ -26,9 +26,15 @@ import { buildCalculatorUrl } from './share';
 export const LIMITS = {
   /** Hard byte cap on the request body (enforced via Content-Length in the wrapper). */
   MAX_BODY_BYTES: 65_536,
-  MAX_SUPPORTS: 12,
-  MAX_HINGES: 8,
-  MAX_LOADS: 40,
+  /**
+   * Size caps chosen so the heaviest allowed request (~2.2 ms minimal solve,
+   * ~3.9 ms worst case with 10 supports + 4 hinges + 30 distributed loads,
+   * measured in Node — see scripts/bench-solve.ts) keeps roughly 2x margin
+   * under the Workers free-plan 10 ms CPU budget including JSON overhead.
+   */
+  MAX_SUPPORTS: 10,
+  MAX_HINGES: 4,
+  MAX_LOADS: 30,
   /** Matches the calculator's own URL-share sanitizer limit [m]. */
   MAX_LENGTH_SI: 1000,
 } as const;

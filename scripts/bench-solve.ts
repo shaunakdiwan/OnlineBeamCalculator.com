@@ -49,17 +49,17 @@ const supportGrid = (n: number): Support[] => [sup(0, 'pin'), ...Array.from({ le
 bench('minimal (2 supports, 1 point load)', (m) => solve(m), model(6, [sup(0, 'pin'), sup(6, 'roller')], [], [{ id: id(), type: 'point', x: 2, P: 10e3 }]));
 bench('10 trapezoid loads + 4 supports', (m) => solve(m), model(L, [sup(0, 'pin'), sup(4, 'roller'), sup(8, 'roller'), sup(12, 'roller')], [], spreadTraps(10, L)));
 bench('25 trapezoid loads + 8 supports', (m) => solve(m), model(L, supportGrid(8), [], spreadTraps(25, L)));
-bench('40 trapezoid loads + 12 supports', (m) => solve(m), model(L, supportGrid(12), [], spreadTraps(40, L)));
+bench('40 trapezoid loads + 12 supports (above new caps, reference)', (m) => solve(m), model(L, supportGrid(12), [], spreadTraps(40, L)));
 
-// Heaviest beam allowed by the API caps: 12 supports, 8 hinges, 40 trapezoid
-// loads. Hinges sit midway between adjacent supports (Gerber-style, stable).
+// Heaviest beam allowed by the API caps: 10 supports, 4 hinges, 30 trapezoid
+// loads. Hinges coincide with supports (Gerber-style, stable).
 const heaviest = model(
   L,
-  supportGrid(12),
-  Array.from({ length: 8 }, (_, i) => hinge(i + 0.5)),
-  spreadTraps(40, L),
+  supportGrid(10),
+  Array.from({ length: 4 }, (_, i) => hinge((i + 1) * 1.2)),
+  spreadTraps(30, L),
 );
-bench('heaviest allowed (12 sup, 8 hinges, 40 loads)', (m) => solve(m), heaviest);
+bench('heaviest allowed (10 sup, 4 hinges, 30 loads)', (m) => solve(m), heaviest);
 bench('heaviest allowed, incl. diagram JSON serialization', (m) => {
   const r = solve(m);
   JSON.stringify({ x: r.deflection.x, shear: r.shear.values, moment: r.moment.values, slope: r.slope.values, deflection: r.deflection.values });

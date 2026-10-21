@@ -1,0 +1,351 @@
+{
+  "openapi": "3.1.0",
+  "jsonSchemaDialect": "https://json-schema.org/draft/2020-12/schema",
+  "info": {
+    "title": "Online Beam Calculator API",
+    "version": "1.0.0",
+    "description": "Public JSON API for static analysis of Euler-Bernoulli beams: reactions, shear / bending-moment / slope / deflection diagrams, and bending stresses.\n\nThe API runs the exact same solver as the interactive calculator at https://onlinebeamcalculator.com/calculator/ and every successful response includes a `calculatorUrl` that opens the calculator preloaded with the same beam.\n\n# Sign conventions\n\n- Loads: point load `P` and distributed load intensities `w`/`w1`/`w2` are DOWNWARD positive; applied moment `M` is CLOCKWISE positive.\n- Reactions: `R` is UPWARD positive; a fixed support's `M` is its fixing moment (sagging-positive convention).\n- Internal moment: sagging positive.\n- Shear: positive when the left segment acts upward on the cut (standard sagging convention).\n- Deflection: DOWNWARD is negative; `slope` = d(deflection)/dx in radians.\n\n# Units\n\nAll inputs are interpreted in, and all results returned in, the units named in the `units` object. Any quantity not specified defaults to pure SI (m, N, N·m, N/m, Pa, kg/m³, m², m⁴, N/m). Internally the solver always runs in SI and converts on the way in and out.\n\n# Limits and errors\n\n- Request body must not exceed 65,536 bytes.\n- At most 12 supports, 8 internal hinges and 40 loads per request.\n- Unstable structures (mechanisms) return `422` with error code `unstable`.\n- A light per-IP rate limit applies (~30 requests / 10 s); sustained abuse may also be throttled at the edge.",
+    "contact": { "name": "Online Beam Calculator", "url": "https://onlinebeamcalculator.com/about/" }
+  },
+  "servers": [{ "url": "https://onlinebeamcalculator.com" }],
+  "tags": [{ "name": "calculate", "description": "Solve a beam" }],
+  "paths": {
+    "/api/calculate": {
+      "post": {
+        "tags": ["calculate"],
+        "summary": "Analyse a beam and return reactions, extrema and diagram samples",
+        "operationId": "calculate",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CalculateRequest" },
+              "examples": {
+                "simplySupportedPointLoad": {
+                  "summary": "Simply supported beam, one point load (SI)",
+                  "value": {
+                    "length": 6,
+                    "supports": [
+                      { "x": 0, "type": "pin" },
+                      { "x": 6, "type": "roller" }
+                    ],
+                    "loads": [{ "type": "point", "x": 2, "P": 10000 }],
+                    "material": "steel",
+                    "section": { "A": 0.02, "I": 6.667e-5, "depth": 0.2 },
+                    "selfWeight": false
+                  }
+                },
+                "imperialUnits": {
+                  "summary": "Same beam expressed in imperial units",
+                  "value": {
+                    "units": { "length": "ft", "force": "lb", "moment": "lbft", "pressure": "psi", "area": "in2", "inertia": "in4" },
+                    "length": 20,
+                    "supports": [
+                      { "x": 0, "type": "pin" },
+                      { "x": 20, "type": "roller" }
+                    ],
+                    "loads": [{ "type": "udl", "x1": 0, "x2": 20, "w": 200 }],
+                    "material": { "E": 29000000 },
+                    "section": { "A": 10, "I": 100, "depth": 8 }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful analysis",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CalculateResponse" },
+                "examples": {
+                  "simplySupportedPointLoad": {
+                    "summary": "Result for the first request example (abridged)",
+                    "value": {
+                      "ok": true,
+                      "units": { "length": "m", "force": "N", "moment": "Nm", "distributed": "N/m", "pressure": "Pa", "density": "kg/m3", "area": "m2", "inertia": "m4", "stiffness": "N/m" },
+                      "results": {
+                        "reactions": [
+                          { "x": 0, "type": "pin", "R": 6666.67, "M": 0 },
+                          { "x": 6, "type": "roller", "R": 3333.33, "M": 0 }
+                        ],
+                        "maxShear": { "value": 6666.67, "x": 0 },
+                        "maxMoment": { "value": 13333.33, "x": 2 },
+                        "maxDeflection": { "value": -0.0029, "x": 2.73 },
+                        "maxBendingStress": {
+                          "top": { "value": -19999000, "x": 2 },
+                          "bottom": { "value": 19999000, "x": 2 }
+                        },
+                        "maxAvgShearStress": { "value": 333333, "x": 0 },
+                        "diagrams": { "x": [0, 0.015, 2, 2.01, 6], "shear": [6666.67, 6666.67, -3333.33, -3333.33, 0], "moment": [0, 100, 13333.33, 13300, 0], "slope": [-0.001667, -0.001667, -0.000667, -0.000657, 0.001333], "deflection": [0, -0.000025, -0.002667, -0.002673, 0] }
+                      },
+                      "samples": 402,
+                      "calculatorUrl": "https://onlinebeamcalculator.com/calculator/#eyJ2IjoxLC..."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Request body is not valid JSON", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "405": { "description": "Method not allowed (use POST)", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "413": { "description": "Request body exceeds the 65,536 byte limit", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "422": {
+            "description": "The beam description is invalid, or the structure is unstable (mechanism)",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } }
+          },
+          "429": { "description": "Rate limit exceeded (about 30 requests per 10 s per IP)", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } },
+          "500": { "description": "Unexpected server error", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ErrorResponse" } } } }
+        }
+      },
+      "options": {
+        "summary": "CORS preflight",
+        "responses": { "204": { "description": "Preflight OK" } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Units": {
+        "type": "object",
+        "description": "Unit for each physical quantity. Every field is optional; unspecified quantities default to pure SI (m, N, N·m, N/m, Pa, kg/m³, m², m⁴, N/m).",
+        "additionalProperties": false,
+        "properties": {
+          "length": { "type": "string", "enum": ["mm", "cm", "m", "in", "ft"], "default": "m" },
+          "force": { "type": "string", "enum": ["N", "kN", "lb", "kip"], "default": "N" },
+          "moment": { "type": "string", "enum": ["Nmm", "Nm", "kNm", "lbft", "kipft", "lbin", "kipin"], "default": "Nm" },
+          "distributed": { "type": "string", "enum": ["N/m", "kN/m", "N/mm", "lb/ft", "kip/ft", "lb/in"], "default": "N/m" },
+          "pressure": { "type": "string", "enum": ["Pa", "kPa", "MPa", "GPa", "psi", "ksi"], "default": "Pa" },
+          "density": { "type": "string", "enum": ["kg/m3", "lb/ft3"], "default": "kg/m3" },
+          "area": { "type": "string", "enum": ["mm2", "cm2", "m2", "in2", "ft2"], "default": "m2" },
+          "inertia": { "type": "string", "enum": ["mm4", "cm4", "m4", "in4", "ft4"], "default": "m4" },
+          "stiffness": { "type": "string", "enum": ["N/m", "kN/m", "kN/mm", "lb/ft", "kip/in"], "default": "N/m" }
+        }
+      },
+      "Support": {
+        "type": "object",
+        "required": ["x", "type"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "description": "Optional label echoed nowhere; generated if omitted." },
+          "x": { "type": "number", "description": "Position along the beam from the left end, in units.length. Must be within the beam." },
+          "type": { "type": "string", "enum": ["pin", "roller", "fixed", "spring"], "description": "pin/roller restrain vertical translation; fixed also restrains rotation; spring is vertical translation with finite stiffness." },
+          "k": { "type": "number", "exclusiveMinimum": 0, "description": "Spring stiffness in units.stiffness. Spring supports only; defaults to 1e6 N/m if omitted." },
+          "settlement": { "type": "number", "description": "Prescribed vertical settlement in units.length, positive = downward. Default 0." }
+        }
+      },
+      "Hinge": {
+        "type": "object",
+        "required": ["x"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "x": { "type": "number", "exclusiveMinimum": 0, "description": "Position in units.length. Must be strictly inside the beam (0 < x < length)." }
+        },
+        "description": "Internal hinge: bending moment is zero at this section. A hinge added between supports can make a structure unstable; such requests return error code `unstable`."
+      },
+      "LoadPoint": {
+        "type": "object",
+        "required": ["type", "x", "P"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "const": "point" },
+          "x": { "type": "number", "description": "Position in units.length, within the beam." },
+          "P": { "type": "number", "description": "Magnitude in units.force, positive = downward, negative = upward." }
+        }
+      },
+      "LoadMoment": {
+        "type": "object",
+        "required": ["type", "x", "M"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "const": "moment" },
+          "x": { "type": "number", "description": "Position in units.length, within the beam." },
+          "M": { "type": "number", "description": "Applied couple in units.moment, positive = clockwise." }
+        }
+      },
+      "LoadUdl": {
+        "type": "object",
+        "required": ["type", "x1", "x2", "w"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "const": "udl" },
+          "x1": { "type": "number", "description": "Start position in units.length." },
+          "x2": { "type": "number", "description": "End position in units.length. Must satisfy x1 < x2." },
+          "w": { "type": "number", "description": "Intensity in units.distributed, positive = downward." }
+        }
+      },
+      "LoadTrapezoid": {
+        "type": "object",
+        "required": ["type", "x1", "x2", "w1", "w2"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "type": { "const": "trapezoid" },
+          "x1": { "type": "number", "description": "Start position in units.length." },
+          "x2": { "type": "number", "description": "End position in units.length. Must satisfy x1 < x2." },
+          "w1": { "type": "number", "description": "Intensity at x1 in units.distributed, positive = downward." },
+          "w2": { "type": "number", "description": "Intensity at x2 in units.distributed, positive = downward." }
+        }
+      },
+      "Load": {
+        "oneOf": [
+          { "$ref": "#/components/schemas/LoadPoint" },
+          { "$ref": "#/components/schemas/LoadMoment" },
+          { "$ref": "#/components/schemas/LoadUdl" },
+          { "$ref": "#/components/schemas/LoadTrapezoid" }
+        ]
+      },
+      "Material": {
+        "oneOf": [
+          {
+            "type": "string",
+            "enum": ["steel", "aluminum", "concrete", "timber"],
+            "description": "Preset material id (steel = A36, aluminum = 6061-T6, concrete = f'c 30 MPa, timber = Douglas fir)."
+          },
+          { "$ref": "#/components/schemas/MaterialProperties" }
+        ]
+      },
+      "MaterialProperties": {
+        "type": "object",
+        "required": ["E"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "E": { "type": "number", "exclusiveMinimum": 0, "description": "Young's modulus in units.pressure." },
+          "density": { "type": "number", "minimum": 0, "description": "Density in units.density. Required > 0 when selfWeight is true; default 0." },
+          "fy": { "type": "number", "description": "Yield strength in units.pressure (informational)." },
+          "nu": { "type": "number", "description": "Poisson's ratio (informational)." }
+        }
+      },
+      "Section": {
+        "type": "object",
+        "required": ["A", "I", "depth"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "A": { "type": "number", "exclusiveMinimum": 0, "description": "Cross-sectional area in units.area." },
+          "I": { "type": "number", "exclusiveMinimum": 0, "description": "Second moment of area about the bending axis in units.inertia." },
+          "depth": { "type": "number", "exclusiveMinimum": 0, "description": "Overall depth in units.length." },
+          "cTop": { "type": "number", "exclusiveMinimum": 0, "description": "Neutral axis to top fibre in units.length; defaults to depth/2." },
+          "cBot": { "type": "number", "exclusiveMinimum": 0, "description": "Neutral axis to bottom fibre in units.length; defaults to depth/2." }
+        }
+      },
+      "CalculateRequest": {
+        "type": "object",
+        "required": ["length", "supports", "material", "section"],
+        "additionalProperties": false,
+        "properties": {
+          "units": { "$ref": "#/components/schemas/Units" },
+          "length": { "type": "number", "exclusiveMinimum": 0, "maximum": 1000, "description": "Beam length in units.length. Maximum 1000 m." },
+          "supports": { "type": "array", "minItems": 1, "maxItems": 12, "items": { "$ref": "#/components/schemas/Support" } },
+          "hinges": { "type": "array", "maxItems": 8, "items": { "$ref": "#/components/schemas/Hinge" }, "default": [] },
+          "loads": { "type": "array", "maxItems": 40, "items": { "$ref": "#/components/schemas/Load" }, "default": [] },
+          "material": { "$ref": "#/components/schemas/Material" },
+          "section": { "$ref": "#/components/schemas/Section" },
+          "selfWeight": { "type": "boolean", "default": false, "description": "Add self-weight as a UDL = A · density · g. Requires material.density > 0." },
+          "includeDiagrams": { "type": "boolean", "default": true, "description": "Include sampled shear/moment/slope/deflection arrays in the response." }
+        }
+      },
+      "Extremum": {
+        "type": "object",
+        "required": ["value", "x"],
+        "properties": {
+          "value": { "type": "number", "description": "Extreme value (signed) in the relevant unit. For the max* fields this is the largest-magnitude value, keeping its sign." },
+          "x": { "type": "number", "description": "Position along the beam in units.length." }
+        }
+      },
+      "Reaction": {
+        "type": "object",
+        "required": ["x", "type", "R", "M"],
+        "properties": {
+          "x": { "type": "number", "description": "Support position in units.length." },
+          "type": { "type": "string", "enum": ["pin", "roller", "fixed", "spring"] },
+          "R": { "type": "number", "description": "Vertical reaction in units.force, UPWARD positive (negative = hold-down)." },
+          "M": { "type": "number", "description": "Fixing moment in units.moment (fixed supports only, sagging-positive); 0 otherwise." }
+        }
+      },
+      "Diagrams": {
+        "type": "object",
+        "required": ["x", "shear", "moment", "slope", "deflection"],
+        "description": "Parallel arrays sampled along the beam (~400 uniform samples plus exact event positions at supports, hinges, load starts/ends and point load / moment positions, so jumps are captured exactly).",
+        "properties": {
+          "x": { "type": "array", "items": { "type": "number" }, "description": "Sample positions in units.length, ascending, 0 to length." },
+          "shear": { "type": "array", "items": { "type": "number" }, "description": "Shear in units.force." },
+          "moment": { "type": "array", "items": { "type": "number" }, "description": "Bending moment in units.moment, sagging positive." },
+          "slope": { "type": "array", "items": { "type": "number" }, "description": "Slope in radians = d(deflection)/dx." },
+          "deflection": { "type": "array", "items": { "type": "number" }, "description": "Deflection in units.length, downward negative." }
+        }
+      },
+      "Results": {
+        "type": "object",
+        "required": ["reactions", "maxShear", "maxMoment", "maxDeflection", "maxBendingStress", "maxAvgShearStress"],
+        "properties": {
+          "reactions": { "type": "array", "items": { "$ref": "#/components/schemas/Reaction" } },
+          "maxShear": { "$ref": "#/components/schemas/Extremum", "description": "Largest-magnitude shear with its position." },
+          "maxMoment": { "$ref": "#/components/schemas/Extremum", "description": "Largest-magnitude bending moment with its position (sagging positive)." },
+          "maxDeflection": { "$ref": "#/components/schemas/Extremum", "description": "Largest-magnitude deflection with its position (downward negative)." },
+          "maxBendingStress": {
+            "type": "object",
+            "required": ["top", "bottom"],
+            "properties": {
+              "top": { "$ref": "#/components/schemas/Extremum", "description": "Extreme bending stress at the top fibre in units.pressure (compression negative for sagging)." },
+              "bottom": { "$ref": "#/components/schemas/Extremum", "description": "Extreme bending stress at the bottom fibre in units.pressure (tension positive for sagging)." }
+            }
+          },
+          "maxAvgShearStress": { "$ref": "#/components/schemas/Extremum", "description": "Largest average shear stress V/A in units.pressure." },
+          "diagrams": { "$ref": "#/components/schemas/Diagrams" }
+        }
+      },
+      "CalculateResponse": {
+        "type": "object",
+        "required": ["ok", "units", "results", "samples", "calculatorUrl"],
+        "properties": {
+          "ok": { "const": true },
+          "units": { "$ref": "#/components/schemas/Units", "description": "The effective unit set used for inputs and outputs (SI defaults filled in)." },
+          "results": { "$ref": "#/components/schemas/Results" },
+          "samples": { "type": "integer", "description": "Number of diagram samples per array." },
+          "calculatorUrl": { "type": "string", "format": "uri", "description": "Opens the interactive calculator preloaded with exactly this beam, in the requested units." }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["code", "message"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": ["invalid_json", "invalid_input", "request_too_large", "unstable", "method_not_allowed", "rate_limited", "internal_error"]
+          },
+          "message": { "type": "string", "description": "Human-readable description; for `unstable` it explains how to fix the model (e.g. add a support)." },
+          "details": {
+            "type": "array",
+            "description": "Present for `invalid_input`: one entry per problem found.",
+            "items": {
+              "type": "object",
+              "required": ["path", "message"],
+              "properties": {
+                "path": { "type": "string", "description": "JSON path of the offending field, e.g. supports[2].x. Empty for the root object." },
+                "message": { "type": "string" }
+              }
+            }
+          },
+          "retryAfterSeconds": { "type": "integer", "description": "Present for `rate_limited`." }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "required": ["ok", "error"],
+        "properties": {
+          "ok": { "const": false },
+          "error": { "$ref": "#/components/schemas/Error" }
+        }
+      }
+    }
+  }
+}

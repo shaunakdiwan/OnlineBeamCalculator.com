@@ -1,0 +1,40 @@
+# Online Beam Calculator
+> Free online beam calculator for statically determinate and indeterminate Euler-Bernoulli beams: supports (pin, roller, fixed, spring, with optional settlement), internal hinges, point loads, applied moments, uniform and trapezoidal distributed loads, self-weight, custom material and section properties. Computes reactions, full shear / moment / slope / deflection diagrams and bending stresses. No signup, no install.
+
+Public site: https://onlinebeamcalculator.com
+
+## API (for scripts and AI assistants)
+- POST https://onlinebeamcalculator.com/api/calculate accepts a JSON beam description and returns reactions, maximum shear / moment / deflection / bending stress with positions, and sampled shear, moment, slope and deflection arrays.
+- Machine-readable contract: OpenAPI 3.1 spec at https://onlinebeamcalculator.com/openapi.json
+- No API key. CORS is open. Requests are limited to 65,536 bytes, 12 supports, 8 internal hinges and 40 loads, and a light rate limit (~30 requests per 10 s per IP).
+- Units are explicit in request and response via the optional `units` object; anything unspecified defaults to SI (m, N, N·m, N/m, Pa). Imperial unit ids (ft, lb, kip, psi, in², in⁴, ...) are supported.
+- Sign conventions: loads are downward-positive (applied moments clockwise-positive); reactions are upward-positive; internal moments are sagging-positive; deflection is downward-negative.
+- Invalid input returns 422 with per-field details; unstable structures (mechanisms) return 422 with error code `unstable` and a message explaining how to fix the model — never garbage numbers.
+- Every successful response contains `calculatorUrl`, a link that opens the interactive calculator preloaded with the same beam for visual inspection.
+
+Example:
+
+```bash
+curl -s https://onlinebeamcalculator.com/api/calculate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "length": 6,
+    "supports": [ { "x": 0, "type": "pin" }, { "x": 6, "type": "roller" } ],
+    "loads": [ { "type": "point", "x": 2, "P": 10000 } ],
+    "material": "steel",
+    "section": { "A": 0.02, "I": 6.667e-5, "depth": 0.2 }
+  }'
+```
+
+returns reactions (6.67 kN and 3.33 kN upward), max shear 6.67 kN, max moment 13.33 kN·m at x = 2 m, sampled diagrams, and the preloaded-calculator link.
+
+## Tools
+- Interactive calculator (draws the beam and all diagrams): https://onlinebeamcalculator.com/calculator/
+- Beam formulas reference (reactions, moments, deflections for common cases): https://onlinebeamcalculator.com/formulas/
+- Step-by-step beam analysis guide: https://onlinebeamcalculator.com/guide/
+- Worked example presets (simply supported, cantilever, overhang, fixed-fixed, continuous, Gerber): https://onlinebeamcalculator.com/calculator/ lists them by locale.
+
+## Notes
+- The API and the calculator UI share one solver implementation, so API results always match what the calculator displays for the same beam.
+- Scope is static Euler-Bernoulli beam analysis (small deflections, elastic material). No axial loads, frames, dynamics or nonlinear analysis.
+- The API is free for light programmatic use. Heavy or commercial use should cache results client-side rather than re-solving identical beams.

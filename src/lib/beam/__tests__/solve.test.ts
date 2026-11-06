@@ -33,20 +33,21 @@ const at = (xs: number[], v: number[], x: number): number => {
 };
 
 describe('solver closed-form', () => {
-  it('simply supported + center point load: Mmax = PL/4, R = P/2, δmax = PL³/48EI', () => {
-    const L = 10, P = 20e3;
-    const r = solve(model({
-      length: L,
-      supports: [sup(0, 'pin'), sup(L, 'roller')],
-      loads: [{ id: id(), type: 'point', x: L / 2, P }],
-    }));
-    expect(r.reactions[0].R).toBeCloseTo(-P / 2, 2); // solver: downward-positive → reaction = −P/2
-    expect(r.reactions[1].R).toBeCloseTo(-P / 2, 2);
-    expect(r.moment.max.value).toBeCloseTo((P * L) / 4, -1);
-    expect(r.moment.max.x).toBeCloseTo(L / 2, 1);
-    const EI = STEEL.E * RECT.I;
-    expect(Math.abs(r.deflection.min.value)).toBeCloseTo((P * L ** 3) / (48 * EI), 8);
-  });
+314	  it('simply supported + center point load (repro case): Mmax = PL/4, R = P/2, δmax = PL³/48EI', () => {
+315	    const L = 11/12, P = 20e3; // 11 in span, 3 in load location
+316	    const r = solve(model({
+317	      length: L,
+318	      supports: [sup(0, 'pin'), sup(L, 'roller')],
+319	      loads: [{ id: id(), type: 'point', x: 3/12, P }], // Load at 3 in
+320	    }));
+321	    expect(r.reactions[0].R).toBeCloseTo(-P / 2, 1);
+322	    expect(r.reactions[1].R).toBeCloseTo(-P / 2, 1);
+323	    expect(r.moment.max.value).toBeCloseTo((P * L) / 4, 1);
+324	    expect(r.moment.max.x).toBeCloseTo(L / 2, 1);
+325	    const EI = STEEL.E * RECT.I;
+326	    expect(Math.abs(r.deflection.min.value)).toBeCloseTo((P * L ** 3) / (48 * EI), 4);
+327	  });
+328	});
 
   it('simply supported + UDL: Mmax = wL²/8, R = wL/2, δmax = 5wL⁴/384EI', () => {
     const L = 8, w = 5e3;

@@ -28,13 +28,26 @@ export interface Mesh {
 const MAX_ELEMENT_COUNT = 400; // ceiling for smooth curves
 const EPS = 1e-9;
 
+/** Snap a position onto the breakpoint grid (1e-9 m) used for node lookups. */
+export const snapX = (x: number) => Math.round(x * 1e9) / 1e9;
+
 export function buildMesh(model: BeamModel): Mesh {
   const L = model.length;
-  const breaks = new Set<number>([0, L]);
+  // Every breakpoint is snapped to this grid so the rounded keys used for
+  // nodeAtX lookups (supports, hinges, load boundaries) always hit a node.
+  // The beam ends must be snapped as well: seeding the set with the raw L
+  // left both L and snap(L) in the set whenever they differ (e.g.
+  // length = 1.4·0.05 = 0.06999999999999999 vs snap = 0.07). The element
+  // between those two breaks then has length ~1e-17, so its stiffness EI/L³
+  // is astronomically large, its node decouples from the rest of the mesh,
+  // and the assembled matrix comes out singular — a perfectly good beam
+  // is then reported as "unstable".
+  const snap = snapX;
+  const breaks = new Set<number>([0, snap(L)]);
 
   const clampInto = (x: number) => {
     const xc = Math.min(Math.max(x, 0), L);
-    breaks.add(Math.round(xc * 1e9) / 1e9);
+    breaks.add(snap(xc));
   };
 
   for (const s of model.supports) clampInto(s.x);
@@ -47,12 +60,33 @@ export function buildMesh(model: BeamModel): Mesh {
     }
   }
 
-  const sortedBreaks = [...breaks].sort((a, b) => a - b);
+  // Merge breaks that sit closer together than a small fraction of the beam:
+  // an element that short is degenerate for the same reason as above. A
+  // merged key still resolves to the surviving node via `aliases`.
+  const minSeg = Math.max(1e-9, L * 1e-7);
+  const snapped = [...breaks].sort((a, b) => a - b);
+  const end = snapped[snapped.length - 1];
+  const kept: number[] = [];
+  const aliases = new Map<number, number>();
+  for (const x of snapped) {
+    const last = kept[kept.length - 1];
+    if (last !== undefined && x - last < minSeg) {
+      if (x === end) {
+        aliases.set(last, x); // the beam end wins
+        kept[kept.length - 1] = x;
+      } else {
+        aliases.set(x, last);
+      }
+    } else {
+      kept.push(x);
+    }
+  }
+  const sortedBreaks = kept;
 
   // Node numbering: each break gets one node, except hinge positions get two.
   const nodeX: number[] = [];
   const nodeAtX = new Map<number, number[]>();
-  const hingeXs = new Set(model.hinges.map((h) => Math.round(h.x * 1e9) / 1e9));
+  const hingeXs = new Set(model.hinges.map((h) => snap(h.x)));
 
   for (const x of sortedBreaks) {
     const idx: number[] = [];
@@ -63,6 +97,11 @@ export function buildMesh(model: BeamModel): Mesh {
       idx.push(nodeX.length - 1);
     }
     nodeAtX.set(x, idx);
+  }
+  // A break folded into a neighbour still resolves to that neighbour's nodes.
+  for (const [from, to] of aliases) {
+    const target = nodeAtX.get(to);
+    if (target) nodeAtX.set(from, target);
   }
 
   // Build elements between consecutive breaks.

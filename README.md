@@ -12,6 +12,38 @@ A browser-based structural beam analysis tool that runs a full finite element so
 
 ---
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Screenshots](#screenshots)
+- [Execution Model](#execution-model)
+- [Features](#features)
+  - [Beam Configurations](#beam-configurations-presets)
+  - [Support Conditions](#support-conditions)
+  - [Internal Hinges](#internal-hinges)
+  - [Load Types](#load-types)
+  - [Structural Analysis Outputs](#structural-analysis-outputs)
+  - [Material Library](#material-library)
+  - [Cross-Section Library](#cross-section-library)
+  - [Unit Systems](#unit-systems)
+  - [UI Features](#ui-features)
+  - [Public REST API](#public-rest-api)
+  - [Internationalization](#internationalization)
+- [Engineering Methodology](#engineering-methodology)
+- [Technology Stack](#technology-stack)
+- [Architecture and Code Organization](#architecture-and-code-organization)
+- [Installation and Local Development](#installation-and-local-development)
+- [Deployment](#deployment)
+- [SEO and Internationalization](#seo-and-internationalization)
+- [Testing and Quality Assurance](#testing-and-quality-assurance)
+- [Engineering Assumptions and Limitations](#engineering-assumptions-and-limitations)
+- [Project Ownership and Development](#project-ownership-and-development)
+- [Project Impact](#project-impact)
+- [Future Improvements](#future-improvements)
+- [License](#license)
+
+---
+
 ## Project Overview
 
 OnlineBeamCalculator.com solves a problem common in early-stage structural and mechanical engineering work: getting a quick, accurate answer for beam reactions, shear force, bending moment, slope, and deflection without reaching for dedicated software like STAAD or SAP2000.
@@ -31,6 +63,22 @@ The application's OG image is available at [`public/og.png`](public/og.png). No 
 - The interactive calculator with a beam diagram, input panel, and four result diagrams (SFD, BMD, slope, deflection).
 - The `/formulas` reference page with KaTeX-rendered beam equations.
 - The mobile layout with the hamburger navigation.
+
+---
+
+## Execution Model
+
+The project has two distinct computation paths, and they are independent of each other:
+
+| Path | Where it runs | Entry point |
+|---|---|---|
+| **Interactive calculator** | Entirely in the user's browser — no server involved | `src/lib/ui/app.ts` calls `solve()` on the main thread |
+| **REST API (`POST /api/calculate`)** | On Cloudflare's edge (Cloudflare Pages Function) | `src/pages/api/calculate.ts` calls the same `solve()` in a Worker |
+
+Both paths call the **identical** TypeScript solver (`src/lib/beam/solve.ts`). There is no separate server for the browser calculator; the solver is bundled into the client-side JavaScript by Astro at build time and runs locally in the browser. The Cloudflare Pages Function is only invoked when a client explicitly hits the `/api/calculate` endpoint.
+
+> [!NOTE]
+> The browser solver runs synchronously on the main thread. For the typical mesh size (100–400 elements) it completes in well under 5 ms on modern hardware. No Web Workers are used.
 
 ---
 
@@ -398,7 +446,7 @@ User interaction (canvas.ts / panel.ts)
     (beam viz)  (SFD/BMD/etc) (results table)
 ```
 
-The entire solver runs synchronously on the main thread. No Web Workers are used. For the typical mesh size (~100–400 elements), solve time is well under 5 ms in modern browsers.
+The entire solver runs synchronously on the main thread. For the typical mesh size (~100–400 elements), solve time is well under 5 ms in modern browsers.
 
 ---
 
